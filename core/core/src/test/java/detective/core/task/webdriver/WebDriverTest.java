@@ -51,7 +51,7 @@ public class WebDriverTest {
     return destFile; 
   }
 
-  @Test
+  //@Test
   public void testGoogleWithFirefoxDriver() {
     // The Firefox driver supports javascript
     WebDriver driver = new FirefoxDriver();
@@ -67,7 +67,7 @@ public class WebDriverTest {
    * 20 max
    * @throws InterruptedException
    */
-  @Test
+  //@Test
   public void testLocalChromeDriver() throws InterruptedException {
     runMultipleThread(20, new WebDriverFactory(){
 
@@ -105,7 +105,7 @@ public class WebDriverTest {
    * 40 looks stable
    * @throws InterruptedException
    */
-  @Test
+  //@Test
   public void testLocalPhantomjs() throws InterruptedException {
     runMultipleThread(60, new WebDriverFactory(){
 
