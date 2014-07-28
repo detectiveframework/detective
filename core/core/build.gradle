@@ -1,0 +1,71 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'groovy'
+
+group = 'detective'
+version = '1.0.0-SNAPSHOT'
+description = """core"""
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+sourceSets {
+  main {
+    java { srcDirs = [] }
+    groovy { srcDirs = ['src/main/java'] }
+  }
+
+  test {
+    java { srcDirs = [] }
+    groovy { srcDirs = ['src/test/java'] }
+  }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+  compile group: 'org.springframework', name: 'spring-aspects', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-core', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-beans', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-oxm', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-expression', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-context', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-aop', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-tx', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-orm', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-context-support', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-jms', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-jdbc', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-web', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-webmvc', version:'3.2.6.RELEASE'
+  compile group: 'org.springframework', name: 'spring-test', version:'3.2.6.RELEASE'
+  compile group: 'org.codehaus.groovy', name: 'groovy-all', version:'2.1.5'
+  compile group: 'org.codehaus.gpars', name: 'gpars', version:'1.2.1'
+  compile group: 'com.google.guava', name: 'guava', version:'17.0'
+  compile group: 'io.netty', name: 'netty-all', version:'4.0.19.Final'
+  compile group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.3.2'
+  compile group: 'org.spockframework', name: 'spock-core', version:'0.7-groovy-2.0'
+  compile group: 'org.elasticsearch', name: 'elasticsearch', version:'1.3.0'
+  compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version:'1.9.13'
+  compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version:'1.9.13'
+  compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.7'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version:'2.0'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.0'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-1.2-api', version:'2.0'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-jcl', version:'2.0'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version:'2.0'
+  compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.3.2'
+  compile group: 'org.apache.commons', name: 'commons-io', version:'1.3.2'
+  compile group: 'org.apache.commons', name: 'commons-collections4', version:'4.0'
+  compile group: 'com.amazonaws', name: 'aws-java-sdk', version:'1.4.7'
+  compile group: 'commons-httpclient', name: 'commons-httpclient', version:'3.1'
+  compile group: 'com.typesafe', name: 'config', version:'1.2.1'
+  compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version:'2.42.2'
+  compile group: 'org.seleniumhq.selenium', name: 'selenium-server', version:'2.42.2'
+  compile group: 'com.github.detro', name: 'phantomjsdriver', version:'1.2.0'
+  compile group: 'org.apache.httpcomponents', name: 'httpcore', version:'4.3.1'
+  compile group: 'org.hamcrest', name: 'hamcrest-all', version:'1.3'
+  compile group: 'junit', name: 'junit', version:'4.10'
+}
