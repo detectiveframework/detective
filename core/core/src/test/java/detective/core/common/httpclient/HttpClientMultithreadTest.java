@@ -11,7 +11,7 @@ import detective.common.httpclient.IdleConnectionMonitorThread;
 
 public class HttpClientMultithreadTest {
 
-  @Test
+  //@Test
   public void test() throws InterruptedException {
     PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
     CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(cm).build();
@@ -45,7 +45,7 @@ public class HttpClientMultithreadTest {
 
   }
   
-  @Test
+  //@Test
   public void testPressure() throws InterruptedException {
     PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
     CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(cm).build();

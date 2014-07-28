@@ -26,7 +26,7 @@ story() "Story in script" {
     }
     
     then "I should have expcected black sweaters in stock"{
-      sweater.black << equalTo(expect.sweater.balck)
+      sweater.black << equalTo(expect.sweater.balk)
       println "check passed for sweater.black with value ${sweater.black}" 
     }
   }

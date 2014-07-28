@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.typesafe.config.Config;
 
+import detective.common.httpclient.IdleConnectionMonitorThread;
 import detective.common.trace.TraceRecorder;
 import detective.common.trace.TraceRetriver;
 import detective.common.trace.impl.TraceRecorderElasticSearchImpl;
@@ -31,6 +32,7 @@ public enum DetectiveFactory {
   private final TraceRetriver retriver;
   
   private final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+  private final IdleConnectionMonitorThread idleConnectionMonitorThread = new IdleConnectionMonitorThread(cm);
   private final CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(cm).build();
   
   private final PGroup threadGroup;
@@ -55,6 +57,9 @@ public enum DetectiveFactory {
     
     cm.setMaxTotal(getConfig().getInt("httpclient.max_connections"));
     cm.setDefaultMaxPerRoute(getConfig().getInt("httpclient.max_connections_pre_site"));
+    
+    idleConnectionMonitorThread.setName("idle-connection-monitor-thread");
+    idleConnectionMonitorThread.start();
   }
   
   public void shutdown(){
@@ -63,6 +68,8 @@ public enum DetectiveFactory {
     } catch (Exception e) {
       logger.error("Error to shutdown running thread pools", e);
     }
+    
+    idleConnectionMonitorThread.shutdown();
     
     try {
       cm.shutdown();
