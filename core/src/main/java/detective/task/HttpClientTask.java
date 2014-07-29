@@ -21,6 +21,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -51,13 +52,18 @@ import detective.core.services.DetectiveFactory;
  *     
  * </pre>
  * <h4>Output</h4>
+ * <h5>Most Useful Output</h5>
  * <pre>
  *   http.cookies: the http context current task have (may created by this task or passed in from input)
- *   http.output
  *   http.status.code
- *   http.header.* : all headers returned from server
- *   get
- *     
+ *   http.status.reason
+ *   http.header.*name* : all headers returned from server, for example http.header.
+ * </pre>
+ * <h5>Other Output</h5>
+ * <pre>
+ *   http.protocal.version.major
+ *   http.protocal.version.minor
+ *   http.protocal.description
  * </pre>
  * 
  * <ul>
@@ -169,7 +175,7 @@ public class HttpClientTask extends AbstractTask{
         }
         
         //Cookies
-        //output.put("http.cookies", context.getCookieStore().getCookies());
+        this.addCookiesOutput(cookieStore, output);
         
         //Entity
         HttpEntity entity = response.getEntity();
@@ -187,6 +193,12 @@ public class HttpClientTask extends AbstractTask{
       throw new TaskException(ex);
     } catch (IOException ex) {
       throw new TaskException(ex);
+    }
+  }
+  
+  private void addCookiesOutput(CookieStore cookieStore, Map<String, Object> output){
+    for (Cookie c : cookieStore.getCookies()){
+      output.put("http.cookie." + c.getName(), c.getValue());
     }
   }
   
