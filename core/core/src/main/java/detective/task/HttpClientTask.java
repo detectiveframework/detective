@@ -52,7 +52,7 @@ import detective.core.services.DetectiveFactory;
  * </pre>
  * <h4>Output</h4>
  * <pre>
- *   http.context: the http context current task have (may created by this task or passed in from input)
+ *   http.cookies: the http context current task have (may created by this task or passed in from input)
  *   http.output
  *   http.status.code
  *   http.header.* : all headers returned from server

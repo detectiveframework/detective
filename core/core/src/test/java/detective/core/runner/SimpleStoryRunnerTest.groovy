@@ -56,6 +56,8 @@ public class SimpleStoryRunnerTest {
         then "I should have four black sweaters in stock"{
           sweater.refund.black << equalTo(1)
           sweater.black << equalTo(4)
+          sweater.black == 4
+          sweater.black << 4
         }
       }
     }

@@ -9,6 +9,7 @@ import org.hamcrest.Matcher;
 import org.junit.Assert;
 
 import detective.core.dsl.DslException;
+import detective.core.matcher.IsEqual;
 
 /**
  * see groovy.time.TimeCategory
@@ -58,25 +59,31 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport{
   }
 
   public static void leftShift(Object self, Object obj){
-    if (self instanceof PropertyToStringDelegate){
-      throw new WrongPropertyNameInDslException(((PropertyToStringDelegate)self).getFullPropertyName());    
-    }
+    throw new RuntimeException("Not supported!");
     
-    if (obj != null && obj instanceof Matcher){
-      Assert.assertThat("", self, (Matcher)obj);
-    }else{
-      throw new DslException("We support org.hamcrest.Matcher only in expect section only for now. Maybe you didn't import static Matchers.*?, please note you can put a break point into your IDE for your DSL and inspect what the value is.");
-    }
+//    if (self instanceof PropertyToStringDelegate){
+//      throw new WrongPropertyNameInDslException(((PropertyToStringDelegate)self).getFullPropertyName());    
+//    }
+//    
+//    if (obj != null){
+//      if (obj instanceof Matcher){
+//        Assert.assertThat("", self, (Matcher)obj);
+//      }else{
+//        
+//      }
+//    } else{
+//      throw new DslException("We support org.hamcrest.Matcher only in expect section only for now. Maybe you didn't import static Matchers.*?, please note you can put a break point into your IDE for your DSL and inspect what the value is.");
+//    }
   }
   
   public void leftShift(Object obj){
-//    if (this instanceof PropertyToStringDelegate){
-//      throw new WrongPropertyNameInDslException(((PropertyToStringDelegate)self).getFullPropertyName());    
-//    }
-    
-    if (obj != null && obj instanceof Matcher){
-      assertThat(obj);
-    }else{
+    if (obj != null){
+      if (obj instanceof Matcher){
+        assertThat(obj);
+      }else{
+        assertThat(IsEqual.equalTo(obj));
+      }
+    } else{
       throw new DslException("We support org.hamcrest.Matcher only in expect section only for now. Maybe you didn't import static Matchers.*?, please note you can put a break point into your IDE for your DSL and inspect what the value is.");
     }
   }
