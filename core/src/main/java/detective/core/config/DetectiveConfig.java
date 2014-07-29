@@ -3,9 +3,17 @@ package detective.core.config;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-public class DetectiveConfig {
+public enum DetectiveConfig {
+  
+  INSTANCE;
+  
+  private DetectiveConfig(){
+    config = configUser.withFallback(configDefault);
+  }
 
-  private static final Config config = ConfigFactory.load("detectivve-config.conf");
+  private final Config configDefault = ConfigFactory.load("detective-config-default.conf");
+  private final Config configUser = ConfigFactory.load("detective.conf");
+  private final Config config;
  
   public static Config getConfig(){
     
@@ -13,6 +21,6 @@ public class DetectiveConfig {
 //    Config configLogin = config.getConfig("tasks.login");
 //    assertThat(configLogin, notNullValue());
 //    assertThat(configLogin.getString("url"), CoreMatchers.equalTo("localhost:8080/login_check"));
-    return config;
+    return INSTANCE.config;
   }
 }
