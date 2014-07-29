@@ -173,6 +173,8 @@ public class HttpClientTask extends AbstractTask{
         
         //Entity
         HttpEntity entity = response.getEntity();
+        // add by George Zeng, for adding a content back to do more actions
+        output.put("http.content", entity.getContent()); 
         output.put("http.content.length", entity.getContentLength());
         if (entity.getContentEncoding() != null)
           output.put("http.content." + entity.getContentEncoding().getName(), entity.getContentEncoding().getValue());
