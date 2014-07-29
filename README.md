@@ -2,11 +2,14 @@
 
 ## Introduction
 
-* Code is document and keep running never outdated
-* Improve Communication as test is specification
-* Make more sence as ProjectManager/BA/Testers able to write story or case by theirself
-* Testing real code and can be running in live environment, the tests running 24*7
-* Run parallel and real-time reporting so that you know your web site is servicing what they should service
+* Test specification is the Code, always keep running so that never outdated
+* Make more sense as ProjectManager/BA/Testers able to write story or case by theirselves
+* Armed to simplify the integration, user acceptance and pressure test
+* Armed to run the tests in development / test / live environment with 24*7
+* Building parallel support
+* Real-time reporting so that you know your web site is servicing what they should service
+* History comparison between your old (pressure) and new testers
+* Able to wrapper into your junit (or *unit) test
 
 Able to support all platform as
 
