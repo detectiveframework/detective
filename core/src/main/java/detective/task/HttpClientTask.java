@@ -57,7 +57,7 @@ import detective.core.services.DetectiveFactory;
  *   http.cookies: the http context current task have (may created by this task or passed in from input)
  *   http.status.code
  *   http.status.reason
- *   http.header.*name* : all headers returned from server, for example http.header.
+ *   http.header.*name* : all headers returned from server, for example http.header.Content-Length
  * </pre>
  * <h5>Other Output</h5>
  * <pre>
