@@ -3,6 +3,7 @@ package detective.task;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -21,13 +22,11 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.cookie.CookieSpec;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
 import org.springframework.http.HttpMethod;
 
 import detective.common.annotation.ThreadSafe;
@@ -174,7 +173,13 @@ public class HttpClientTask extends AbstractTask{
         //Entity
         HttpEntity entity = response.getEntity();
         // add by George Zeng, for adding a content back to do more actions
-        output.put("http.content", entity.getContent()); 
+        Scanner scanner = new Scanner(entity.getContent());
+        StringBuilder content = new StringBuilder();
+        while(scanner.hasNext()) {
+        	content.append(scanner.nextLine()).append("\n");
+        }
+        scanner.close();
+        output.put("http.content", content.toString()); 
         output.put("http.content.length", entity.getContentLength());
         if (entity.getContentEncoding() != null)
           output.put("http.content." + entity.getContentEncoding().getName(), entity.getContentEncoding().getValue());
