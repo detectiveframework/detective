@@ -3,6 +3,7 @@ package detective.task;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -21,14 +22,11 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.cookie.CookieSpec;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
 import org.springframework.http.HttpMethod;
 
 import detective.common.annotation.ThreadSafe;
@@ -52,18 +50,13 @@ import detective.core.services.DetectiveFactory;
  *     
  * </pre>
  * <h4>Output</h4>
- * <h5>Most Useful Output</h5>
  * <pre>
  *   http.cookies: the http context current task have (may created by this task or passed in from input)
+ *   http.output
  *   http.status.code
- *   http.status.reason
- *   http.header.*name* : all headers returned from server, for example http.header.Content-Length
- * </pre>
- * <h5>Other Output</h5>
- * <pre>
- *   http.protocal.version.major
- *   http.protocal.version.minor
- *   http.protocal.description
+ *   http.header.* : all headers returned from server
+ *   get
+ *     
  * </pre>
  * 
  * <ul>
@@ -175,12 +168,18 @@ public class HttpClientTask extends AbstractTask{
         }
         
         //Cookies
-        this.addCookiesOutput(cookieStore, output);
+        //output.put("http.cookies", context.getCookieStore().getCookies());
         
         //Entity
         HttpEntity entity = response.getEntity();
         // add by George Zeng, for adding a content back to do more actions
-        output.put("http.content", entity.getContent()); 
+        Scanner scanner = new Scanner(entity.getContent());
+        StringBuilder content = new StringBuilder();
+        while(scanner.hasNext()) {
+        	content.append(scanner.nextLine()).append("\n");
+        }
+        scanner.close();
+        output.put("http.content", content.toString()); 
         output.put("http.content.length", entity.getContentLength());
         if (entity.getContentEncoding() != null)
           output.put("http.content." + entity.getContentEncoding().getName(), entity.getContentEncoding().getValue());
@@ -195,12 +194,6 @@ public class HttpClientTask extends AbstractTask{
       throw new TaskException(ex);
     } catch (IOException ex) {
       throw new TaskException(ex);
-    }
-  }
-  
-  private void addCookiesOutput(CookieStore cookieStore, Map<String, Object> output){
-    for (Cookie c : cookieStore.getCookies()){
-      output.put("http.cookie." + c.getName(), c.getValue());
     }
   }
   
