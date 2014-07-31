@@ -4,6 +4,7 @@ import groovy.lang.Closure;
 
 import java.util.Map;
 
+import detective.core.Parameters;
 import detective.core.Story;
 import detective.core.dsl.SharedDataPlaceHolder;
 import detective.core.runner.PropertyToStringDelegate;
@@ -12,11 +13,11 @@ public class StoryDelegate extends PropertyToStringDelegate{
   protected Story story;
   protected Closure<?> closure;
 
-  public StoryDelegate(Map<String, Object> values){
+  public StoryDelegate(Parameters values){
     super(values);
   }
   
-  public StoryDelegate(PropertyToStringDelegate parent, String propertyName, Map<String, Object> values){
+  public StoryDelegate(PropertyToStringDelegate parent, String propertyName, Parameters values){
     super(parent, propertyName, values);
   }
   

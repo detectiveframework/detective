@@ -46,7 +46,9 @@ public class ParallelRunnerTest {
   public void testAutoDepends() {
     story() "Two Scenarios should able to run parallel and do that auto depends" {
 
-      share { echotask.task1 }
+      share { 
+        echotask.task1 
+      }
 
       scenario_echo1 "echo1" {
         given "give a parameter" { task1 = "parallel" }

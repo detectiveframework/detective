@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
 
+import detective.core.Parameters;
 import detective.core.TestTask;
 import detective.core.config.ConfigException;
 import detective.task.AbstractTask;
@@ -27,7 +28,7 @@ public class WebDriverTask extends AbstractTask implements TestTask{
   private WebDriver driver;  
   
   @Override
-  protected void doExecute(Map<String, Object> config, Map<String, Object> output) {
+  protected void doExecute(Parameters config, Parameters output) {
     String url = this.readAsString(config, "browser.url", null, false, "the url you want browser navigate to");
     driver.get(url);
   }

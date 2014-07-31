@@ -11,7 +11,7 @@ public interface Scenario extends Titled{
     /**
      * @return immutable map for parameters;
      */
-    Map<String, Object> getParameters();
+    Parameters getParameters();
   }
   
   public interface Events extends Context{

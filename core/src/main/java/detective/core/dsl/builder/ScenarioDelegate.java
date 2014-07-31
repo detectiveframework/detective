@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
+import detective.core.Parameters;
 import detective.core.TestTask;
 import detective.core.dsl.DslException;
 import detective.core.dsl.SimpleScenario;
@@ -44,11 +45,11 @@ public class ScenarioDelegate extends PropertyToStringDelegate{
     this.closure = closure;
   }
 
-  public ScenarioDelegate(Map<String, Object> values){
+  public ScenarioDelegate(Parameters values){
     super(values);
   }
   
-  public ScenarioDelegate(PropertyToStringDelegate parent, String propertyName, Map<String, Object> values){
+  public ScenarioDelegate(PropertyToStringDelegate parent, String propertyName, Parameters values){
     super(parent, propertyName, values);
   }
   

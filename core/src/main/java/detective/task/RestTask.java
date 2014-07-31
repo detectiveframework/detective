@@ -11,8 +11,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.typesafe.config.Config;
 
+import detective.core.Parameters;
 import detective.core.TestTask;
 import detective.core.config.ConfigException;
+import detective.core.dsl.ParametersImpl;
 
 /**
  * This task support all rest calls
@@ -35,7 +37,7 @@ public class RestTask implements TestTask {
   
   protected final RestTemplate rest = new RestTemplate();
 
-  public Map<String, Object> execute(Map<String, Object> config) throws ConfigException {
+  public Parameters execute(Parameters config) throws ConfigException {
     if (config == null)
       throw new ConfigException("Config can't be null");
     
@@ -49,7 +51,7 @@ public class RestTask implements TestTask {
       body = entity.getBody();
     }
     
-    Map<String, Object> result = new HashMap<String, Object>();
+    Parameters result = new ParametersImpl();
     result.put("body", body);
     return result;
   }

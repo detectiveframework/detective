@@ -14,12 +14,14 @@ import org.codehaus.groovy.runtime.GroovyCategorySupport;
 
 import com.google.common.collect.ImmutableMap;
 
+import detective.core.Parameters;
 import detective.core.Scenario;
 import detective.core.Scenario.Context;
 import detective.core.Story;
 import detective.core.StoryRunner;
 import detective.core.TestTask;
 import detective.core.dsl.DslException;
+import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.SharedDataPlaceHolder;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.dsl.table.Row;
@@ -28,10 +30,10 @@ import detective.utils.StringUtils;
 
 public class SimpleStoryRunner implements StoryRunner{
   
-  private static Map<String, Object> aggrigateAllIncomeParameters(Story story, Scenario s){
-    Map<String, Object> all = new HashMap<String, Object>();
+  private static Parameters aggrigateAllIncomeParameters(Story story, Scenario s){
+    Parameters all = new ParametersImpl();
 
-    Map<String, Object> shared = story.getSharedDataMap();
+    Parameters shared = story.getSharedDataMap();
     all.putAll(shared);
     
     for (Context context : s.getContexts()){
@@ -49,7 +51,7 @@ public class SimpleStoryRunner implements StoryRunner{
       }
       
       for (TestTask task : scenario.getTasks()){
-        final Map<String, Object> datain = aggrigateAllIncomeParameters(story, scenario);
+        final Parameters datain = aggrigateAllIncomeParameters(story, scenario);
         
         try {
           runScenarioWithTask(scenario, task, datain);
@@ -61,7 +63,7 @@ public class SimpleStoryRunner implements StoryRunner{
   }
 
   private void runScenarioWithTask(final Scenario scenario, final TestTask task,
-      Map<String, Object> datain) throws InterruptedException {
+      Parameters datain) throws InterruptedException {
     //process all datatables
     List<Row> datatable = (List<Row>)datain.get(DslBuilder.DATATABLE_PARAMNAME);
     if (datatable != null){
@@ -73,7 +75,7 @@ public class SimpleStoryRunner implements StoryRunner{
         Row row = datatable.get(i);
         
         prepareDataIn(datain, headers, row);
-        final Map<String, Object> datainWithRow = ImmutableMap.copyOf(datain);
+        final Parameters datainWithRow = datain.immutable();
         Promise<Object> p = DetectiveFactory.INSTANCE.getThreadGroup().task(new Runnable(){
           public void run() {
             runScenario(scenario, task, datainWithRow);
@@ -85,11 +87,12 @@ public class SimpleStoryRunner implements StoryRunner{
       for (Promise<Object> p : promises)
         p.join();
     }else{
+      datain = datain.immutable();
       runScenario(scenario, task, datain);
     }
   }
 
-  private Map<String, Object> prepareDataIn(Map<String, Object> datain, String[] headers, Row row) {
+  private Parameters prepareDataIn(Parameters datain, String[] headers, Row row) {
     Object[] values = row.asArray();
     for (int i = 0; i < headers.length; i++){
       datain.put(headers[i], values[i]);
@@ -111,10 +114,8 @@ public class SimpleStoryRunner implements StoryRunner{
     return headers.toArray(new String[]{});
   }
   
-  private void runScenario(Scenario scenario, TestTask task, Map<String, Object> datain) {
-    datain = ImmutableMap.copyOf(datain);
-    
-    Map<String, Object> dataout = task.execute(datain);        
+  private void runScenario(Scenario scenario, TestTask task, Parameters datain) {
+    Parameters dataout = task.execute(datain);        
     dataout = combineInAndOut(datain, dataout);
     
     updateSharedData(scenario, dataout);
@@ -141,7 +142,7 @@ public class SimpleStoryRunner implements StoryRunner{
     }
   }
 
-  private void updateSharedData(Scenario scenario, Map<String, Object> dataout) {
+  private void updateSharedData(Scenario scenario, Parameters dataout) {
     Story story = scenario.getStory();
     Set<String> sharedDataKeys = this.getPlaceHolderKeys(story);
     for (String key : sharedDataKeys){
@@ -156,16 +157,16 @@ public class SimpleStoryRunner implements StoryRunner{
    * @param dataout
    * @return
    */
-  private Map<String, Object> combineInAndOut(Map<String, Object> datain, Map<String, Object> dataout){
-    Map<String, Object> combined = new HashMap<String, Object>(datain);
-    combined.putAll(dataout);
-    return ImmutableMap.copyOf(combined);
-//    return combined;
+  private Parameters combineInAndOut(Parameters datain, Parameters dataout){
+    Parameters p = new ParametersImpl();
+    p.putAll(datain);
+    p.putAll(dataout);
+    return p;
   }
   
   private Set<String> getPlaceHolderKeys(Story story){
     Set<String> keys = new HashSet<String>();
-    Map<String, Object> parameters = story.getSharedDataMap();
+    Parameters parameters = story.getSharedDataMap();
     for (String key : parameters.keySet()){
       Object value = parameters.get(key);
       if (value != null && value.equals(SharedDataPlaceHolder.INSTANCE)){

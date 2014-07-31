@@ -30,6 +30,7 @@ import org.apache.http.protocol.HTTP;
 import org.springframework.http.HttpMethod;
 
 import detective.common.annotation.ThreadSafe;
+import detective.core.Parameters;
 import detective.core.TaskException;
 import detective.core.config.ConfigException;
 import detective.core.services.DetectiveFactory;
@@ -122,7 +123,7 @@ import detective.core.services.DetectiveFactory;
 public class HttpClientTask extends AbstractTask{
 
   @Override
-  protected void doExecute(Map<String, Object> config, Map<String, Object> output) {
+  protected void doExecute(Parameters config, Parameters output) {
     CloseableHttpClient httpClient = DetectiveFactory.INSTANCE.getHttpClient();
     
     CookieStore cookieStore = this.readOptional(config, "http.cookies", null, CookieStore.class);

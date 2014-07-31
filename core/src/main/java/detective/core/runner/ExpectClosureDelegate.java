@@ -7,6 +7,7 @@ import org.junit.Assert;
 
 import com.google.common.base.Optional;
 
+import detective.core.Parameters;
 import detective.core.dsl.DslException;
 import groovy.util.Expando;
 
@@ -31,7 +32,7 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
    * 
    * @param values
    */
-  public ExpectClosureDelegate(Map<String, Object> values){
+  public ExpectClosureDelegate(Parameters values){
     super(values);
   }
   
@@ -40,7 +41,7 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
    * @param parent can not be null
    * @param values
    */
-  public ExpectClosureDelegate(PropertyToStringDelegate parent, String propertyName, Map<String, Object> values){
+  public ExpectClosureDelegate(PropertyToStringDelegate parent, String propertyName, Parameters values){
     super(parent, propertyName, values);
   }
   

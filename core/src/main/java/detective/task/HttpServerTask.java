@@ -48,8 +48,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import detective.common.annotation.ThreadSafe;
+import detective.core.Parameters;
 import detective.core.TestTask;
 import detective.core.config.ConfigException;
+import detective.core.dsl.ParametersImpl;
 
 @ThreadSafe
 public class HttpServerTask implements TestTask {
@@ -58,7 +60,7 @@ public class HttpServerTask implements TestTask {
     void close();
   }
 
-  public Map<String, Object> execute(Map<String, Object> config) throws ConfigException {
+  public Parameters execute(Parameters config) throws ConfigException {
     if (config == null)
       throw ConfigException.configCantEmpty();
     
@@ -77,7 +79,7 @@ public class HttpServerTask implements TestTask {
       try {
         Channel ch = b.bind(port).sync().channel();
         ChannelFuture future = ch.closeFuture();
-        Map<String, Object> result = new HashMap<String, Object>();
+        Parameters result = new ParametersImpl();
         result.put("channel", future);
         result.put("handler", new ServerHandler(){
 

@@ -17,11 +17,8 @@ public interface Story {
    * This map can be changed out side of the story, for example in task which running inside other thread
    * @return
    */
-  Map<String, Object> getSharedDataMap();
+  Parameters getSharedDataMap();
   void putSharedData(String key, Object value);
 
   List<Scenario> getScenarios();
-
-  List<Scenario> getBeforeTasks();
-  List<Scenario> getAfterTasks();
 }

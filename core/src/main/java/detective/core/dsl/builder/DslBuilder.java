@@ -10,10 +10,12 @@ import java.util.Map;
 
 import org.codehaus.groovy.runtime.InvokerHelper;
 
+import detective.core.Parameters;
 import detective.core.Scenario;
 import detective.core.Story;
 import detective.core.TestTask;
 import detective.core.dsl.DslException;
+import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.SharedDataPlaceHolder;
 import detective.core.dsl.SimpleContext;
 import detective.core.dsl.SimpleEvents;
@@ -24,11 +26,11 @@ import detective.core.dsl.SimpleStory;
 @SuppressWarnings("rawtypes") 
 public class DslBuilder extends BuilderSupport{
   
-  private Map<SimpleScenario, Map<String, Object>> scenariosParameters = new HashMap<SimpleScenario, Map<String, Object>>();
-  private Map<String, Object> getParametersFromScenario(SimpleScenario s){
-    Map<String, Object> parameters = scenariosParameters.get(s);
+  private Map<SimpleScenario, Parameters> scenariosParameters = new HashMap<SimpleScenario, Parameters>();
+  private Parameters getParametersFromScenario(SimpleScenario s){
+    Parameters parameters = scenariosParameters.get(s);
     if (parameters == null){
-      parameters = new HashMap<String, Object>();
+      parameters = new ParametersImpl();
       scenariosParameters.put(s, parameters);
     }
     
@@ -54,7 +56,7 @@ public class DslBuilder extends BuilderSupport{
           sub.setClosure(closure);
           return sub;
         }else if (current instanceof Story && (methodName.equalsIgnoreCase("share"))){
-          StoryDelegate sub = new StoryDelegate(new HashMap<String, Object>());
+          StoryDelegate sub = new StoryDelegate(new ParametersImpl());
           sub.story = (Story)current;
           sub.closure = closure;
           closure.setDelegate(sub);

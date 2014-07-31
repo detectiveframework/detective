@@ -6,6 +6,7 @@ import groovy.util.Expando;
 
 import org.junit.Assert;
 
+import detective.core.Parameters;
 import detective.core.dsl.DslException;
 
 /**
@@ -18,14 +19,14 @@ public class PropertyToStringDelegate extends Expando{
   private final PropertyToStringDelegate parent;
   
 
-  protected final Map<String, Object> values;
+  protected final Parameters values;
   
   /**
    * Create a new ROOT expect closure delegate
    * 
    * @param values
    */
-  public PropertyToStringDelegate(Map<String, Object> values){
+  public PropertyToStringDelegate(Parameters values){
     this.parent = null;
     this.propertyName = null;
     this.values = values;
@@ -36,7 +37,7 @@ public class PropertyToStringDelegate extends Expando{
    * @param parent can not be null
    * @param values
    */
-  public PropertyToStringDelegate(PropertyToStringDelegate parent, String propertyName, Map<String, Object> values){
+  public PropertyToStringDelegate(PropertyToStringDelegate parent, String propertyName, Parameters values){
     Assert.assertNotNull(parent);
     Assert.assertNotNull(propertyName);
     Assert.assertNotNull(values);

@@ -5,26 +5,29 @@ import java.util.Map;
 
 import com.google.common.base.Optional;
 
+import detective.core.Parameters;
 import detective.core.TestTask;
 import detective.core.config.ConfigException;
 import detective.core.dsl.DslException;
+import detective.core.dsl.ParametersImpl;
 
 public abstract class AbstractTask implements TestTask{
 
-  public Map<String, Object> execute(Map<String, Object> config) throws ConfigException {
+  @Override
+  public Parameters execute(Parameters config) throws ConfigException {
     if (config == null)
       throw ConfigException.configCantEmpty();
     
-    Map<String, Object> output = new HashMap<String, Object>();
+    Parameters output = new ParametersImpl();
     
     doExecute(config, output);
     
     return output;
   }
   
-  protected abstract void doExecute(Map<String, Object> config, Map<String, Object> output);
+  protected abstract void doExecute(Parameters config, Parameters output);
   
-  protected String readAsString(Map<String, Object> config, String key, String defaultValue, boolean isOptional, String errorWhenNotPresent){
+  protected String readAsString(Parameters config, String key, String defaultValue, boolean isOptional, String errorWhenNotPresent){
     Object value = config.get(key);
     if (value == null){
       if (! isOptional)
@@ -35,7 +38,7 @@ public abstract class AbstractTask implements TestTask{
       return value.toString();
   }
   
-  protected Long readAsLong(Map<String, Object> config, String key, Long defaultValue, boolean isOptional, String errorWhenNotPresent){
+  protected Long readAsLong(Parameters config, String key, Long defaultValue, boolean isOptional, String errorWhenNotPresent){
     String str = readAsString(config, key, null, isOptional, errorWhenNotPresent);
     if (str == null)
       return null;
@@ -43,7 +46,7 @@ public abstract class AbstractTask implements TestTask{
     return Long.valueOf(str);
   }
   
-  protected <T extends Object> T readAsObject(Map<String, Object> config, String key, T defaultValue, boolean isOptional, String errorMsg, Class<T> clazz){
+  protected <T extends Object> T readAsObject(Parameters config, String key, T defaultValue, boolean isOptional, String errorMsg, Class<T> clazz){
     Object value = config.get(key);
     if (value == null){
       if (! isOptional){
@@ -55,7 +58,7 @@ public abstract class AbstractTask implements TestTask{
     }
   }
   
-  protected <T extends Object> T readOptional(Map<String, Object> config, String key, T defaultValue, Class<T> clazz){
+  protected <T extends Object> T readOptional(Parameters config, String key, T defaultValue, Class<T> clazz){
     if (!config.containsKey(key))
       return null;
     

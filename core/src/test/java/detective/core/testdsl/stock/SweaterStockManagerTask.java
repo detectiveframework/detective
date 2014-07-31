@@ -2,6 +2,7 @@ package detective.core.testdsl.stock;
 
 import java.util.Map;
 
+import detective.core.Parameters;
 import detective.core.TestTask;
 import detective.core.config.ConfigException;
 import detective.task.AbstractTask;
@@ -29,7 +30,7 @@ import detective.task.AbstractTask;
 public class SweaterStockManagerTask extends AbstractTask implements TestTask{
   
   @Override
-  protected void doExecute(Map<String, Object> config, Map<String, Object> output) {
+  protected void doExecute(Parameters config, Parameters output) {
     Long blackSweater = this.readAsLong(config, "sweater.black", null, false, "sweater.black : number"); 
     Long blueSweater = this.readAsLong(config, "sweater.blue", null, false, "sweater.blue : number");
     

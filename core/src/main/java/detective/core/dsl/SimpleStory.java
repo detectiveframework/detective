@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import detective.core.Parameters;
 import detective.core.Scenario;
 import detective.core.Story;
 
@@ -79,7 +80,7 @@ public class SimpleStory extends GroovyObjectSupport implements Story{
   private final List<Scenario> beforeTasks = new ArrayList<Scenario>();
   private final List<Scenario> afterTasks = new ArrayList<Scenario>();
   
-  private final Map<String, Object> sharedDataMap = new ConcurrentHashMap<String, Object>();
+  private final Parameters sharedDataMap = new ParametersImpl();
   
   //TODO Readonly
   public SimpleStory(){
@@ -167,8 +168,8 @@ public class SimpleStory extends GroovyObjectSupport implements Story{
   }
 
 
-  public Map<String, Object> getSharedDataMap() {
-    return ImmutableMap.copyOf(sharedDataMap);
+  public Parameters getSharedDataMap() {
+    return sharedDataMap.immutable();
   }
 
 

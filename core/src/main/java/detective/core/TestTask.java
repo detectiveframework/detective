@@ -8,6 +8,6 @@ import detective.core.config.ConfigException;
 
 public interface TestTask {
 
-  Map<String, Object> execute(Map<String, Object> config) throws ConfigException;
+  Parameters execute(Parameters config) throws ConfigException;
   
 }

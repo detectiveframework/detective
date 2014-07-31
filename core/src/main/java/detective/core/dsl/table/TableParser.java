@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.codehaus.groovy.runtime.GroovyCategorySupport;
 
+import detective.core.Parameters;
 import detective.core.runner.PropertyToStringDelegate;
 
 public class TableParser {
@@ -33,7 +34,7 @@ public class TableParser {
     return row.or(nextValue);
   }
 
-  public static List<Row> asListOfRows(Map<String, Object> existsParameters, Closure<?> tableData) {
+  public static List<Row> asListOfRows(Parameters existsParameters, Closure<?> tableData) {
     context.set(new ArrayList<Row>());
     tableData.setDelegate(new PropertyToStringDelegate(existsParameters));
     tableData.setResolveStrategy(Closure.DELEGATE_FIRST);

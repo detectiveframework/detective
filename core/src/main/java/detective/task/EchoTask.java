@@ -2,6 +2,8 @@ package detective.task;
 
 import java.util.Map;
 
+import detective.core.Parameters;
+
 /**
  * Echo all input data
  *
@@ -9,7 +11,7 @@ import java.util.Map;
 public class EchoTask extends AbstractTask{
 
   @Override
-  protected void doExecute(Map<String, Object> config, Map<String, Object> output) {
+  protected void doExecute(Parameters config, Parameters output) {
     for (String key : config.keySet()){
       output.put("echotask." + key, config.get(key));
     }

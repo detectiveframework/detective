@@ -1,15 +1,11 @@
 package detective.core.dsl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
-
+import detective.core.Parameters;
 import detective.core.Scenario.Context;
 
 public class SimpleContext implements Context{
 
-  private Map<String, Object> parameters = new HashMap<String, Object>(); 
+  private Parameters parameters = new ParametersImpl(); 
   private String title;
   
   public String getTitle() {
@@ -20,8 +16,8 @@ public class SimpleContext implements Context{
     this.title = title;
   }
 
-  public Map<String, Object> getParameters(){
-    return ImmutableMap.copyOf(parameters);
+  public Parameters getParameters(){
+    return parameters.immutable();
   }
   
   public void addParameter(String key, Object value){
