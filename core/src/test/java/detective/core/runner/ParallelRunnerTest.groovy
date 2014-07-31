@@ -1,7 +1,7 @@
 package detective.core.runner;
 
 import static org.junit.Assert.*;
-import static detective.core.dsl.builder.DslBuilder.*;
+import static detective.core.Detective.*;
 import static detective.core.Matchers.*;
 
 import detective.core.dsl.DslException
@@ -15,42 +15,59 @@ public class ParallelRunnerTest {
 
   @Test
   public void test() {
-    Story story1 = story() "Two Scenarios should able to run parallel" {
-      inOrderTo "keep track of stock"
-      asa "store owner"
-      iwantto "add items back to stock when they're returned"
-      sothat "..."
-      
+    story() "Two Scenarios should able to run parallel and do that auto depends" {
+
+      share { echotask.task1 }
+
       scenario_echo1 "echo1" {
-        task TestTaskFactory.echo()
-      
-        given "give a parameter" {
-          parameter1 = "parallel"
-        }
-        
+        given "give a parameter" { task1 = "parallel" }
+
+        when "A" { runtask TestTaskFactory.echo() }
+
         then "parameter should send back"{
-          echotask.parameter1 << equalTo("parallel")
-          echotask.parameter1 << equalTo(parameter1)
+          echotask.task1 << equalTo("parallel")
         }
       }
-      
+
       scenario_echo2 "echo2" {
-        task TestTaskFactory.echo()
-      
-        given "give a parameter" {
-          parameter1 = "parallel"
-        }
-        
+        given "give a parameter that come from share data and it will setup by echo1 task" { parameter1 = echotask.task1 }
+
+        when "AA"{ runtask TestTaskFactory.echo()  }
+
         then "parameter should send back"{
-          echotask.parameter1 << equalTo("parallel")
-          echotask.parameter1 << equalTo(parameter1)
+//          echotask.parameter1 << equalTo("parallel")
+//          echotask.parameter1 << equalTo(parameter1)
         }
       }
     }
-    
-    StoryRunner runner = new SimpleStoryRunner();
-    
-    runner.run(story1);
   }
 
+  @Test
+  public void testAutoDepends() {
+    story() "Two Scenarios should able to run parallel and do that auto depends" {
+
+      share { echotask.task1 }
+
+      scenario_echo1 "echo1" {
+        given "give a parameter" { task1 = "parallel" }
+
+        when "A" { runtask TestTaskFactory.echo() }
+
+        then "parameter should send back"{
+          echotask.task1 << equalTo("parallel")
+        }
+      }
+
+      scenario_echo2 "echo2" {
+        given "give a parameter that come from share data and it will setup by echo1 task" { parameter1 = echotask.task1 }
+
+        when "AA"{ runtask TestTaskFactory.echo()  }
+
+        then "parameter should send back"{
+//          echotask.parameter1 << equalTo("parallel")
+//          echotask.parameter1 << equalTo(parameter1)
+        }
+      }
+    }
+  }
 }

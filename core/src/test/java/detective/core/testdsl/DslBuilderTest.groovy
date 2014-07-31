@@ -37,7 +37,7 @@ public class DslBuilderTest {
       share {
         sharedData1 = "This Is Shared Data1"
         shared.data2 = "shared data with property format"
-        shared.placeholder = PLACEHOLDER
+        shared.placeholder
       }
 
       scenario_1 "data should able to share between scenario" {

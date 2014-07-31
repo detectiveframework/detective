@@ -76,7 +76,7 @@ public class SimpleStoryRunnerTest {
       share {
         sharedData1 = "This Is Shared Data1"
         shared.data2 = "shared data with property format"
-        shared.placeholder = PLACEHOLDER
+        shared.placeholder
       }
       
       scenario "data should able to share between scenario" {
@@ -113,8 +113,8 @@ public class SimpleStoryRunnerTest {
       share {
         sharedData1 = "This Is Shared Data1"
         shared.data2 = "shared data with property format"
-        shared.placeholder = PLACEHOLDER
-        loggedin = PLACEHOLDER
+        shared.placeholder
+        loggedin
       }
       
       before "login" {

@@ -25,9 +25,6 @@ public class StoryDelegate extends PropertyToStringDelegate{
   }
   
   public Object getProperty(String property) {
-    if (this.getParent() == null && "PLACEHOLDER".equalsIgnoreCase(property))
-      return SharedDataPlaceHolder.INSTANCE;
-    
     return super.getProperty(property);
   }
 }

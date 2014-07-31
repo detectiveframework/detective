@@ -14,6 +14,7 @@ import detective.core.Scenario;
 import detective.core.Story;
 import detective.core.TestTask;
 import detective.core.dsl.DslException;
+import detective.core.dsl.SharedDataPlaceHolder;
 import detective.core.dsl.SimpleContext;
 import detective.core.dsl.SimpleEvents;
 import detective.core.dsl.SimpleOutcomes;
@@ -164,6 +165,9 @@ public class DslBuilder extends BuilderSupport{
   }
   
   private void addStorySharedData(StoryDelegate sub, Story story, String propertyPrix) {
+    if (sub.getProperties().size() == 0)
+      story.putSharedData(sub.getFullPropertyName(), SharedDataPlaceHolder.INSTANCE);
+    
     for (Object k : sub.getProperties().keySet()){
       String key = k.toString();
       Object value = sub.getProperty(key);
