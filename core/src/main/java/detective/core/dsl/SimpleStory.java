@@ -66,6 +66,7 @@ And two black garments in stock
  * @author James Luo
  *
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class SimpleStory extends GroovyObjectSupport implements Story{
   
   private static final Logger logger = LoggerFactory.getLogger(SimpleStory.class);
@@ -169,21 +170,25 @@ public class SimpleStory extends GroovyObjectSupport implements Story{
 
 
   public Parameters getSharedDataMap() {
-    return sharedDataMap.immutable();
+    return sharedDataMap;
   }
-
 
   public void putSharedData(String key, Object value) {
     if (! sharedDataMap.containsKey(key)){
       logger.info("A new shared data [" + key + "] created for story [" + title + "]");
+      if (value == null)
+        value = new SharedVariableImpl(this, key);
+
       sharedDataMap.put(key, value);
     }else{
-      Object oldValue = sharedDataMap.get(key);
-      if (oldValue.equals(SharedDataPlaceHolder.INSTANCE)){
-        sharedDataMap.put(key, value);
-        logger.info("Shared data [" + key + "] in story [" + title + "] has been updated.");
-      }else{
-        throw new DslException("Shared data [" + key + "] can only setup once.");
+      Object oldValue = sharedDataMap.getUnwrappered(key);
+      try {
+        if (oldValue instanceof SharedVariable)
+          sharedDataMap.put(key, value);
+        else
+          throw new DslException("Shared data [" + key + "] can only setup once in story [" + title + "]");
+      } catch (Exception e) {
+        throw new DslException(e.getMessage() + " current story [" + title + "]", e);
       }
     }
   }

@@ -2,11 +2,12 @@ package detective.core.runner;
 
 import static org.junit.Assert.*;
 
-import static detective.core.dsl.builder.DslBuilder.*;
+import static detective.core.Detective.*;
 import static detective.core.Matchers.*;
 
 import detective.core.dsl.DslException
 import detective.core.TestTaskFactory;
+import detective.core.StoryFailException;
 
 import detective.core.Story
 import detective.core.StoryRunner
@@ -30,7 +31,7 @@ public class SimpleStoryRunnerTest {
 
   @Test
   public void test() {
-    Story story1 = story() "Returns go to stock" {
+    story() "Returns go to stock" {
       inOrderTo "keep track of stock"
       asa "store owner"
       iwantto "add items back to stock when they're returned"
@@ -38,7 +39,6 @@ public class SimpleStoryRunnerTest {
       
       scenario_refund "Refunded items should be returned to stock" {
         task TestTaskFactory.stockManagerTask()
-        task TestTaskFactory.stockManagerTask1()
       
         given "a customer previously bought a black sweater from me" {
           
@@ -56,15 +56,10 @@ public class SimpleStoryRunnerTest {
         then "I should have four black sweaters in stock"{
           sweater.refund.black << equalTo(1)
           sweater.black << equalTo(4)
-          sweater.black == 4
           sweater.black << 4
         }
       }
     }
-    
-    StoryRunner runner = new SimpleStoryRunner();
-    
-    runner.run(story1);
   }
   
   @Test
@@ -98,10 +93,6 @@ public class SimpleStoryRunnerTest {
         }
       }
     }
-    
-    StoryRunner runner = new SimpleStoryRunner();
-    
-    runner.run(story);
   }
   
   @Test
@@ -154,48 +145,40 @@ public class SimpleStoryRunnerTest {
         }
       }
     }
-    
-    StoryRunner runner = new SimpleStoryRunner();
-    
-    runner.run(story);
   }
   
   @Test
   public void testWrongPropertyName() {
-    Story story1 = story() "Returns go to stock" {
-      inOrderTo "keep track of stock"
-      asa "store owner"
-      iwantto "add items back to stock when they're returned"
-      sothat "..."
-      
-      scenario_refund "Refunded items should be returned to stock" {
-        task TestTaskFactory.stockManagerTask()
-      
-        given "a customer previously bought a black sweater from me" {
+    try{
+      story() "Returns go to stock" {
+        inOrderTo "keep track of stock"
+        asa "store owner"
+        iwantto "add items back to stock when they're returned"
+        sothat "..."
+        
+        scenario_refund "Refunded items should be returned to stock" {
+          task TestTaskFactory.stockManagerTask()
+        
+          given "a customer previously bought a black sweater from me" {
+            
+          }
           
-        }
-        
-        given "I currently have three black sweaters left in stock" {
-          sweater.black = 3
-          sweater.blue = 0
-        }
-        
-        when "he returns the sweater for a refund" {
-          sweater.refund.black = 1
-        }
-        
-        then "I should have four black sweaters in stock"{
-          sweater.refund.black << equalTo(1)
-          sweater.balck << equalTo(4)    //<<<<<Here we have a wrong name
+          given "I currently have three black sweaters left in stock" {
+            sweater.black = 3
+            sweater.blue = 0
+          }
+          
+          when "he returns the sweater for a refund" {
+            sweater.refund.black = 1
+          }
+          
+          then "I should have four black sweaters in stock"{
+            sweater.refund.black << equalTo(1)
+            sweater.balck << equalTo(4)    //<<<<<Here we have a wrong name
+          }
         }
       }
-    }
-    
-    StoryRunner runner = new SimpleStoryRunner();
-    
-    try{
-      runner.run(story1);
-    }catch (DslException e){
+    }catch (StoryFailException e){
       //Should show user with suggestion
       assert e.getMessage().contains("sweater.balck not able to found");
       assert e.getMessage().contains("do you mean : sweater.black");
@@ -206,26 +189,59 @@ public class SimpleStoryRunnerTest {
   }
   
   @Test
-  public void testEmptyTasks() {
-    Story story1 = story() "Returns go to stock" {
-      inOrderTo "keep track of stock"
-      asa "store owner"
-      iwantto "add items back to stock when they're returned"
-      sothat "..."
-      
-      scenario_refund "Refunded items should be returned to stock" {
+  public void testWrongPropertyName1() {
+    try{
+      story() "Returns go to stock" {
         
-        given "a customer previously bought a black sweater from me" {
+        scenario_refund "Refunded items should be returned to stock" {
+          task TestTaskFactory.stockManagerTask()
+        
+          given "a customer previously bought a black sweater from me" {
+            
+          }
           
-        }        
+          given "I currently have three black sweaters left in stock" {
+            sweater.black = 3
+            sweater.blue = 0
+          }
+          
+          when "he returns the sweater for a refund" {
+            sweater.refund.black = 1
+          }
+          
+          then "I should have four black sweaters in stock"{
+            sweater.refund.black << equalTo(1)
+            sweater.black << equalTo(sweater.refund.black_wrong)    //<<<<<Here we have a wrong name
+          }
+        }
       }
+    }catch (StoryFailException e){
+      //Should show user with suggestion
+      assert e.getMessage().contains("sweater.refund.black_wrong not able to found");
+      assert e.getMessage().contains("do you mean : sweater.refund.black");
+      return;
     }
     
-    StoryRunner runner = new SimpleStoryRunner();
-    
+    fail("Should run into error")
+  }
+  
+  @Test
+  public void testEmptyTasks() {
     try{
-      runner.run(story1);
-    }catch (DslException e){
+      story() "Returns go to stock" {
+        inOrderTo "keep track of stock"
+        asa "store owner"
+        iwantto "add items back to stock when they're returned"
+        sothat "..."
+        
+        scenario_refund "Refunded items should be returned to stock" {
+          
+          given "a customer previously bought a black sweater from me" {
+            
+          }
+        }
+      }
+    }catch (StoryFailException e){
       assert e.getMessage().contains("You need at least 1 task defined in task section");
       return;
     }
@@ -236,7 +252,7 @@ public class SimpleStoryRunnerTest {
   @Test
   public void testWrongTasks() {
     try{
-      Story story1 = story() "Returns go to stock" {
+      story() "Returns go to stock" {
         inOrderTo "keep track of stock"
         asa "store owner"
         iwantto "add items back to stock when they're returned"

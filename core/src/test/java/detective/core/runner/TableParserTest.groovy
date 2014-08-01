@@ -49,7 +49,7 @@ public class TableParserTest {
   
   @Test
   public void testPropertyChainWithParameters() {
-    List<Row> rows = TableParser.asListOfRows(new ParametersImpl(["test1.test2.job":"The Real Name"])) {
+    List<Row> rows = TableParser.asListOfRows(ParametersImpl.createFromMap(["test1.test2.job":"The Real Name"])) {
       test1.test2.fistname  |  test1.test2.lastname   |   test1.test2.job
       "Christian"           |  "Baranowski"           |  "Developer"
       "James"               |  "Bond"                 |  "Agent"

@@ -32,6 +32,10 @@ public class PropertyToStringDelegate extends Expando{
     this.values = values;
   }
   
+  public Parameters getValues(){
+    return values;
+  }
+  
   /**
    * 
    * @param parent can not be null

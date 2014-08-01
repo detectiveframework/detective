@@ -30,7 +30,7 @@ public class DslBuilder extends BuilderSupport{
   private Parameters getParametersFromScenario(SimpleScenario s){
     Parameters parameters = scenariosParameters.get(s);
     if (parameters == null){
-      parameters = new ParametersImpl();
+      parameters = new ParametersImpl(s.getStory().getSharedDataMap());
       scenariosParameters.put(s, parameters);
     }
     
@@ -104,7 +104,7 @@ public class DslBuilder extends BuilderSupport{
       if (name.toString().equalsIgnoreCase("given") || name.toString().equalsIgnoreCase("when")){        
         SimpleContext context = null;
         if (name.toString().equalsIgnoreCase("given")){
-          context = new SimpleContext();
+          context = new SimpleContext(sub.getScenario());
           sub.getScenario().addContext(context);
         }else
           context = (SimpleEvents)sub.scenario.getEvents();
@@ -156,19 +156,23 @@ public class DslBuilder extends BuilderSupport{
   private void addContextParameters(ScenarioDelegate sub, SimpleContext contexts, String propertyPrix) {
     for (Object k : sub.getProperties().keySet()){
       String key = k.toString();
+      String name = (propertyPrix == null ? "" : propertyPrix + ".") + key;
+      if (sub.getValues().isInParent(name))
+        return;
+      
       Object value = sub.getProperty(key);
       
       if (value instanceof ScenarioDelegate){
-        this.addContextParameters((ScenarioDelegate)value, contexts, (propertyPrix == null ? "" : propertyPrix + ".") + key);
+        this.addContextParameters((ScenarioDelegate)value, contexts, name);
       }else{
-        contexts.addParameter((propertyPrix == null ? "" : propertyPrix + ".") + key, value);
+        contexts.addParameter(name, value);
       }
     }
   }
   
   private void addStorySharedData(StoryDelegate sub, Story story, String propertyPrix) {
     if (sub.getProperties().size() == 0)
-      story.putSharedData(sub.getFullPropertyName(), SharedDataPlaceHolder.INSTANCE);
+      story.putSharedData(sub.getFullPropertyName(), null);
     
     for (Object k : sub.getProperties().keySet()){
       String key = k.toString();

@@ -57,6 +57,11 @@ public class ScenarioDelegate extends PropertyToStringDelegate{
     return new ScenarioDelegate(parent, propertyName, values);
   }
   
+  
+  protected Object getPropertyInnernal(String property){
+    Object value = values.getUnwrappered(getFullPropertyName(property));
+    return value;
+  }
   public TestTask runtask(TestTask task){
     this.scenario.addTask(task);
     return task;

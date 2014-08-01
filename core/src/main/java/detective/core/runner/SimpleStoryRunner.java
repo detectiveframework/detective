@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.codehaus.groovy.runtime.GroovyCategorySupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -18,6 +20,7 @@ import detective.core.Parameters;
 import detective.core.Scenario;
 import detective.core.Scenario.Context;
 import detective.core.Story;
+import detective.core.StoryFailException;
 import detective.core.StoryRunner;
 import detective.core.TestTask;
 import detective.core.dsl.DslException;
@@ -30,40 +33,80 @@ import detective.utils.StringUtils;
 
 public class SimpleStoryRunner implements StoryRunner{
   
+  private static final Logger logger = LoggerFactory.getLogger(SimpleStoryRunner.class); 
+  
   private static Parameters aggrigateAllIncomeParameters(Story story, Scenario s){
     Parameters all = new ParametersImpl();
 
     Parameters shared = story.getSharedDataMap();
-    all.putAll(shared);
+    all.putAllUnwrappered(shared);
     
     for (Context context : s.getContexts()){
-      all.putAll(context.getParameters());
+      all.putAllUnwrappered(context.getParameters());
     }
-    all.putAll(s.getEvents().getParameters());
+    all.putAllUnwrappered(s.getEvents().getParameters());
 
     return all;
   }
 
-  public void run(Story story) {
-    for (Scenario scenario : story.getScenarios()){
-      if (scenario.getTasks().size() == 0){
-        throw new DslException("You need at least 1 task defined in task section, for example: scenario_1 \"scenario description\" {\n  task StockTaskFactory.stockManagerTask() \n  given \"a customer previously bought a black sweater from me\" {\n                  \n}");
-      }
-      
-      for (TestTask task : scenario.getTasks()){
-        final Parameters datain = aggrigateAllIncomeParameters(story, scenario);
+  public void run(final Story story) {
+    Map<Scenario, Promise<Object>> promises = new HashMap<Scenario, Promise<Object>>();
+    for (final Scenario scenario : story.getScenarios()){
+      try {
         
-        try {
-          runScenarioWithTask(scenario, task, datain);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
+        Promise<Object> p = DetectiveFactory.INSTANCE.getThreadGroup().task(new Runnable(){
+
+          @Override
+          public void run() {
+              try {
+                runScenario(story, scenario);                
+              } catch (Throwable e) {
+                throw new StoryFailException(story, e.getMessage(), e);
+              }          
+          }});
+        
+        promises.put(scenario, p);
+        
+      } catch (Throwable e) {
+        makeScenarioFail(scenario, e);
+      }
+    }
+    
+    for (Scenario s : promises.keySet()){
+      Promise<Object> promise = promises.get(s);
+      try {
+        promise.join();
+        if (promise.isError()){
+          makeScenarioFail(s, promise.getError());
+        }else{
+          s.setSuccessed(true);
+        }          
+      } catch (Throwable e) {
+        makeScenarioFail(s, e);
       }
     }
   }
 
+  private void makeScenarioFail(Scenario s, Throwable e) {
+    s.setSuccessed(false);
+    s.setError(e);
+    //logger.error("Scenario [" + s.getTitle() + "] in story [" + s.getStory().getTitle() + "] fail, " + e.getMessage(), e);
+  }
+
+  private void runScenario(Story story, final Scenario scenario) throws Throwable {
+    if (scenario.getTasks().size() == 0){
+      throw new DslException("You need at least 1 task defined in task section, for example: scenario_1 \"scenario description\" {\n  task StockTaskFactory.stockManagerTask() \n  given \"a customer previously bought a black sweater from me\" {\n                  \n}");
+    }
+    
+    //So far we allow one task pre-scenario, no threading
+    for (final TestTask task : scenario.getTasks()){
+      final Parameters datain = aggrigateAllIncomeParameters(story, scenario);
+      runScenarioWithTask(scenario, task, datain);
+    }
+  }
+ 
   private void runScenarioWithTask(final Scenario scenario, final TestTask task,
-      Parameters datain) throws InterruptedException {
+      Parameters datain) throws Throwable {
     //process all datatables
     List<Row> datatable = (List<Row>)datain.get(DslBuilder.DATATABLE_PARAMNAME);
     if (datatable != null){
@@ -75,7 +118,7 @@ public class SimpleStoryRunner implements StoryRunner{
         Row row = datatable.get(i);
         
         prepareDataIn(datain, headers, row);
-        final Parameters datainWithRow = datain.immutable();
+        final Parameters datainWithRow = datain.clone();
         Promise<Object> p = DetectiveFactory.INSTANCE.getThreadGroup().task(new Runnable(){
           public void run() {
             runScenario(scenario, task, datainWithRow);
@@ -84,10 +127,15 @@ public class SimpleStoryRunner implements StoryRunner{
         promises.add(p);
       }
       
-      for (Promise<Object> p : promises)
+      for (Promise<Object> p : promises){
         p.join();
+        if (p.isError()){
+          makeScenarioFail(scenario, p.getError());
+          throw p.getError();
+        }
+      }
     }else{
-      datain = datain.immutable();
+      datain = datain.clone();
       runScenario(scenario, task, datain);
     }
   }
@@ -115,13 +163,15 @@ public class SimpleStoryRunner implements StoryRunner{
   }
   
   private void runScenario(Scenario scenario, TestTask task, Parameters datain) {
-    Parameters dataout = task.execute(datain);        
-    dataout = combineInAndOut(datain, dataout);
+    Parameters dataout = task.execute(datain);  
     
     updateSharedData(scenario, dataout);
     
     if (scenario.getOutcomes().getExpectClosure() != null){
-      scenario.getOutcomes().getExpectClosure().setDelegate(new ExpectClosureDelegate(dataout));
+      //Shared data need join into the running user code so that they can change it
+      Parameters dataToPassIntoExpectClosure = combineSharedAndInAndOut(scenario.getStory().getSharedDataMap(), datain, dataout);
+      
+      scenario.getOutcomes().getExpectClosure().setDelegate(new ExpectClosureDelegate(dataToPassIntoExpectClosure));
       scenario.getOutcomes().getExpectClosure().setResolveStrategy(Closure.DELEGATE_ONLY);
       
       try {
@@ -130,12 +180,14 @@ public class SimpleStoryRunner implements StoryRunner{
       } catch (WrongPropertyNameInDslException e) {
         StringBuilder sb = new StringBuilder(e.getPropertyName());
         sb.append(" not able to found in properties list, do you mean : ")
-        .append(StringUtils.getBestMatch(e.getPropertyName(), dataout.keySet()).or("notAbleToFoundBestMatchProperties"))
+        .append(StringUtils.getBestMatch(e.getPropertyName(), dataToPassIntoExpectClosure.keySet()).or("notAbleToFoundBestMatchProperties"))
         .append("\nthe avaiable properties we got:")
-        .append(dataout.keySet())
+        .append(dataToPassIntoExpectClosure.keySet())
         .append("\nHere is the properties and the values for your reference:\n")
-        .append(dataout.toString());
-        throw new DslException(sb.toString());
+        .append(dataToPassIntoExpectClosure.toString());
+        throw new DslException(sb.toString(), e);
+      } catch (java.lang.AssertionError e){
+        throw new detective.core.AssertionError(scenario.getStory(), scenario, scenario.getOutcomes(), e);
       }
     }else{
       throw new DslException("There is no \"then\" section in DSL scenario part. \n " + scenario.toString());
@@ -144,7 +196,7 @@ public class SimpleStoryRunner implements StoryRunner{
 
   private void updateSharedData(Scenario scenario, Parameters dataout) {
     Story story = scenario.getStory();
-    Set<String> sharedDataKeys = this.getPlaceHolderKeys(story);
+    Set<String> sharedDataKeys = story.getSharedDataMap().keySet();
     for (String key : sharedDataKeys){
       if (dataout.containsKey(key))
        story.putSharedData(key, dataout.get(key));
@@ -157,23 +209,23 @@ public class SimpleStoryRunner implements StoryRunner{
    * @param dataout
    * @return
    */
-  private Parameters combineInAndOut(Parameters datain, Parameters dataout){
-    Parameters p = new ParametersImpl();
-    p.putAll(datain);
-    p.putAll(dataout);
+  private Parameters combineSharedAndInAndOut(Parameters shared, Parameters datain, Parameters dataout){
+    Parameters p = new ParametersImpl(shared);
+    p.putAllUnwrappered(datain);
+    p.putAllUnwrappered(dataout);
     return p;
   }
   
-  private Set<String> getPlaceHolderKeys(Story story){
-    Set<String> keys = new HashSet<String>();
-    Parameters parameters = story.getSharedDataMap();
-    for (String key : parameters.keySet()){
-      Object value = parameters.get(key);
-      if (value != null && value.equals(SharedDataPlaceHolder.INSTANCE)){
-        keys.add(key);
-      }
-    }
-    return keys;
-  }
+//  private Set<String> getPlaceHolderKeys(Story story){
+//    Set<String> keys = new HashSet<String>();
+//    Parameters parameters = story.getSharedDataMap();
+//    for (String key : parameters.keySet()){
+//      Object value = parameters.get(key);
+//      if (value != null && value.equals(SharedDataPlaceHolder.INSTANCE)){
+//        keys.add(key);
+//      }
+//    }
+//    return keys;
+//  }
 
 }

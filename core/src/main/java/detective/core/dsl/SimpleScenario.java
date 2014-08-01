@@ -28,10 +28,12 @@ Then  [outcome]
 public class SimpleScenario extends GroovyObjectSupport implements Scenario{
   
   private String id;
+  private Boolean successed = false;
+  private Throwable error;
   private final String title;
   private final Story story;
   private final List<SimpleContext> contexts = new ArrayList<SimpleContext>();
-  private final SimpleEvents events = new SimpleEvents();
+  private final SimpleEvents events;
   private final SimpleOutcomes outcomes = new SimpleOutcomes();
   private final List<TestTask> tasks = new ArrayList<TestTask>();
   
@@ -39,6 +41,7 @@ public class SimpleScenario extends GroovyObjectSupport implements Scenario{
 
   public SimpleScenario(Story story, String title){
     this.story = story;
+    events = new SimpleEvents(this);
     this.title = title;
   }
 
@@ -86,6 +89,9 @@ public class SimpleScenario extends GroovyObjectSupport implements Scenario{
   public SimpleScenario addTask(TestTask task){
     checkImmutable();
     
+    if (this.tasks.size() >= 1)
+      throw new DslException("We support only one task pre scenario at this moment.");
+    
     this.tasks.add(task);
     return this;
   }
@@ -99,6 +105,26 @@ public class SimpleScenario extends GroovyObjectSupport implements Scenario{
     checkImmutable();
     
     this.id = id;
+  }
+
+  @Override
+  public boolean getSuccessed() {
+    return successed;
+  }
+
+  @Override
+  public void setSuccessed(boolean success) {
+    successed = success;
+  }
+
+  @Override
+  public Throwable getError() {
+    return error;
+  }
+
+  @Override
+  public void setError(Throwable exception) {
+    this.error = exception;
   }
 
 

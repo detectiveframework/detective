@@ -29,6 +29,12 @@ public interface Scenario extends Titled{
   
   String getId();
   
+  boolean getSuccessed();
+  void setSuccessed(boolean success);
+  
+  Throwable getError();
+  void setError(Throwable exception);
+  
   Story getStory();
   
   List<? extends TestTask> getTasks();

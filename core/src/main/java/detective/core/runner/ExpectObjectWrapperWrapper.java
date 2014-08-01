@@ -48,7 +48,10 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport{
       } else if (!realValue.equals(other.realValue))
         return false;
     }else
-      return obj.equals(this.realValue);
+      if (obj instanceof PropertyToStringDelegate)
+        throw new WrongPropertyNameInDslException(((PropertyToStringDelegate)obj).getFullPropertyName());
+      else
+        return obj.equals(this.realValue);
     
     return true;
   }

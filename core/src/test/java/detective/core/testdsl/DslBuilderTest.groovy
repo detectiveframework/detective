@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import static detective.core.dsl.builder.DslBuilder.*;
 import detective.core.dsl.SharedDataPlaceHolder;
+import detective.core.dsl.SharedVariable
 
 import static detective.core.Matchers.*;
 
@@ -56,7 +57,7 @@ public class DslBuilderTest {
     assert story.getSharedDataMap().size() == 3;
     assert story.getSharedDataMap().get("sharedData1") == "This Is Shared Data1"
     assert story.getSharedDataMap().get("shared.data2") == "shared data with property format"
-    assert story.getSharedDataMap().get("shared.placeholder") == SharedDataPlaceHolder.INSTANCE;
+    assert story.getSharedDataMap().getUnwrappered("shared.placeholder") instanceof SharedVariable;
   }
   
   /**
@@ -71,9 +72,6 @@ public class DslBuilderTest {
       sothat "..."
       
       scenario_refund "Refunded items should be returned to stock" {
-        task TestTaskFactory.stockManagerTask() 
-        task TestTaskFactory.stockManagerTask1()
-      
         given "a customer previously bought a black sweater from me" {
           
         }
@@ -115,10 +113,8 @@ public class DslBuilderTest {
     Scenario s0 = story.scenarios.get(0);
     Assert.assertThat(s0.getId(), equalTo("scenario_refund"));
     Assert.assertThat(s0.getTitle(), equalTo("Refunded items should be returned to stock"));
-    Assert.assertThat(s0.getTasks().size(), equalTo(3));
+    Assert.assertThat(s0.getTasks().size(), equalTo(1));
     Assert.assertThat(s0.getTasks().get(0).getClass().getName(), equalTo("detective.core.testdsl.stock.SweaterStockManagerTask"));
-    Assert.assertThat(s0.getTasks().get(1).getClass().getName(), equalTo("detective.core.testdsl.stock.SweaterStockManagerTask"));
-    Assert.assertThat(s0.getTasks().get(2).getClass().getName(), equalTo("detective.core.testdsl.stock.SweaterStockManagerTask"));
     Assert.assertThat(s0.getContexts().get(0).title, equalTo("a customer previously bought a black sweater from me"));
     Assert.assertThat(s0.getContexts().get(0).getParameters().size(), equalTo(0));
     Assert.assertThat(s0.getContexts().get(1).title, equalTo("I currently have three black sweaters left in stock"));

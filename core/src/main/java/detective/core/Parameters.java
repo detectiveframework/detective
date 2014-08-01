@@ -1,15 +1,11 @@
 package detective.core;
 
+import java.util.List;
 import java.util.Set;
 
-public interface Parameters {
+public interface Parameters extends Cloneable{
   
-  /**
-   * Create a new immutable parameters
-   * 
-   * @return
-   */
-  Parameters immutable();
+  Parameters clone();
 
   /**
    * Returns the value to which the specified key is mapped,
@@ -158,4 +154,11 @@ public interface Parameters {
    */
   Object remove(String key);
   
+  Object getUnwrappered(String key);
+  
+  Set<String> getUnbindShareVarKeys();
+  
+  boolean isInParent(String key);
+  
+  void putAllUnwrappered(Parameters parameters);
 }
