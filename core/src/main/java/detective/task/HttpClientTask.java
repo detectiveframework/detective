@@ -43,6 +43,7 @@ import detective.core.services.DetectiveFactory;
  * 
  * <h4>Input</h4>
  * <pre>
+ *   http.use_shared_cookies: default true, identify if this httpclient will read cookies from share data section
  *   http.cookies: optional, output of other HTTPClientTask
  *   http.address: a String or a Java URI
  *   http.method: GET, PUT, POST, DELETE, HEAD, OPTIONS, optional, default to POST
@@ -126,7 +127,11 @@ public class HttpClientTask extends AbstractTask{
   protected void doExecute(Parameters config, Parameters output) {
     CloseableHttpClient httpClient = DetectiveFactory.INSTANCE.getHttpClient();
     
-    CookieStore cookieStore = this.readOptional(config, "http.cookies", null, CookieStore.class);
+    CookieStore cookieStore = null;
+    boolean useSharedCookies = this.readAsString(config, "http.use_shared_cookies", "true", true, null).equals("true");
+    if (useSharedCookies){
+      cookieStore = this.readOptional(config, "http.cookies", null, CookieStore.class);  
+    }
     if (cookieStore == null){
       cookieStore = new BasicCookieStore();
     }

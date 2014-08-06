@@ -78,7 +78,8 @@ public class ParametersImpl implements Parameters{
         ((SharedVariable)oldValue).setValue(value);
         return oldValue;
       }else{
-        throw new DslException("Shared data [" + key + "] can only setup once.");
+        //throw new DslException("Shared data [" + key + "] can only setup once.");
+        logger.info("As shared data [" + key + "] can only setup once, your value ignored.");
       }
     }
     

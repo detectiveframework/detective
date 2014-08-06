@@ -150,7 +150,8 @@ public class ParallelRunnerTest {
       return;
     }
     
-    fail("Should run into error");
+    //fail("Should run into error");
+    //We allow them setup more then once now
   }
 
 }

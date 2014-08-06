@@ -2,6 +2,7 @@ package detective.core.services;
 
 import groovyx.gpars.group.PGroup;
 import groovyx.gpars.group.DefaultPGroup;
+import groovyx.gpars.scheduler.DefaultPool;
 import groovyx.gpars.scheduler.ResizeablePool;
 
 import java.net.InetAddress;
@@ -53,7 +54,8 @@ public enum DetectiveFactory {
     retriver = new TraceRetriverElasticSearchImpl();
     
     int poolsize = getConfig().getInt("parallel.max_poolsize");
-    threadGroup = new DefaultPGroup(new ResizeablePool(true, poolsize));
+    //threadGroup = new DefaultPGroup(new ResizeablePool(true, poolsize));
+    threadGroup = new DefaultPGroup(new DefaultPool(true, poolsize));
     
     cm.setMaxTotal(getConfig().getInt("httpclient.max_connections"));
     cm.setDefaultMaxPerRoute(getConfig().getInt("httpclient.max_connections_pre_site"));

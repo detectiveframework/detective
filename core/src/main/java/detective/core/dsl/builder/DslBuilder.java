@@ -158,7 +158,7 @@ public class DslBuilder extends BuilderSupport{
       String key = k.toString();
       String name = (propertyPrix == null ? "" : propertyPrix + ".") + key;
       if (sub.getValues().isInParent(name))
-        return;
+        continue;
       
       Object value = sub.getProperty(key);
       

@@ -125,10 +125,9 @@ public class DataTableRunnerTest {
         }
         
         then "I should have expected black sweaters in stock"{
+          println Thread.currentThread().getName() + " sweater.black=${sweater.black} sweater.black=${sweater.black} sweater.black=${sweater.black} sweater.black=${sweater.black} sweater.refund.black = ${sweater.refund.black}  expected.name.here = ${expected.name.here} Done, ${sweater.black} + ${sweater.refund.black} = ${expected.name.here}"
           expect.sweater.balck << equalTo("expected.name.here")
           sweater.black << equalTo(expected.name.here)  //Working as this is the real parameter name in data table
-          println "Done, ${sweater.black - sweater.refund.black} + ${sweater.refund.black} = ${expected.name.here}"
-          //sweater.black << equalTo(expect.sweater.balck)  //not working as expect.sweater.balck = "expected.name.here"
         }
       }
     }

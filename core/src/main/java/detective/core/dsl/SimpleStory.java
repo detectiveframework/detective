@@ -186,7 +186,8 @@ public class SimpleStory extends GroovyObjectSupport implements Story{
         if (oldValue instanceof SharedVariable)
           sharedDataMap.put(key, value);
         else
-          throw new DslException("Shared data [" + key + "] can only setup once in story [" + title + "]");
+          //throw new DslException("Shared data [" + key + "] can only setup once in story [" + title + "]");
+          logger.info("As shared data [" + key + "] can only setup once in story [" + title + "], your value ignored");
       } catch (Exception e) {
         throw new DslException(e.getMessage() + " current story [" + title + "]", e);
       }

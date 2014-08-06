@@ -1,16 +1,14 @@
 package detective.core.runner;
 
 import static org.junit.Assert.*;
-
 import static detective.core.Detective.*;
 import static detective.core.Matchers.*;
-
 import detective.core.dsl.DslException
+import detective.core.exception.StoryFailException;
 import detective.core.TestTaskFactory;
-import detective.core.StoryFailException;
-
 import detective.core.Story
 import detective.core.StoryRunner
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

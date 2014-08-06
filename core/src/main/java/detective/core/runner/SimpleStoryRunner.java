@@ -20,7 +20,6 @@ import detective.core.Parameters;
 import detective.core.Scenario;
 import detective.core.Scenario.Context;
 import detective.core.Story;
-import detective.core.StoryFailException;
 import detective.core.StoryRunner;
 import detective.core.TestTask;
 import detective.core.dsl.DslException;
@@ -28,6 +27,7 @@ import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.SharedDataPlaceHolder;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.dsl.table.Row;
+import detective.core.exception.StoryFailException;
 import detective.core.services.DetectiveFactory;
 import detective.utils.StringUtils;
 
@@ -90,6 +90,7 @@ public class SimpleStoryRunner implements StoryRunner{
   private void makeScenarioFail(Scenario s, Throwable e) {
     s.setSuccessed(false);
     s.setError(e);
+    throw new StoryFailException(s.getStory(), e.getMessage(), e);
     //logger.error("Scenario [" + s.getTitle() + "] in story [" + s.getStory().getTitle() + "] fail, " + e.getMessage(), e);
   }
 
@@ -168,15 +169,17 @@ public class SimpleStoryRunner implements StoryRunner{
     updateSharedData(scenario, dataout);
     
     if (scenario.getOutcomes().getExpectClosure() != null){
+      Closure<?> expectClosure = (Closure)scenario.getOutcomes().getExpectClosure().clone();
+      
       //Shared data need join into the running user code so that they can change it
       Parameters dataToPassIntoExpectClosure = combineSharedAndInAndOut(scenario.getStory().getSharedDataMap(), datain, dataout);
       
-      scenario.getOutcomes().getExpectClosure().setDelegate(new ExpectClosureDelegate(dataToPassIntoExpectClosure));
-      scenario.getOutcomes().getExpectClosure().setResolveStrategy(Closure.DELEGATE_ONLY);
+      expectClosure.setDelegate(new ExpectClosureDelegate(dataToPassIntoExpectClosure));
+      expectClosure.setResolveStrategy(Closure.DELEGATE_ONLY);
       
       try {
-        GroovyCategorySupport.use(ExpectObjectWrapper.class, scenario.getOutcomes().getExpectClosure());
-        //scenario.getOutcomes().getExpectClosure().call();
+        //GroovyCategorySupport.use(ExpectObjectWrapper.class, scenario.getOutcomes().getExpectClosure());
+        expectClosure.call();
       } catch (WrongPropertyNameInDslException e) {
         StringBuilder sb = new StringBuilder(e.getPropertyName());
         sb.append(" not able to found in properties list, do you mean : ")

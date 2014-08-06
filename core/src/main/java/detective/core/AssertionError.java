@@ -1,6 +1,7 @@
 package detective.core;
 
 import detective.core.Scenario.Outcomes;
+import detective.core.exception.StoryFailException;
 
 public class AssertionError extends StoryFailException {
 
