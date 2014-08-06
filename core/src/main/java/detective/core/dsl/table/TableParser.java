@@ -10,6 +10,7 @@ import java.util.Map;
 import org.codehaus.groovy.runtime.GroovyCategorySupport;
 
 import detective.core.Parameters;
+import detective.core.dsl.builder.ShareDataAwardDelegate;
 import detective.core.runner.PropertyToStringDelegate;
 
 public class TableParser {
@@ -36,7 +37,7 @@ public class TableParser {
 
   public static List<Row> asListOfRows(Parameters existsParameters, Closure<?> tableData) {
     context.set(new ArrayList<Row>());
-    tableData.setDelegate(new PropertyToStringDelegate(existsParameters));
+    tableData.setDelegate(new ShareDataAwardDelegate(existsParameters));
     tableData.setResolveStrategy(Closure.DELEGATE_FIRST);
 
     GroovyCategorySupport.use(TableParser.class, tableData);

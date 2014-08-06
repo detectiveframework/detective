@@ -7,7 +7,7 @@ package detective.core.dsl;
  *
  * @param <T>
  */
-public interface SharedVariable<T> {
+public interface SharedVariable<T> extends WrappedObject<T>{
 
   /**
    * Represents a thread-safe single-assignment, multi-read variable.

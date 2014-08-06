@@ -2,7 +2,7 @@ package detective.core.runner;
 
 import static org.junit.Assert.*;
 
-import static detective.core.dsl.builder.DslBuilder.*;
+import static detective.core.Detective.*;
 import static detective.core.Matchers.*;
 
 import detective.core.dsl.DslException
@@ -32,7 +32,7 @@ public class DataTableRunnerTest {
 
   @Test
   public void test() {
-    Story story1 = story() "Returns go to stock" {
+    story() "Returns go to stock" {
       inOrderTo "keep track of stock"
       asa "store owner"
       iwantto "add items back to stock when they're returned"
@@ -56,13 +56,38 @@ public class DataTableRunnerTest {
         }
       }
     }
-    
-    runner.run(story1);
+  }
+  
+  @Test
+  public void testTableWithShareData() {
+    story() "Returns go to stock" {
+
+      share{
+        shared.data1
+      }
+            
+      scenario_refund "Refunded items should be returned to stock" {
+        task TestTaskFactory.stockManagerTask()
+      
+        given "read a shared data in given section shoudn't pause the parser thread" {
+          datatable {
+            sweater.black | sweater.refund.black  | expect.sweater.balck  | shared
+            3             | 1                     | 4                     | shared.data1
+            100           | 50                    | 150                   | shared.data1
+          }
+          sweater.blue = 0
+        }
+        
+        then "I should have expcected black sweaters in stock"{
+          sweater.black << equalTo(expect.sweater.balck)
+        }
+      }
+    }
   }
   
   @Test
   public void testDataTableParamOverwrite() {
-    Story story1 = story() "Returns go to stock" {
+    story() "Returns go to stock" {
       inOrderTo "keep track of stock"
       asa "store owner"
       iwantto "add items back to stock when they're returned"
@@ -91,13 +116,11 @@ public class DataTableRunnerTest {
         }
       }
     }
-    
-    runner.run(story1);
   }
   
   @Test
   public void testDataTableParamBatchAdd() {
-    Story story1 = story() "DataTable support batch add" {
+    story() "DataTable support batch add" {
       inOrderTo "generate a lot of data table records"
       
       scenario_refund "Refunded items should be returned to stock" {
@@ -131,15 +154,12 @@ public class DataTableRunnerTest {
         }
       }
     }
-    
-    runner.run(story1);
   }
   
   @Test
   public void testWithTwoDataTables() {
-    StoryRunner runner = new SimpleStoryRunner();
     try{
-      Story story1 = story() "Returns go to stock" {
+      story() "Returns go to stock" {
         inOrderTo "keep track of stock"
         asa "store owner"
         iwantto "add items back to stock when they're returned"
@@ -171,8 +191,6 @@ public class DataTableRunnerTest {
           }
         }
       }
-      
-      runner.run(story1);
     }catch (DslException e){
       assert e.getMessage().contains("So far we support only one type of datatable in all given section");
       return;
@@ -184,7 +202,7 @@ public class DataTableRunnerTest {
   @Test
   public void testDataTableWithOneRow() {
     try{
-      Story story1 = story() "Returns go to stock" {
+      story() "Returns go to stock" {
         inOrderTo "keep track of stock"
         asa "store owner"
         iwantto "add items back to stock when they're returned"

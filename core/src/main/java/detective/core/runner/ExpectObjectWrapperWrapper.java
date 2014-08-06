@@ -9,6 +9,7 @@ import org.hamcrest.Matcher;
 import org.junit.Assert;
 
 import detective.core.dsl.DslException;
+import detective.core.dsl.WrappedObject;
 import detective.core.matcher.IsEqual;
 
 /**
@@ -19,7 +20,7 @@ import detective.core.matcher.IsEqual;
  * @author James Luo
  *
  */
-public class ExpectObjectWrapperWrapper extends GroovyObjectSupport{
+public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements WrappedObject<Object>{
   
   private final Object realValue;
   
@@ -115,6 +116,16 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport{
 
   public Object getRealValue() {
     return realValue;
+  }
+
+  @Override
+  public Object getValue() {
+    return realValue;
+  }
+
+  @Override
+  public void setValue(Object value) {
+    throw new RuntimeException("We don't allow setup the value at this moment");
   }
 
 }

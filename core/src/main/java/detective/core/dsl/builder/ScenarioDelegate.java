@@ -16,7 +16,7 @@ import detective.core.dsl.table.Row;
 import detective.core.dsl.table.TableParser;
 import detective.core.runner.PropertyToStringDelegate;
 
-public class ScenarioDelegate extends PropertyToStringDelegate{    
+public class ScenarioDelegate extends ShareDataAwardDelegate{    
   protected String title;
   protected SimpleScenario scenario;
   protected Closure<?> closure;
@@ -62,6 +62,7 @@ public class ScenarioDelegate extends PropertyToStringDelegate{
     Object value = values.getUnwrappered(getFullPropertyName(property));
     return value;
   }
+  
   public TestTask runtask(TestTask task){
     this.scenario.addTask(task);
     return task;

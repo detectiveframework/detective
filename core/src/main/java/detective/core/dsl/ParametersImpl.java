@@ -59,10 +59,19 @@ public class ParametersImpl implements Parameters{
     }
       
     Object obj = map.get(key);
-    if (obj != null && obj instanceof SharedVariable){
-      return ((SharedVariable<?>)obj).getValue();
+    if (obj != null && obj instanceof WrappedObject){
+      return getWrappedValue((WrappedObject<?>)obj);
     }
     return obj;
+  }
+  
+  private Object getWrappedValue(WrappedObject<?> obj){
+    Object unwrapped = obj.getValue();
+    
+    if (unwrapped instanceof WrappedObject)
+      return getWrappedValue((WrappedObject<?>)unwrapped);
+    else
+      return unwrapped;
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
