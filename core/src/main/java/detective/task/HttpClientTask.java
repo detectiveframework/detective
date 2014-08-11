@@ -185,7 +185,8 @@ public class HttpClientTask extends AbstractTask{
         	content.append(scanner.nextLine()).append("\n");
         }
         scanner.close();
-        output.put("http.content", content.toString()); 
+        output.put("http.content", content.toString());
+        output.put("http.content.string", content.toString());
         output.put("http.content.length", entity.getContentLength());
         if (entity.getContentEncoding() != null)
           output.put("http.content." + entity.getContentEncoding().getName(), entity.getContentEncoding().getValue());

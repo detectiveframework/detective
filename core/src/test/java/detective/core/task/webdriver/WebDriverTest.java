@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -45,7 +47,7 @@ public class WebDriverTest {
     File scrFile = ((TakesScreenshot)webdriver).getScreenshotAs(OutputType.FILE);
     // Now you can do whatever you need to do with it, for example copy somewhere
 
-    File destFile = new File("/Users/bglcorp/git/detective/core/core/target/classes/" + scrFile.getName());
+    File destFile = new File("/Users/bglcorp/git/detective/core/target/classes/" + scrFile.getName());
     FileUtils.copyFile(scrFile, destFile);
     
     return destFile; 
@@ -89,12 +91,18 @@ public class WebDriverTest {
     });    
   }
   
-  //@Test
+  @Test
   public void testRemotePhantomjs() throws InterruptedException {
-    runMultipleThread(1, new WebDriverFactory(){
+    runMultipleThread(30, new WebDriverFactory(){
 
       public WebDriver getDriver() {
-        return new RemoteWebDriver(DesiredCapabilities.phantomjs());
+        RemoteWebDriver driver;
+        try {
+          driver = new RemoteWebDriver(new URL("http://localhost:8081/wd"), DesiredCapabilities.phantomjs());
+          return driver;
+        } catch (MalformedURLException e) {
+          throw new RuntimeException(e.getMessage(), e);
+        }
       }
       
     });

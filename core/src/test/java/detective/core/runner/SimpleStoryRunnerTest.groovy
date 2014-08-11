@@ -5,6 +5,7 @@ import static detective.core.Detective.*;
 import static detective.core.Matchers.*;
 import detective.core.dsl.DslException
 import detective.core.exception.StoryFailException;
+import detective.core.task.JsonBuilderTask
 import detective.core.TestTaskFactory;
 import detective.core.Story
 import detective.core.StoryRunner
@@ -92,6 +93,30 @@ public class SimpleStoryRunnerTest {
       }
     }
   }
+  
+//  @Test
+//  public void testJsonBuilder() {
+//    story() "Direct read json" {
+//
+//      scenario "json" {
+//        given "give json input" {
+//          jsoninput = '{"person":{"name":"Guillaume","age":33,"pets":["dog","cat"]}}'
+//        }
+//
+//        when "run json builder task" { 
+//          runtask new JsonBuilderTask(); 
+//        }
+//
+//        then "parameter should send back"{
+//          json.person.name << "Guillaume"
+//          json.person.age << 33
+//          json.person.pets.size() << 2
+//          json.person.pets[0] << "dog"
+//          json.person.pets[1] << "cat"
+//        }
+//      }
+//    }
+//  }
   
   @Test
   public void testBeforeAfter(){
