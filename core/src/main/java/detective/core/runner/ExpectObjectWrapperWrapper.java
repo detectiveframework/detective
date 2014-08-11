@@ -1,14 +1,20 @@
 package detective.core.runner;
 
+import java.util.Map;
+
 import groovy.lang.Closure;
 import groovy.lang.GroovyObjectSupport;
+import groovy.lang.MetaClass;
+import groovy.lang.MetaClassRegistry;
 
 import org.codehaus.groovy.reflection.MixinInMetaClass;
 import org.codehaus.groovy.runtime.GroovyCategorySupport;
+import org.codehaus.groovy.runtime.metaclass.MetaClassRegistryImpl;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 
 import detective.core.dsl.DslException;
+import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.WrappedObject;
 import detective.core.matcher.IsEqual;
 
@@ -23,9 +29,11 @@ import detective.core.matcher.IsEqual;
 public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements WrappedObject<Object>{
   
   private final Object realValue;
+  private final MetaClassRegistry registry;
   
   public ExpectObjectWrapperWrapper(Object realValue){
     this.realValue = realValue;
+    registry = MetaClassRegistryImpl.getInstance(MetaClassRegistryImpl.LOAD_DEFAULT);
   }
   
   @Override
@@ -126,6 +134,40 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements W
   @Override
   public void setValue(Object value) {
     throw new RuntimeException("We don't allow setup the value at this moment");
+  }
+  
+  public Object getProperty(String property) {
+    //still have get property? it's maybe a map or list
+    if (realValue != null){
+      if (realValue instanceof GroovyObjectSupport){
+        Object value = ((GroovyObjectSupport)realValue).getProperty(property);
+        return new ExpectObjectWrapperWrapper(value);
+      }else{     
+        MetaClass metaClass = registry.getMetaClass(realValue.getClass());
+        if (metaClass != null){
+          Object value = metaClass.getProperty(realValue, property);
+          return new ExpectObjectWrapperWrapper(value);
+        }
+      } 
+    }
+    
+    return super.getProperty(property);
+  }
+  
+  public Object invokeMethod(String name, Object args) {
+    if (realValue != null){
+      if (realValue instanceof GroovyObjectSupport){
+        Object value = ((GroovyObjectSupport)realValue).invokeMethod(name, args);
+        return new ExpectObjectWrapperWrapper(value);
+      }else {
+        MetaClass metaClass = registry.getMetaClass(realValue.getClass());
+        if (metaClass != null){
+          Object value = metaClass.invokeMethod(realValue, name, args);
+          return new ExpectObjectWrapperWrapper(value);
+        }
+      }
+    }
+    return getMetaClass().invokeMethod(this, name, args);
   }
 
 }

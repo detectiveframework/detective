@@ -7,6 +7,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import detective.core.attation.AttationTest;
 import detective.core.runner.DataSharedInStoryLevelTest;
 import detective.core.runner.DataTableRunnerTest;
+import detective.core.runner.JsonSupportTest;
 import detective.core.runner.ParallelRunnerTest;
 import detective.core.runner.SimpleStoryRunnerTest;
 import detective.core.runner.TableParserTest;
@@ -21,7 +22,8 @@ import detective.core.testdsl.DslBuilderTest;
     DataTableRunnerTest.class,
     DataSharedInStoryLevelTest.class,
     AttationTest.class,
-    ParallelRunnerTest.class
+    ParallelRunnerTest.class,
+    JsonSupportTest.class
   })
 public class AllDslTests {
 
