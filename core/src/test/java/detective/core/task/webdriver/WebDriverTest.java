@@ -30,8 +30,8 @@ public class WebDriverTest {
   
   @Before
   public void setupEnv(){
-    System.setProperty("webdriver.chrome.driver", "/Users/bglcorp/git/detective/core/core/src/main/resources/chromedrivers/mac/chromedriver");
-    System.setProperty(org.openqa.selenium.phantomjs.PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "/Users/bglcorp/git/detective/core/core/src/main/resources/phantomjs/phantomjs-1.9.7-macosx/bin/phantomjs");
+    System.setProperty("webdriver.chrome.driver", "/Users/bglcorp/git/detective/core/src/main/resources/chromedrivers/mac/chromedriver");
+    System.setProperty(org.openqa.selenium.phantomjs.PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, "/Users/bglcorp/git/detective/core/src/main/resources/phantomjs/phantomjs-1.9.7-macosx/bin/phantomjs");
     
   }
 
