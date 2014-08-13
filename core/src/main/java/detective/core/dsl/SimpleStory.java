@@ -203,6 +203,11 @@ public class SimpleStory extends GroovyObjectSupport implements Story{
   public List<Scenario> getAfterTasks() {
     return ImmutableList.copyOf(this.afterTasks);
   }
+
+  @Override
+  public void setGlobalParameters(Parameters parameters) {
+    this.sharedDataMap.setParent(parameters);
+  }
   
   
 }

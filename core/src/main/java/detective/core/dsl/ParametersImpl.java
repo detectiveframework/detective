@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableMap;
 
 import detective.core.Parameters;
+import detective.core.exception.ImmutableElementException;
+import detective.core.services.DetectiveFactory;
 
 /**
  * Create a tree like parameters. 
@@ -24,7 +26,17 @@ public class ParametersImpl implements Parameters{
   
   private static final Logger logger = LoggerFactory.getLogger(ParametersImpl.class);
   
-  private final Parameters parent;
+  private Parameters parent;
+  
+  public Parameters getParent() {
+    return parent;
+  }
+  
+  public void setParent(Parameters parent) {
+    this.parent = parent;
+  }
+
+  private boolean immutable = false;
   
   public ParametersImpl(){
     this(null);
@@ -62,6 +74,10 @@ public class ParametersImpl implements Parameters{
     if (obj != null && obj instanceof WrappedObject){
       return getWrappedValue((WrappedObject<?>)obj);
     }
+    
+    if (obj == null)
+      obj = DetectiveFactory.INSTANCE.getParametersConfig().getUnwrappered(key);
+    
     return obj;
   }
   
@@ -77,6 +93,9 @@ public class ParametersImpl implements Parameters{
   @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   public Object put(String key, Object value) {
+    if (immutable)
+      throw new ImmutableElementException("Parameter is immutable, you may try to setup a parameter which comes from global settings. Key:" + key);
+    
     if (parent != null && parent.containsKey(key)){
       return parent.put(key, value);
     }
@@ -128,13 +147,14 @@ public class ParametersImpl implements Parameters{
     if (parent == null)
       return map.containsKey(key);
     else
-      return parent.containsKey(key) && map.containsKey(key);
+      return parent.containsKey(key) || map.containsKey(key);
   }
 
   @Override
   public Parameters clone() {
     Parameters p = new ParametersImpl();
     p.putAllUnwrappered(this);
+    p.setImmutable(this.isImmutable());
     return p;
   }
 
@@ -147,6 +167,9 @@ public class ParametersImpl implements Parameters{
   
   @Override
   public void putAllUnwrappered(Parameters parameters) {
+    if (immutable)
+      throw new ImmutableElementException("Parameter is immutable, you may try to setup a parameter which comes from global settings.");
+    
     for (String key : parameters.keySet()){
        map.put(key, parameters.getUnwrappered(key));
     }
@@ -154,6 +177,9 @@ public class ParametersImpl implements Parameters{
 
   @Override
   public Object remove(String key) {
+    if (immutable)
+      throw new ImmutableElementException("Parameter is immutable, you may try to setup a parameter which comes from global settings. Key:" + key);
+    
     if (parent == null)
       return map.remove(key);
     else{
@@ -166,6 +192,16 @@ public class ParametersImpl implements Parameters{
 
   @Override
   public Object getUnwrappered(String key) {
+    Object obj = getUnwrapperedInner(key);
+    if (obj == null){
+      if (DetectiveFactory.INSTANCE.getParametersConfig().containsKey(key))
+        obj = DetectiveFactory.INSTANCE.getParametersConfig().getUnwrappered(key);
+    }
+      
+    return obj;
+  }
+
+  private Object getUnwrapperedInner(String key) {
     if (parent == null)
       return map.get(key);
     else{
@@ -203,6 +239,14 @@ public class ParametersImpl implements Parameters{
       return true;
     else
       return false;
+  }
+
+  public boolean isImmutable() {
+    return immutable;
+  }
+
+  public void setImmutable(boolean immutable) {
+    this.immutable = immutable;
   }
 
 }

@@ -121,6 +121,22 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements W
       
     throw new RuntimeException("minus support only number so far, please log a issue if you got this error, Thanks");
   }
+  
+  public Object plus(Object obj){
+    if (obj instanceof ExpectObjectWrapperWrapper){
+      Object otherValue = ((ExpectObjectWrapperWrapper)obj).realValue;
+      if (realValue instanceof Integer || otherValue instanceof Integer)
+        return ((Number)realValue).intValue() + ((Number)otherValue).intValue();
+      else if (realValue instanceof Long || otherValue instanceof Long)
+        return ((Number)realValue).longValue() + ((Number)otherValue).longValue();
+      else if (realValue instanceof Number && otherValue instanceof Number)
+        return ((Number)realValue).doubleValue() + ((Number)otherValue).doubleValue();
+      else if (realValue instanceof String && otherValue instanceof String)
+        return ((String)realValue) + ((String)otherValue);
+    }
+      
+    throw new RuntimeException("minus support only number and String so far, please log a issue if you got this error, Thanks");
+  }
 
   public Object getRealValue() {
     return realValue;

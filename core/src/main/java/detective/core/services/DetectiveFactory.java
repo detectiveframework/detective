@@ -6,6 +6,7 @@ import groovyx.gpars.scheduler.DefaultPool;
 import groovyx.gpars.scheduler.ResizeablePool;
 
 import java.net.InetAddress;
+import java.util.Map;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -14,13 +15,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.typesafe.config.Config;
+import com.typesafe.config.ConfigValue;
 
 import detective.common.httpclient.IdleConnectionMonitorThread;
 import detective.common.trace.TraceRecorder;
 import detective.common.trace.TraceRetriver;
 import detective.common.trace.impl.TraceRecorderElasticSearchImpl;
 import detective.common.trace.impl.TraceRetriverElasticSearchImpl;
+import detective.core.Parameters;
 import detective.core.config.DetectiveConfig;
+import detective.core.dsl.ParametersImpl;
 
 public enum DetectiveFactory {
 
@@ -37,6 +41,8 @@ public enum DetectiveFactory {
   private final CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(cm).build();
   
   private final PGroup threadGroup;
+  
+  private final Parameters parametersConfig;
   
   private DetectiveFactory(){
     if (getConfig().getBoolean("ElasticSearchServer.builtin")){
@@ -62,6 +68,21 @@ public enum DetectiveFactory {
     
     idleConnectionMonitorThread.setName("idle-connection-monitor-thread");
     idleConnectionMonitorThread.start();
+    
+    parametersConfig = new ParametersImpl();
+    setupParameters(parametersConfig);
+    parametersConfig.setImmutable(true);
+  }
+  
+  public Parameters getParametersConfig() {
+    return parametersConfig;
+  }
+  
+  private void setupParameters(Parameters parameters){
+    Config config = this.getConfig();
+    for (Map.Entry<String, ConfigValue> entry : config.entrySet()){      
+      parameters.put(entry.getKey(), entry.getValue().unwrapped());
+    }
   }
   
   public void shutdown(){

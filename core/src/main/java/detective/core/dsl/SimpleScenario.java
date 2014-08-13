@@ -89,9 +89,6 @@ public class SimpleScenario extends GroovyObjectSupport implements Scenario{
   public SimpleScenario addTask(TestTask task){
     checkImmutable();
     
-    if (this.tasks.size() >= 1)
-      throw new DslException("We support only one task pre scenario at this moment.");
-    
     this.tasks.add(task);
     return this;
   }

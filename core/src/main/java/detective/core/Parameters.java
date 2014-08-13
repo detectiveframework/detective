@@ -5,6 +5,14 @@ import java.util.Set;
 
 public interface Parameters extends Cloneable{
   
+  Parameters getParent();
+  
+  void setParent(Parameters parent);
+  
+  boolean isImmutable();
+
+  void setImmutable(boolean immutable);
+  
   Parameters clone();
 
   /**

@@ -8,7 +8,9 @@ import detective.core.attation.AttationTest;
 import detective.core.runner.DataSharedInStoryLevelTest;
 import detective.core.runner.DataTableRunnerTest;
 import detective.core.runner.JsonSupportTest;
+import detective.core.runner.MultTasksTest;
 import detective.core.runner.ParallelRunnerTest;
+import detective.core.runner.ParameterResolveTest;
 import detective.core.runner.SimpleStoryRunnerTest;
 import detective.core.runner.TableParserTest;
 import detective.core.testdsl.DslBuilderTest;
@@ -23,7 +25,9 @@ import detective.core.testdsl.DslBuilderTest;
     DataSharedInStoryLevelTest.class,
     AttationTest.class,
     ParallelRunnerTest.class,
-    JsonSupportTest.class
+    JsonSupportTest.class,
+    MultTasksTest.class,
+    ParameterResolveTest.class
   })
 public class AllDslTests {
 

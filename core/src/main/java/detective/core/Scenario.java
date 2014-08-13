@@ -37,7 +37,7 @@ public interface Scenario extends Titled{
   
   Story getStory();
   
-  List<? extends TestTask> getTasks();
+  List<TestTask> getTasks();
   
   List<? extends Context> getContexts();
   

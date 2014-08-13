@@ -50,6 +50,8 @@ public class SimpleStoryRunner implements StoryRunner{
   }
 
   public void run(final Story story) {
+    //story.setGlobalParameters(DetectiveFactory.INSTANCE.getParametersConfig());
+    
     Map<Scenario, Promise<Object>> promises = new HashMap<Scenario, Promise<Object>>();
     for (final Scenario scenario : story.getScenarios()){
       try {
@@ -100,13 +102,13 @@ public class SimpleStoryRunner implements StoryRunner{
     }
     
     //So far we allow one task pre-scenario, no threading
-    for (final TestTask task : scenario.getTasks()){
+//    for (final TestTask task : scenario.getTasks()){
       final Parameters datain = aggrigateAllIncomeParameters(story, scenario);
-      runScenarioWithTask(scenario, task, datain);
-    }
+      runScenarioWithTask(scenario, scenario.getTasks(), datain);
+//    }
   }
  
-  private void runScenarioWithTask(final Scenario scenario, final TestTask task,
+  private void runScenarioWithTask(final Scenario scenario, final List<TestTask> task,
       Parameters datain) throws Throwable {
     //process all datatables
     List<Row> datatable = (List<Row>)datain.get(DslBuilder.DATATABLE_PARAMNAME);
@@ -163,10 +165,17 @@ public class SimpleStoryRunner implements StoryRunner{
     return headers.toArray(new String[]{});
   }
   
-  private void runScenario(Scenario scenario, TestTask task, Parameters datain) {
-    Parameters dataout = task.execute(datain);  
-    
-    updateSharedData(scenario, dataout);
+  private void runScenario(Scenario scenario, List<TestTask> tasks, Parameters datain) {
+    Parameters dataout = new ParametersImpl();
+    datain = datain.clone();
+    for (TestTask task : tasks){
+      Parameters dataReturned = task.execute(datain);
+      
+      dataout.putAllUnwrappered(dataReturned);  
+      datain.putAllUnwrappered(dataReturned);
+      
+      updateSharedData(scenario, dataout);
+    }
     
     if (scenario.getOutcomes().getExpectClosure() != null){
       Closure<?> expectClosure = (Closure)scenario.getOutcomes().getExpectClosure().clone();

@@ -1,10 +1,17 @@
 package detective.core;
 
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import groovy.json.JsonBuilder;
 import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
+import groovy.util.XmlSlurper;
+import groovy.xml.MarkupBuilder;
 
 import org.hamcrest.Matcher;
+import org.xml.sax.SAXException;
 
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.matcher.IsEqual;
@@ -33,8 +40,21 @@ public class Detective {
     return builder;
   }
   
-  public static Object parseJson(String json){
+  public static Object jsonParser(String json){
     return (new JsonSlurper()).parseText(json);
+  }
+  
+  public static MarkupBuilder xmlBuilder(Closure c){
+    MarkupBuilder builder = new MarkupBuilder();
+    return builder;
+  }
+  
+  public static Object xmlParser(String xml){
+    try {
+      return (new XmlSlurper()).parseText(xml);
+    } catch (Throwable e) {
+      throw new RuntimeException(e);
+    }
   }
   
   public static EchoTask echoTask(){

@@ -13,6 +13,8 @@ public interface Story {
 
   String getBenefit();
   
+  void setGlobalParameters(Parameters parameters);
+  
   /**
    * This map can be changed out side of the story, for example in task which running inside other thread
    * @return
