@@ -91,7 +91,7 @@ public class WebDriverTest {
     });    
   }
   
-  @Test
+  //@Test
   public void testRemotePhantomjs() throws InterruptedException {
     runMultipleThread(30, new WebDriverFactory(){
 

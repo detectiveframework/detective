@@ -38,7 +38,7 @@ public class ParameterResolveTest {
           
           parameter.resolve.test.givenOverrided << "if has same name here will overwrite config file"
           
-          ElasticSearchServer.port << 9999
+          ElasticSearchServer.port << 9300
         }
       }
     }
