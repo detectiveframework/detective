@@ -1,9 +1,5 @@
 package detective.core;
 
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import groovy.json.JsonBuilder;
 import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
@@ -11,8 +7,11 @@ import groovy.util.XmlSlurper;
 import groovy.xml.MarkupBuilder;
 
 import org.hamcrest.Matcher;
-import org.xml.sax.SAXException;
 
+import detective.common.trace.TraceRecord;
+import detective.common.trace.TraceRecordBuilder;
+import detective.common.trace.TraceRecorder;
+import detective.common.trace.impl.TraceRecorderElasticSearchImpl;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.matcher.IsEqual;
 import detective.core.runner.DslBuilderAndRun;
@@ -21,6 +20,21 @@ import detective.task.HttpClientTask;
 import detective.utils.StringUtils;
 
 public class Detective {
+  
+  private enum Recorder {
+    INSTANCE;
+    
+    private final TraceRecorderElasticSearchImpl recorder = new TraceRecorderElasticSearchImpl();
+
+    public TraceRecorder getRecorder() {
+      return recorder;
+    }
+  }
+  
+  public enum LogLevel{
+    FATAL, ERROR, WARN, INFO, DEBUG, TRACE;
+    
+  }
 
   public static DslBuilder story(){
     return new DslBuilderAndRun();
@@ -55,6 +69,42 @@ public class Detective {
     } catch (Throwable e) {
       throw new RuntimeException(e);
     }
+  }
+  
+  public static TraceRecord record(TraceRecord record){
+    Recorder.INSTANCE.getRecorder().record(record);
+    
+    return record;
+  }
+  
+  public static TraceRecord recordLog(LogLevel level, String message){
+    TraceRecord record = TraceRecordBuilder.newRecord().withSimpleDateAsHashKey().getRecord();
+    record.setType("log");
+    record.setCaption(message);
+    return record(record);
+  }
+  
+  public static TraceRecord info(String message){
+    return recordLog(LogLevel.INFO, message);
+  }
+  
+  public static TraceRecord error(String message){
+    return recordLog(LogLevel.ERROR, message);
+  }
+  
+  public static TraceRecord error(String message, Throwable e){
+    TraceRecord record = TraceRecordBuilder.newRecord()
+        .withSimpleDateAsHashKey()
+        .withException(e)
+        .getRecord();
+    record.setType("log");
+    record.setCaption(message);
+    
+    return record(record);
+  }
+  
+  public static TraceRecord debug(String message){
+    return recordLog(LogLevel.DEBUG, message);
   }
   
   public static EchoTask echoTask(){
