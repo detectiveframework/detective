@@ -1,7 +1,11 @@
 package detective.task;
 
+import groovy.lang.GString;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -22,7 +26,14 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -49,6 +60,8 @@ import detective.core.services.DetectiveFactory;
  *   http.method: GET, PUT, POST, DELETE, HEAD, OPTIONS, optional, default to POST
  *   
  *   http.post.string: optional, the data as a plain text which will post to server
+ *   
+ *   http.post.file.filename: optional, the file you'd like to upload
  *     
  * </pre>
  * <h4>Output</h4>
@@ -145,6 +158,8 @@ public class HttpClientTask extends AbstractTask{
     URI uri = null;
     if (address instanceof String)
       uri = URI.create((String)address);
+    else if (address instanceof GString)
+      uri = URI.create(address.toString());
     else if (address instanceof URI)
       uri = (URI)address;
     else
@@ -153,8 +168,13 @@ public class HttpClientTask extends AbstractTask{
     HttpUriRequest request = this.createHttpUriRequest(m, uri);
     request.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36");
     if (request instanceof HttpPost){
-      String postText = this.readOptional(config, "http.post.string", null, String.class);
-      setupPostRequest((HttpPost)request, postText);
+      if (config.containsKey("http.post.string")){
+        String postText = this.readOptional(config, "http.post.string", null, String.class);
+        setupPostRequest((HttpPost)request, postText);
+      }else if (config.containsKey("http.post.file.filename")){
+        String filename = this.readOptional(config, "http.post.file.filename", null, String.class);
+        this.setupPostWithFileName((HttpPost)request, filename);
+      }
     }
     
     try {
@@ -213,6 +233,32 @@ public class HttpClientTask extends AbstractTask{
     //request.getParams().setBooleanParameter("http.protocol.expect-continue", false);
     entity.setContentType(basicHeader);
     request.setEntity(entity);
+    
+    return request;
+  }
+  
+  protected HttpPost setupPostWithFileName(HttpPost request, String fileName){
+    if (fileName == null || fileName.length() == 0)
+      return request;
+    
+    
+    ContentBody fileBody = new FileBody(new File(fileName), ContentType.DEFAULT_BINARY);
+    
+    MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
+    multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE).setBoundary("boundaryABC--WebKitFormBoundaryGMApUciYGfDuPa49");
+    multipartEntity.addPart("file", fileBody);
+    request.setEntity(multipartEntity.build());
+    
+//    MultipartEntity mpEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, "boundaryABC--WebKitFormBoundaryGMApUciYGfDuPa49", Charset.forName("UTF-8"));
+//    mpEntity.addPart("userfile", fileBody);
+//    request.setEntity(mpEntity);
+    
+//    FileEntity entity = new FileEntity(new File(fileName), ContentType.APPLICATION_OCTET_STREAM);
+//    BasicHeader basicHeader = new BasicHeader(HTTP.CONTENT_TYPE,"application/json");
+    //request.getParams().setBooleanParameter("http.protocol.expect-continue", false);
+//    entity.setContentType(basicHeader);
+    
+//    request.setEntity(mpEntity);
     
     return request;
   }

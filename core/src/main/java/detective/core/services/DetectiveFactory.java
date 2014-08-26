@@ -48,8 +48,8 @@ public enum DetectiveFactory {
     if (getConfig().getBoolean("ElasticSearchServer.builtin")){
       
     }else{
-//      ElasticSearchClientFactory.setHostName(getConfig().getString("ElasticSearchServer.host"));
-//      ElasticSearchClientFactory.setPort(getConfig().getInt("ElasticSearchServer.port"));
+      ElasticSearchClientFactory.setHostName(getConfig().getString("ElasticSearchServer.host"));
+      ElasticSearchClientFactory.setPort(getConfig().getInt("ElasticSearchServer.port"));
 //      ElasticSearchClientFactory.getTransportClient();
     }
     

@@ -34,8 +34,8 @@ public class S3GetTask extends AbstractTask implements TestTask{
   @Override
   protected void doExecute(Parameters config, Parameters output) {
     String bucketName = this.readAsString(config, "aws.s3.bucketName", null, false, "aws.s3.bucketName not present in config");
-    String key = this.readAsString(config, "aws.s3.get.key", null, false, "aws.s3.list.prefix not present");
-    String versionId = this.readAsString(config, "aws.s3.get.versionId", null, false, "aws.s3.list.prefix not present");
+    String key = this.readAsString(config, "aws.s3.get.key", null, false, "aws.s3.get.key not present");
+    String versionId = this.readAsString(config, "aws.s3.get.versionId", null, true, "aws.s3.get.versionId not present");
     
     AmazonS3 client = new AmazonS3Client(AwsUtils.getCredentialProviderC(config), AwsUtils.getClientConfig(config));
     client.setRegion(AwsUtils.getRegion(config));
@@ -58,7 +58,6 @@ public class S3GetTask extends AbstractTask implements TestTask{
         try{
           output.put("content", IOUtils.toByteArray(objectData));
           output.put("metadata", object.getObjectMetadata());
-          output.put("redirectLocation", object.getRedirectLocation());
         }finally{
           try {
             objectData.close();
