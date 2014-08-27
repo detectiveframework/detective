@@ -2,7 +2,7 @@
 
 ## Introduction
 
-* A simple test DSL which keep running all the time
+* A DSL with pure groovy, no additional compile process required
 * Make more sense as ProjectManager/BA/Testers able to write story or scenarios by theirselves
 * Armed to simplify the integration, user acceptance and pressure test
 * Armed to run the tests in development / test / live environment with 24*7
