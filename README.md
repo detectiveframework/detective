@@ -6,8 +6,9 @@
 * Make more sense as ProjectManager/BA/Testers able to write story or case by theirselves
 * Armed to simplify the integration, user acceptance and pressure test
 * Armed to run the tests in development / test / live environment with 24*7
-* Building parallel support
-* Real-time reporting so that you know your web site is servicing what they should service
+* Built in parallel support (Both in local and spark cluster)
+* Support datatables and built in parallel on it
+* Real-time reporting so that you know your web site is servicing what they should always do
 * History comparison between your old (pressure) and new testers
 * Able to wrapper into your junit (or *unit) test
 
@@ -21,40 +22,45 @@ Able to support all platform as
 Clearly define the test tasks tester and developer need do. Easy for tester to use, easy for developer to extend.
 
 A Task: Developer defined how to perform a test, for example login can be a task, it ask tester supply username and password and return if it's successful or not.
-A Step: Tester define the input data and expected output data along with A Task, for example a step "login" will use "login" task defined by developer but test define the input data.
-A Story: Combination of steps, defined by Testers
+A Scenario: Tester define the input data and expected output data along with A Task, for example a scenario "login should sucess with correct username and password" will use "login" task defined by developer but test define the input data.
+A Story or Feature: Combination of scenarios, defined by Testers, for example 
+  - "login should sucess with correct username password"
+  - "login should fail with correct username but wrong password"
+  - "login should blocked if user tried 5 times with wrong username or password"
 
 ### The system need:
 Extensible: Developers should easy to extend the test task
-Easy: Testers should easy to understand how to build a story (which is combination of tasks)
+Easy: Testers should easy to understand how to build a story/feature (which is combination of tasks)
   - Task need drive by document
-  - Create Document for all tasks automatically
+  - Create Document for all tasks automatically (TODO)
 
 ### Testers:
-  - The test stories
+  - The test stories / features
   - Input Test Data
   - Expected Output Data
 
 ### Developers:
   Define the task.
   For every task:
-    define the input data
-    define output data
-    do the check for output data if possible
+    - define the input data
+    - define output data
+    - verify output data if possible
 
 ### The Detective
-  Provider a way that PM/BA/Testers create a story.
-  A story contains steps and expected output data for every step.
+  Provider a communication channel that PM/BA/Testers create a story.
+  A story contains scenarios and expected output.
   Schedule and run the steps parallel
   
 ### Discussion 
   Config (for example YAML) or Groovy DSL?
-  if config changed by tester, how developers know?
-  we can make a config runnable
-  DSL got ide support, you can put break point, you can even write your code, very powerful  
+  - if config changed by tester, how developers know?
+  - we can make a config runnable
+  - DSL got ide support, you can put break point, you can even write your code, very powerful
+  - So far we choose DSL but with config support  
 
 ### What's the story looks like
-
+    static import StockTaskFactory.*
+    
 	story() "Returns go to stock" {
       inOrderTo "keep track of stock"
       asa "store owner"
@@ -62,10 +68,9 @@ Easy: Testers should easy to understand how to build a story (which is combinati
       sothat "..."
       
       scenario_refund "Refunded items should be returned to stock" {
-        task StockTaskFactory.stockManagerTask()
-      
+        
         given "a customer previously bought a black sweater from me" {
-          
+        	runtask setupStockData()  
         }
         
         given "I currently have three black sweaters left in stock" {
@@ -75,6 +80,7 @@ Easy: Testers should easy to understand how to build a story (which is combinati
         
         when "he returns the sweater for a refund" {
           sweater.refund.black = 1
+          runtask stockManagerTask()
         }
         
         then "I should have four black sweaters in stock"{
@@ -98,6 +104,7 @@ Easy: Testers should easy to understand how to build a story (which is combinati
   - Web UI for write tasks
   - Global Distributed Cloud Runner
   - Junit integration
+  - Closure support for task
   
   
 ## Installation
