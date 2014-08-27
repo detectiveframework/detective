@@ -2,14 +2,14 @@
 
 ## Introduction
 
-* Test specification is the Code, always keep running so that never outdated
-* Make more sense as ProjectManager/BA/Testers able to write story or case by theirselves
+* A simple test DSL which keep running all the time
+* Make more sense as ProjectManager/BA/Testers able to write story or scenarios by theirselves
 * Armed to simplify the integration, user acceptance and pressure test
 * Armed to run the tests in development / test / live environment with 24*7
 * Built in parallel support (Both in local and spark cluster)
 * Support datatables and built in parallel on it
 * Real-time reporting so that you know your web site is servicing what they should always do
-* History comparison between your old (pressure) and new testers
+* Performance comparison between your old (pressure) and new tests
 * Able to wrapper into your junit (or *unit) test
 
 Able to support all platform as
