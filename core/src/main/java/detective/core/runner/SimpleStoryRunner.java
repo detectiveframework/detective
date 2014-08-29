@@ -61,7 +61,7 @@ public class SimpleStoryRunner implements StoryRunner{
           @Override
           public void run() {
               try {
-                runScenario(story, scenario);                
+                runScenario(scenario);                
               } catch (Throwable e) {
                 throw new StoryFailException(story, e.getMessage(), e);
               }          
@@ -96,16 +96,13 @@ public class SimpleStoryRunner implements StoryRunner{
     //logger.error("Scenario [" + s.getTitle() + "] in story [" + s.getStory().getTitle() + "] fail, " + e.getMessage(), e);
   }
 
-  private void runScenario(Story story, final Scenario scenario) throws Throwable {
+  public void runScenario(final Scenario scenario) throws Throwable {
     if (scenario.getTasks().size() == 0){
       throw new DslException("You need at least 1 task defined in task section, for example: scenario_1 \"scenario description\" {\n  task StockTaskFactory.stockManagerTask() \n  given \"a customer previously bought a black sweater from me\" {\n                  \n}");
     }
     
-    //So far we allow one task pre-scenario, no threading
-//    for (final TestTask task : scenario.getTasks()){
-      final Parameters datain = aggrigateAllIncomeParameters(story, scenario);
-      runScenarioWithTask(scenario, scenario.getTasks(), datain);
-//    }
+    final Parameters datain = aggrigateAllIncomeParameters(scenario.getStory(), scenario);
+    runScenarioWithTask(scenario, scenario.getTasks(), datain);
   }
  
   private void runScenarioWithTask(final Scenario scenario, final List<TestTask> task,

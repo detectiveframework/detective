@@ -10,6 +10,12 @@ import detective.core.exception.StoryFailException;
 
 public class DslBuilderAndRun extends DslBuilder {
   
+  //TODO James Global Variable here, refactor when have time
+  private static RunnerInterceptor interceptor = null;
+  public static void setInterceptor(RunnerInterceptor interceptor){
+    DslBuilderAndRun.interceptor = interceptor;
+  }
+  
   private static final Logger logger = LoggerFactory.getLogger(DslBuilderAndRun.class);
   
   protected Object doInvokeMethod(String methodName, Object name, Object args){
@@ -26,6 +32,12 @@ public class DslBuilderAndRun extends DslBuilder {
   
   protected Object doFinishedBuilding(Story story){
     try {
+      if (interceptor != null){
+        boolean isContinue = interceptor.beforeRun(story);
+        if (! isContinue)
+          return story;
+      }
+      
       new SimpleStoryRunner().run(story);
       boolean storyFailed = false;
       Throwable error  = null;
