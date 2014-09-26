@@ -1,5 +1,10 @@
 package detective.core.filter;
 
-public interface RunnerFilterChain {
+
+public interface RunnerFilterChain<T> extends Iterable<RunnerFilter<T>> {
+  
+  void doFilter(T t);
+  
+  void resetChainPosition();
 
 }

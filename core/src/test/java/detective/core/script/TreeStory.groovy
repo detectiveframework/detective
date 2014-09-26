@@ -8,6 +8,8 @@ import detective.core.TestTaskFactory;
 story() "Tree Stroy " {
   inOrderTo "create a tree like story structure"
   iWantTo "A story should able to include other script like stories"
+  version "1.0.1" "1.1.1"
+  author "James Luo"
   
   share {
     shared.toplevel.novalue

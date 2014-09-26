@@ -1,10 +1,13 @@
 package detective.core.distribute;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Job {
+public class Job implements Serializable{
   
+  private static final long serialVersionUID = 1L;
+
   /**
    * A story class name, this is groovy script but maybe contains more then one story or feature on it
    */
@@ -13,12 +16,13 @@ public class Job {
   /**
    * Which story you'd like to run
    */
-  private int storyIndex;
+  private int storyIndex = 0;
   
   /**
    * Which scenario you'd like to run
+   * -1 means all scenarios
    */
-  private int scenarioIndex;
+  private int scenarioIndex = -1;
   
   /**
    * What parameters you'd like to use, this has highest priority, will overwrite everything
@@ -27,8 +31,17 @@ public class Job {
   
   /**
    * Which row of your dataTable you'd like to run
+   * -1 means all table rows
    */
-  private int dataTableIndex;
+  private int dataTableIndex = -1;
+  
+  
+  @Override
+  public String toString() {
+    return "Job to run [storyClassName=" + storyClassName + ", storyIndex=" + storyIndex
+        + ", scenarioIndex=" + scenarioIndex + ", dataTableIndex=" + dataTableIndex
+        + ", parameters=" + parameters + "]";
+  }
 
   public String getStoryClassName() {
     return storyClassName;

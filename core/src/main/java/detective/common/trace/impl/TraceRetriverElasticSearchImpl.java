@@ -17,14 +17,12 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import detective.common.DateUtil;
 import detective.common.trace.TraceRecord;
 import detective.common.trace.TraceRetriver;
 import detective.core.services.ElasticSearchClientFactory;
 
-@Service("TraceRetriverElasticSearchImpl")
 public class TraceRetriverElasticSearchImpl implements TraceRetriver {
   
   private final Logger logger = LoggerFactory.getLogger(getClass());

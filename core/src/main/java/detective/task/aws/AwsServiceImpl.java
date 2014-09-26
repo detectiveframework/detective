@@ -2,7 +2,6 @@ package detective.task.aws;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.Protocol;
@@ -26,7 +25,7 @@ import com.amazonaws.services.sqs.AmazonSQSClient;
  * @author James Luo
  * @version 17/12/2012 5:28:42 PM
  */
-public class AwsServiceImpl implements InitializingBean, AwsService {
+public class AwsServiceImpl implements AwsService {
 
   private static Logger log = LoggerFactory.getLogger(AwsServiceImpl.class);
 
@@ -142,7 +141,6 @@ public class AwsServiceImpl implements InitializingBean, AwsService {
     this.secretKey = secretKey;
   }
 
-  @Override
   public void afterPropertiesSet() throws Exception {
     factory();
   }

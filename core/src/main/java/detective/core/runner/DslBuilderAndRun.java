@@ -7,13 +7,23 @@ import detective.core.Scenario;
 import detective.core.Story;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.exception.StoryFailException;
+import detective.core.filter.FilterChainFactory;
+import detective.core.filter.RunnerFilter;
+import detective.core.filter.RunnerFilterChain;
+import detective.core.services.DetectiveFactory;
 
 public class DslBuilderAndRun extends DslBuilder {
   
   //TODO James Global Variable here, refactor when have time
-  private static RunnerInterceptor interceptor = null;
-  public static void setInterceptor(RunnerInterceptor interceptor){
-    DslBuilderAndRun.interceptor = interceptor;
+  private static ThreadLocal<RunnerFilterChain<Story>> filterChainCurrentThread = new ThreadLocal<RunnerFilterChain<Story>>();
+  
+  /**
+   * Setup chain for current thread
+   * 
+   * @param chain
+   */
+  public static void setFilterChainCurrentThread(RunnerFilterChain<Story> chain){
+    filterChainCurrentThread.set(chain);
   }
   
   private static final Logger logger = LoggerFactory.getLogger(DslBuilderAndRun.class);
@@ -30,35 +40,25 @@ public class DslBuilderAndRun extends DslBuilder {
     return obj;
   }
   
+  @SuppressWarnings("unchecked")
   protected Object doFinishedBuilding(Story story){
     try {
-      if (interceptor != null){
-        boolean isContinue = interceptor.beforeRun(story);
-        if (! isContinue)
-          return story;
+      if (filterChainCurrentThread.get() == null){
+        setFilterChainCurrentThread((RunnerFilterChain<Story>)FilterChainFactory.ConfigReader.instanceFromConfigFile("runner.normal.filter_chain_factory").getChain());
       }
       
-      new SimpleStoryRunner().run(story);
-      boolean storyFailed = false;
-      Throwable error  = null;
-      for (Scenario s : story.getScenarios()){
-        if (!s.getSuccessed()){
-          storyFailed = true;
-          error = s.getError();
-          logger.error(error.getMessage(), error);
-        }
+      if (filterChainCurrentThread.get() != null){
+        RunnerFilterChain<Story> chain = filterChainCurrentThread.get();
+        chain.resetChainPosition();
+        chain.doFilter(story);        
       }
-      if (storyFailed && error != null)
-        throw new StoryFailException(story, error.getMessage(), error);
+    }catch (Exception e){
+      if (e instanceof StoryFailException)
+        throw (StoryFailException)e;
       else
-        logger.info("Story [" + story.getTitle() + "] ran successfully.");
-    } catch (StoryFailException e) {
-      throw e;
-    } catch (Throwable e){
-      throw new StoryFailException(story, e.getMessage(), e);
+        throw new StoryFailException(story, e.getMessage(), e);
     }
-    
-    
+      
     return story;
   }
 

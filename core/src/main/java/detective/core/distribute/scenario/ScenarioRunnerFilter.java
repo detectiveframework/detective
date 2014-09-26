@@ -1,46 +1,59 @@
-package detective.core.runner;
+package detective.core.distribute.scenario;
 
 import groovy.lang.Closure;
 import groovyx.gpars.dataflow.Promise;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import org.codehaus.groovy.runtime.GroovyCategorySupport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableMap;
 
 import detective.core.Parameters;
 import detective.core.Scenario;
 import detective.core.Scenario.Context;
 import detective.core.Story;
-import detective.core.StoryRunner;
 import detective.core.TestTask;
-import detective.core.distribute.Job;
 import detective.core.dsl.DslException;
 import detective.core.dsl.ParametersImpl;
-import detective.core.dsl.SharedDataPlaceHolder;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.dsl.table.Row;
 import detective.core.exception.StoryFailException;
+import detective.core.filter.RunnerFilter;
 import detective.core.filter.RunnerFilterChain;
+import detective.core.runner.ExpectClosureDelegate;
+import detective.core.runner.PropertyToStringDelegate;
+import detective.core.runner.WrongPropertyNameInDslException;
 import detective.core.services.DetectiveFactory;
 import detective.utils.StringUtils;
 
-public class SimpleStoryRunner implements StoryRunner{
-  
-  private static final Logger logger = LoggerFactory.getLogger(SimpleStoryRunner.class); 
-  
-  private final RunnerFilterChain filterChain;
-  
-  public SimpleStoryRunner(RunnerFilterChain chain){
-    this.filterChain = chain;
+public class ScenarioRunnerFilter implements RunnerFilter<ScenarioRunContext>{
+
+  @Override
+  public void doFilter(ScenarioRunContext context, RunnerFilterChain<ScenarioRunContext> chain) {
+    Story story = context.getJobStoryRunContext().getStory();
+    int scenarioIndex = story.getScenarios().indexOf(context.getScenario());
+    
+    if (scenarioIndex < 0)
+      return; //Can't find? we don't continue
+    
+    int expectedScenarioIndex = context.getJobStoryRunContext().getJob().getScenarioIndex();
+    if (expectedScenarioIndex != -1 && expectedScenarioIndex != scenarioIndex){
+      return;
+    }
+    
+    try {
+      runScenario(context.getScenario());
+    } catch (Throwable e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void runScenario(final Scenario scenario) throws Throwable {
+    if (scenario.getTasks().size() == 0){
+      throw new DslException("You need at least 1 task defined in task section, for example: scenario_1 \"scenario description\" {\n  task StockTaskFactory.stockManagerTask() \n  given \"a customer previously bought a black sweater from me\" {\n                  \n}");
+    }
+    
+    final Parameters datain = aggrigateAllIncomeParameters(scenario.getStory(), scenario);
+    runScenarioWithTask(scenario, scenario.getTasks(), datain);
   }
   
   private static Parameters aggrigateAllIncomeParameters(Story story, Scenario s){
@@ -55,60 +68,6 @@ public class SimpleStoryRunner implements StoryRunner{
     all.putAllUnwrappered(s.getEvents().getParameters());
 
     return all;
-  }
-
-  public void run(final Story story, final Job job) {
-    Map<Scenario, Promise<Object>> promises = new HashMap<Scenario, Promise<Object>>();
-    for (final Scenario scenario : story.getScenarios()){
-      try {
-        
-        Promise<Object> p = DetectiveFactory.INSTANCE.getThreadGroup().task(new Runnable(){
-
-          @Override
-          public void run() {
-              try {
-                runScenario(scenario);                
-              } catch (Throwable e) {
-                throw new StoryFailException(story, e.getMessage(), e);
-              }          
-          }});
-        
-        promises.put(scenario, p);
-        
-      } catch (Throwable e) {
-        makeScenarioFail(scenario, e);
-      }
-    }
-    
-    for (Scenario s : promises.keySet()){
-      Promise<Object> promise = promises.get(s);
-      try {
-        promise.join();
-        if (promise.isError()){
-          makeScenarioFail(s, promise.getError());
-        }else{
-          s.setSuccessed(true);
-        }          
-      } catch (Throwable e) {
-        makeScenarioFail(s, e);
-      }
-    }
-  }
-
-  private void makeScenarioFail(Scenario s, Throwable e) {
-    s.setSuccessed(false);
-    s.setError(e);
-    throw new StoryFailException(s.getStory(), e.getMessage(), e);
-    //logger.error("Scenario [" + s.getTitle() + "] in story [" + s.getStory().getTitle() + "] fail, " + e.getMessage(), e);
-  }
-
-  public void runScenario(final Scenario scenario) throws Throwable {
-    if (scenario.getTasks().size() == 0){
-      throw new DslException("You need at least 1 task defined in task section, for example: scenario_1 \"scenario description\" {\n  task StockTaskFactory.stockManagerTask() \n  given \"a customer previously bought a black sweater from me\" {\n                  \n}");
-    }
-    
-    final Parameters datain = aggrigateAllIncomeParameters(scenario.getStory(), scenario);
-    runScenarioWithTask(scenario, scenario.getTasks(), datain);
   }
  
   private void runScenarioWithTask(final Scenario scenario, final List<TestTask> task,
@@ -144,6 +103,13 @@ public class SimpleStoryRunner implements StoryRunner{
       datain = datain.clone();
       runScenario(scenario, task, datain);
     }
+  }
+  
+  private void makeScenarioFail(Scenario s, Throwable e) {
+    s.setSuccessed(false);
+    s.setError(e);
+    throw new StoryFailException(s.getStory(), e.getMessage(), e);
+    //logger.error("Scenario [" + s.getTitle() + "] in story [" + s.getStory().getTitle() + "] fail, " + e.getMessage(), e);
   }
 
   private Parameters prepareDataIn(Parameters datain, String[] headers, Row row) {
@@ -242,5 +208,4 @@ public class SimpleStoryRunner implements StoryRunner{
 //    }
 //    return keys;
 //  }
-
 }

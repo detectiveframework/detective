@@ -69,7 +69,7 @@ public class S3GetTask extends AbstractTask implements TestTask{
         break;
       }catch (AmazonS3Exception e){
         Detective.error("Error when read details from S3 for dynamic module:" + keyInfo, e);
-        break;
+        throw e;
       }catch (Throwable e){
         Detective.error("Error when read details from S3 for dynamic module, will wait 2 seconds and retry..."  + keyInfo, e);
         

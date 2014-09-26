@@ -38,7 +38,8 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-import org.springframework.http.HttpMethod;
+
+import com.amazonaws.HttpMethod;
 
 import detective.common.annotation.ThreadSafe;
 import detective.core.Parameters;
@@ -135,6 +136,11 @@ import detective.core.services.DetectiveFactory;
  */
 @ThreadSafe
 public class HttpClientTask extends AbstractTask{
+  
+  public enum HttpMethod {
+    GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, PATCH;
+}
+
 
   @Override
   protected void doExecute(Parameters config, Parameters output) {

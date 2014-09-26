@@ -51,7 +51,7 @@ public class DataSharedInStoryLevelTest {
     
     StoryRunner runner = new SimpleStoryRunner();
     
-    runner.run(story1);
+    runner.run(story1, null);
   }
 
 }

@@ -1,5 +1,7 @@
 package detective.common;
 
+import groovy.lang.GroovyClassLoader;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -34,7 +36,13 @@ public class ClassUtils {
       for (final String file : files) {
         if (file.endsWith(".class")) {
           try {
-            classes.add(Class.forName(pckgname + '.' + file.substring(0, file.length() - 6)));
+            String classname = pckgname + '.' + file.substring(0, file.length() - 6);
+            //GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());
+            //Class clazz = loader.loadClass(classname, true, false, true);
+            //classes.add(clazz);
+            //Class.forName(classname, true, ClassUtils.class.getClassLoader()).isAssignableFrom(groovy.lang.Script.class);
+            //Class.forName(classname, true, loader).getSuperclass() == "groovy.lang.Script";
+            classes.add(Class.forName(classname));
           } catch (final NoClassDefFoundError e) {
             // do nothing. this class hasn't been found by the
             // loader, and we don't care.
