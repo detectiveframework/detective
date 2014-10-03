@@ -26,100 +26,45 @@
 	<scm>
 		<url>https://github.com/detectiveframework/detective.git</url>
 	</scm>
- 
+
 	<dependencies>
-		<!-- 
+		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-aspects</artifactId> 
+			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
+			<artifactId>spring-core</artifactId> <version>${spring.version}</version> 
+			</dependency> <dependency> <groupId>org.springframework</groupId> <artifactId>spring-beans</artifactId> 
+			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
+			<artifactId>spring-oxm</artifactId> <version>${spring.version}</version> 
+			</dependency> <dependency> <groupId>org.springframework</groupId> <artifactId>spring-expression</artifactId> 
+			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
+			<artifactId>spring-context</artifactId> <version>${spring.version}</version> 
+			</dependency> <dependency> <groupId>org.springframework</groupId> <artifactId>spring-aop</artifactId> 
+			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
+			<artifactId>spring-tx</artifactId> <version>${spring.version}</version> </dependency> 
+			<dependency> <groupId>org.springframework</groupId> <artifactId>spring-orm</artifactId> 
+			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
+			<artifactId>spring-context-support</artifactId> <version>${spring.version}</version> 
+			</dependency> <dependency> <groupId>org.springframework</groupId> <artifactId>spring-jms</artifactId> 
+			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
+			<artifactId>spring-jdbc</artifactId> <version>${spring.version}</version> 
+			</dependency> <dependency> <groupId>org.springframework</groupId> <artifactId>spring-web</artifactId> 
+			<version>${spring.version}</version> </dependency> <dependency> <groupId>org.springframework</groupId> 
+			<artifactId>spring-webmvc</artifactId> <version>${spring.version}</version> 
+			</dependency> <dependency> <groupId>org.springframework</groupId> <artifactId>spring-test</artifactId> 
+			<version>${spring.version}</version> </dependency> -->
+
+		<!-- Careful about spark version, it will ship httpclient when we try to submit our tasks  -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aspects</artifactId>
-			<version>${spring.version}</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.4</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.3.4</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-oxm</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-expression</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-aop</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jms</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		 -->
 
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
@@ -145,11 +90,6 @@
 			<version>4.0.19.Final</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.3.4</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.spockframework</groupId>
@@ -181,10 +121,10 @@
 			<version>1.7.5</version>
 		</dependency>
 
-		<dependency> 
-			<groupId>org.slf4j</groupId> 
-			<artifactId>slf4j-log4j12</artifactId> 
-			<version>1.7.5</version> 
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
 		</dependency>
 
 		<dependency>
@@ -209,6 +149,12 @@
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>
 			<version>1.4.7</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>httpclient</artifactId>
+					<groupId>org.apache.httpcomponents</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -221,34 +167,45 @@
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>2.42.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-server</artifactId>
-			<version>2.42.2</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.mortbay.jetty</groupId>
-  					<artifactId>servlet-api-2.5</artifactId>
+					<artifactId>httpclient</artifactId>
+					<groupId>org.apache.httpcomponents</groupId>
 				</exclusion>
 				<exclusion>
+					<artifactId>selenium-htmlunit-driver</artifactId>
 					<groupId>org.seleniumhq.selenium</groupId>
-  					<artifactId>jetty-repacked</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<!-- <dependency> <groupId>org.seleniumhq.selenium</groupId> <artifactId>selenium-server</artifactId> 
+			<version>2.42.2</version> <exclusions> <exclusion> <groupId>org.mortbay.jetty</groupId> 
+			<artifactId>servlet-api-2.5</artifactId> </exclusion> <exclusion> <groupId>org.seleniumhq.selenium</groupId> 
+			<artifactId>jetty-repacked</artifactId> </exclusion> </exclusions> </dependency> -->
 
 		<dependency>
 			<groupId>com.github.detro</groupId>
 			<artifactId>phantomjsdriver</artifactId>
 			<version>1.2.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>httpclient</artifactId>
+					<groupId>org.apache.httpcomponents</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.spark</groupId>
 			<artifactId>spark-core_2.10</artifactId>
-			<version>1.0.2</version>
+			<version>1.1.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jets3t</artifactId>
+					<groupId>net.java.dev.jets3t</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
