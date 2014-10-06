@@ -15,6 +15,8 @@ public class DataSharedInStoryLevelTest {
 
   @Test
   public void test() {
+    //Comment by James
+    
     Story story1 = story() "Data Should able to shared between scenarios" {
       inOrderTo "share data between scenarios"
       asa "test designer"
