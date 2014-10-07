@@ -7,7 +7,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import detective.core.distribute.Job;
-import detective.core.distribute.JobCollector;
+import detective.core.distribute.collector.JobCollector;
 
 public class JobCollectorTest {
 

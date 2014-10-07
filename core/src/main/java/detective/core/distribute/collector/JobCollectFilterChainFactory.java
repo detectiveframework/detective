@@ -1,4 +1,4 @@
-package detective.core.distribute;
+package detective.core.distribute.collector;
 
 import java.util.ArrayList;
 import java.util.List;

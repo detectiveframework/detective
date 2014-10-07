@@ -1,4 +1,4 @@
-package detective.core.distribute;
+package detective.core.distribute.collector;
 
 import groovy.lang.Script;
 
@@ -9,6 +9,7 @@ import detective.common.ClassUtils;
 import detective.core.Detective;
 import detective.core.Scenario;
 import detective.core.Story;
+import detective.core.distribute.Job;
 import detective.core.filter.FilterChainFactory;
 import detective.core.filter.RunnerFilter;
 import detective.core.filter.RunnerFilterChain;

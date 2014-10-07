@@ -88,6 +88,7 @@ public class JobRunnerFilterImpl implements JobRunner {
   @SuppressWarnings("unchecked")
   private RunnerFilterChain<JobStoryRunContext> createFilterChain(){
     try {
+      //default detective.core.distribute.SparkJobRunnerFilterChainFactory
       FilterChainFactory factory = FilterChainFactory.ConfigReader.instanceFromConfigFile("runner.spark_running.filter_chain_factory");
       return (RunnerFilterChain<JobStoryRunContext>)factory.getChain();
     } catch (Exception e) {

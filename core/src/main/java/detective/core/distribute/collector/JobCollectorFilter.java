@@ -1,4 +1,4 @@
-package detective.core.distribute;
+package detective.core.distribute.collector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import detective.core.Detective;
 import detective.core.Scenario;
 import detective.core.Story;
+import detective.core.distribute.Job;
+import detective.core.distribute.JobFactory;
 import detective.core.exception.StoryFailException;
 import detective.core.filter.RunnerFilter;
 import detective.core.filter.RunnerFilterChain;

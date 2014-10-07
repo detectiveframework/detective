@@ -9,6 +9,7 @@ import org.apache.spark.api.java.function.VoidFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import detective.core.distribute.collector.JobCollector;
 import detective.core.services.DetectiveFactory;
 
 public class SparkDriver {
