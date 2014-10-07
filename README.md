@@ -1,5 +1,7 @@
 # The Bug Detective
 
+[Visit Our Documentation Page](http://detectiveframework.github.io/detective)
+
 ## Introduction
 
 * A DSL with pure groovy, no additional compile process required
