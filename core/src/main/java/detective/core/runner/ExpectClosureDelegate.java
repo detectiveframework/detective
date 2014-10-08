@@ -87,6 +87,14 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
     this.getValues().putAllUnwrappered(dataReturned);
   }
   
+  public void runtask(List<?> tasks){
+    for (Object item : tasks){
+      if (item instanceof TestTask){
+        runtask((TestTask)item);
+      }
+    }
+  }
+  
   public List<Row> table(Closure<?> c){
     List<Row> rows = TableParser.asListOfRows(values, c);
     if (rows.size() < 2)

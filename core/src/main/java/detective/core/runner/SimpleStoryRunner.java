@@ -135,7 +135,8 @@ public class SimpleStoryRunner implements StoryRunner{
         Parameters dataToPassIntoExpectClosure = parameterForWholeScenario;
         
         expectClosure.setDelegate(new ExpectClosureDelegate(dataToPassIntoExpectClosure));
-        expectClosure.setResolveStrategy(Closure.DELEGATE_ONLY);
+        //expectClosure.setResolveStrategy(Closure.DELEGATE_ONLY);
+        expectClosure.setResolveStrategy(Closure.DELEGATE_FIRST);
         
         try {
           //GroovyCategorySupport.use(ExpectObjectWrapper.class, scenario.getOutcomes().getExpectClosure());
