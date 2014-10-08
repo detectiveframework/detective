@@ -1,17 +1,13 @@
 package detective.core.dsl;
 
+import groovy.lang.GroovyObjectSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import detective.core.Scenario;
 import detective.core.Story;
-import detective.core.TestTask;
-import detective.core.Scenario.Context;
-import detective.core.Scenario.Events;
-import detective.core.Scenario.Outcomes;
-import groovy.lang.GroovyObjectSupport;
+import detective.core.dsl.table.Row;
 
 /**
  * <pre>
@@ -32,23 +28,24 @@ public class SimpleScenario extends GroovyObjectSupport implements Scenario{
   private Throwable error;
   private final String title;
   private final Story story;
-  private final List<SimpleContext> contexts = new ArrayList<SimpleContext>();
-  private final SimpleEvents events;
-  private final SimpleOutcomes outcomes = new SimpleOutcomes();
-  private final List<TestTask> tasks = new ArrayList<TestTask>();
+  
+  private final List<Step> steps = new ArrayList<Step>();
+  
+  private final List<Row> scenarioTable = new ArrayList<Row>();
   
   private boolean isImmutable = false;
 
   public SimpleScenario(Story story, String title){
     this.story = story;
-    events = new SimpleEvents(this);
     this.title = title;
   }
 
+  
+
   @Override
   public String toString() {
-    return id + " \"" + title + "\"\n   tasks=" + tasks + ",\n   give " + contexts
-        + "}\n   when " + events + "\n   then " + outcomes + "";
+    return "SimpleScenario [id=" + id + ", title=" + title + ", scenarioTable=" + scenarioTable
+        + ", steps=" + steps + "]";
   }
 
   public Story getStory() {
@@ -58,41 +55,11 @@ public class SimpleScenario extends GroovyObjectSupport implements Scenario{
   public String getTitle() {
     return title;
   }
-
-  public List<? extends Context> getContexts() {
-    return ImmutableList.copyOf(this.contexts);
-  }
   
-  public void addContext(SimpleContext context){
-    checkImmutable();
-    
-    this.contexts.add(context);
-  }
-
   private void checkImmutable() {
     if (isImmutable)
       throw new DslException("Scenario is immuable.");
   }
-
-  public Events getEvents() {
-    return this.events;
-  }
-
-  public Outcomes getOutcomes() {
-    return this.outcomes;
-  }
-  
-  public List<TestTask> getTasks() {
-    return ImmutableList.copyOf(tasks);
-  }
-  
-  public SimpleScenario addTask(TestTask task){
-    checkImmutable();
-    
-    this.tasks.add(task);
-    return this;
-  }
-  
   
   public String getId() {
     return id;
@@ -124,6 +91,18 @@ public class SimpleScenario extends GroovyObjectSupport implements Scenario{
     this.error = exception;
   }
 
+  @Override
+  public List<Step> getSteps() {
+    return steps;
+  }
 
+  public void addStep(Step step){
+    steps.add(step);
+  }
+
+  @Override
+  public List<Row> getScenarioTable() {
+    return scenarioTable;
+  }
   
 }

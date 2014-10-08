@@ -11,6 +11,7 @@ import detective.core.dsl.SharedDataPlaceHolder;
 import detective.core.dsl.SharedVariable
 
 import static detective.core.Matchers.*;
+import detective.core.Detective;
 
 import detective.core.TestTaskFactory;
 import detective.core.dsl.DslException
@@ -113,18 +114,16 @@ public class DslBuilderTest {
     Scenario s0 = story.scenarios.get(0);
     Assert.assertThat(s0.getId(), equalTo("scenario_refund"));
     Assert.assertThat(s0.getTitle(), equalTo("Refunded items should be returned to stock"));
-    Assert.assertThat(s0.getTasks().size(), equalTo(1));
-    Assert.assertThat(s0.getTasks().get(0).getClass().getName(), equalTo("detective.core.testdsl.stock.SweaterStockManagerTask"));
-    Assert.assertThat(s0.getContexts().get(0).title, equalTo("a customer previously bought a black sweater from me"));
-    Assert.assertThat(s0.getContexts().get(0).getParameters().size(), equalTo(0));
-    Assert.assertThat(s0.getContexts().get(1).title, equalTo("I currently have three black sweaters left in stock"));
-    Assert.assertThat(s0.getContexts().get(1).getParameters().size(), equalTo(1));
-    Assert.assertThat(s0.getContexts().get(1).getParameters().get("sweater.black"), equalTo(3));
     
-    //When
-    Assert.assertThat(s0.getEvents().title, equalTo("he returns the sweater for a refund"));
-    Assert.assertThat(s0.getEvents().getParameters().size(), equalTo(1));
-    Assert.assertThat(s0.getEvents().getParameters().get("sweater.refund.black"), equalTo(1));
+    Assert.assertThat(s0.getSteps().size(), equalTo(4));
+    Assert.assertThat(s0.getSteps().get(0).getTitle(), equalTo("a customer previously bought a black sweater from me"));
+    Assert.assertThat(s0.getSteps().get(0).getExpectClosure(), is(notNullValue()));
+    Assert.assertThat(s0.getSteps().get(1).getTitle(), equalTo("I currently have three black sweaters left in stock"));
+    Assert.assertThat(s0.getSteps().get(1).getExpectClosure(), is(notNullValue()));
+    Assert.assertThat(s0.getSteps().get(2).getTitle(), equalTo("he returns the sweater for a refund"));
+    Assert.assertThat(s0.getSteps().get(2).getExpectClosure(), is(notNullValue()));
+    Assert.assertThat(s0.getSteps().get(3).getTitle(), equalTo("I should have four black sweaters in stock"));
+    Assert.assertThat(s0.getSteps().get(3).getExpectClosure(), is(notNullValue()));
     
     Assert.assertThat(story.scenarios.get(1).getId(), equalTo("scenario_replace"));
     Assert.assertThat(story.scenarios.get(1).getTitle(), equalTo("Replaced items should be returned to stock"));
@@ -134,7 +133,7 @@ public class DslBuilderTest {
   @Test
   public void dslBuilderTestParameterIssue(){
     try {
-      Story story = story() "parameter not support sub . " {
+      Detective.story() "parameter not support sub . " {
         inOrderTo "remove the ambiguousness of proeprty access operation . "
         asa "detective designer"
         iwantto "stop my tester and developer running into this ambiguousness"
@@ -150,7 +149,7 @@ public class DslBuilderTest {
           }
         }
       }
-    } catch (DslException e){
+    } catch (Exception e){
       assert e.getMessage().contains("ambiguousness");
       return;
     }
@@ -161,7 +160,7 @@ public class DslBuilderTest {
   @Test
   public void dslBuilderTestParameterIssue1(){
     try {
-      Story story = story() "parameter not support sub . " {
+      Detective.story() "parameter not support sub . " {
         inOrderTo "remove the ambiguousness of proeprty access operation . "
         asa "detective designer"
         iwantto "stop my tester and developer running into this ambiguousness"
@@ -169,15 +168,15 @@ public class DslBuilderTest {
         forexample "for example login.username if a valid identifier for us, but when you add login.username.lastname, we have no idea it is going to access a property from identifier login.username or it is a new identifier. "
         
         scenario_B "define login.username.lastname first and login.username" {
-          task TestTaskFactory.stockManagerTask()
-          
           given "a customer previously bought a black sweater from me" {
             login.username.lastname = "lastname"
-                login.username = "username"
+            login.username = "username"
+            
+            runtask TestTaskFactory.stockManagerTask()
           }
         }
       }
-    } catch (DslException e){
+    } catch (Exception e){
       assert e.getMessage().contains("ambiguousness");
       return;
     }

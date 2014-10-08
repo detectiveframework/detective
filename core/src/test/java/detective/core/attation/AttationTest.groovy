@@ -18,11 +18,11 @@ public class AttationTest {
     story() "Two Scenarios should able to run parallel and do that auto depends" {
 
       share { 
-        //echotask.task1  //cause dead lock
+        echotask.task1  //cause dead lock
         
         sharedata.changedin.givesection
         sharedata.changedin.whensection
-        //sharedata.changedin.thensection    //this will cause the thread pause all the time
+        sharedata.changedin.thensection    //this will cause the thread pause all the time
       }
 
       scenario_echo1 "echo1" {

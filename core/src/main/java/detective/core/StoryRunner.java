@@ -6,7 +6,7 @@ public interface StoryRunner {
 
   void run(Story story, final Job job);
   
-  void runScenario(final Scenario scenario) throws Throwable;
+  void runScenario(final Scenario scenario, Parameters config) throws Throwable;
   
   
   

@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableMap;
 
 import detective.core.Parameters;
 import detective.core.Scenario;
-import detective.core.Scenario.Context;
+import detective.core.Scenario.Step;
 import detective.core.Story;
 import detective.core.StoryRunner;
 import detective.core.TestTask;
@@ -42,20 +42,6 @@ public class SimpleStoryRunner implements StoryRunner{
   public SimpleStoryRunner(RunnerFilterChain chain){
     this.filterChain = chain;
   }
-  
-  private static Parameters aggrigateAllIncomeParameters(Story story, Scenario s){
-    Parameters all = new ParametersImpl();
-
-    Parameters shared = story.getSharedDataMap();
-    all.putAllUnwrappered(shared);
-    
-    for (Context context : s.getContexts()){
-      all.putAllUnwrappered(context.getParameters());
-    }
-    all.putAllUnwrappered(s.getEvents().getParameters());
-
-    return all;
-  }
 
   public void run(final Story story, final Job job) {
     Map<Scenario, Promise<Object>> promises = new HashMap<Scenario, Promise<Object>>();
@@ -67,7 +53,8 @@ public class SimpleStoryRunner implements StoryRunner{
           @Override
           public void run() {
               try {
-                runScenario(scenario);                
+                //runScenario(scenario);
+                runScenario(scenario, new ParametersImpl());
               } catch (Throwable e) {
                 throw new StoryFailException(story, e.getMessage(), e);
               }          
@@ -101,23 +88,13 @@ public class SimpleStoryRunner implements StoryRunner{
     throw new StoryFailException(s.getStory(), e.getMessage(), e);
     //logger.error("Scenario [" + s.getTitle() + "] in story [" + s.getStory().getTitle() + "] fail, " + e.getMessage(), e);
   }
-
-  public void runScenario(final Scenario scenario) throws Throwable {
-    if (scenario.getTasks().size() == 0){
-      throw new DslException("You need at least 1 task defined in task section, for example: scenario_1 \"scenario description\" {\n  task StockTaskFactory.stockManagerTask() \n  given \"a customer previously bought a black sweater from me\" {\n                  \n}");
-    }
+  
+  //Handle Scenario Role
+  public void runScenario(final Scenario scenario, Parameters config) throws Throwable{
+    Parameters datain = new ParametersImpl(config);
     
-    final Parameters datain = aggrigateAllIncomeParameters(scenario.getStory(), scenario);
-    runScenarioWithTask(scenario, scenario.getTasks(), datain);
-  }
- 
-  private void runScenarioWithTask(final Scenario scenario, final List<TestTask> task,
-      Parameters datain) throws Throwable {
-    //process all datatables
-    List<Row> datatable = (List<Row>)datain.get(DslBuilder.DATATABLE_PARAMNAME);
-    if (datatable != null){
-      datain.remove(DslBuilder.DATATABLE_PARAMNAME);
-      
+    List<Row> datatable = scenario.getScenarioTable();
+    if (datatable != null && datatable.size() > 1){
       String[] headers = checkGetFirstRow(datatable);
       List<Promise<Object>> promises = new ArrayList<Promise<Object>>();
       for (int i = 1; i < datatable.size(); i++){
@@ -127,7 +104,7 @@ public class SimpleStoryRunner implements StoryRunner{
         final Parameters datainWithRow = datain.clone();
         Promise<Object> p = DetectiveFactory.INSTANCE.getThreadGroup().task(new Runnable(){
           public void run() {
-            runScenario(scenario, task, datainWithRow);
+            runScenarioNew(scenario, datainWithRow);
           }
         });        
         promises.add(p);
@@ -142,7 +119,46 @@ public class SimpleStoryRunner implements StoryRunner{
       }
     }else{
       datain = datain.clone();
-      runScenario(scenario, task, datain);
+      runScenarioNew(scenario, datain);
+    }
+  }
+  
+  public void runScenarioNew(final Scenario scenario, Parameters datain) {
+    //Shared data need join into the running user code so that they can change it
+    Parameters parameterForWholeScenario = new ParametersImpl(scenario.getStory().getSharedDataMap());
+    parameterForWholeScenario.putAll(datain);
+    
+    for (Step step : scenario.getSteps()){
+      if (step.getExpectClosure() != null){
+        Closure<?> expectClosure = (Closure)step.getExpectClosure().clone();
+        
+        Parameters dataToPassIntoExpectClosure = parameterForWholeScenario;
+        
+        expectClosure.setDelegate(new ExpectClosureDelegate(dataToPassIntoExpectClosure));
+        expectClosure.setResolveStrategy(Closure.DELEGATE_ONLY);
+        
+        try {
+          //GroovyCategorySupport.use(ExpectObjectWrapper.class, scenario.getOutcomes().getExpectClosure());
+          expectClosure.call();
+        } catch (WrongPropertyNameInDslException e) { 
+          StringBuilder sb = new StringBuilder(e.getPropertyName());
+          sb.append(" not able to found in properties list, do you mean : ")
+          .append(StringUtils.getBestMatch(e.getPropertyName(), dataToPassIntoExpectClosure.keySet()).or("notAbleToFoundBestMatchProperties"))
+          .append("\nthe avaiable properties we got:")
+          .append(dataToPassIntoExpectClosure.keySet())
+          .append("\nHere is the properties and the values for your reference:\n")
+          .append(dataToPassIntoExpectClosure.toString());
+          throw new DslException(sb.toString(), e);
+        } catch (java.lang.AssertionError e){
+          throw new detective.core.AssertionError(scenario.getStory(), scenario, step, e);
+        } catch (groovy.lang.MissingPropertyException e){
+          throw new DslException(e.getMessage() +  ". Please note we have a know ambiguousness for parent child relationship, for example login.username is a valid identifier for us, but when you add login.username.lastname, we have no idea it is going to access a property from identifier login.username or it is a new identifier.", e);
+        }
+        
+        //this.updateSharedData(scenario, dataToPassIntoExpectClosure);
+      }else{
+        throw new DslException("There is no \"then\" section in DSL scenario part. \n " + scenario.toString());
+      }
     }
   }
 
@@ -167,53 +183,13 @@ public class SimpleStoryRunner implements StoryRunner{
     }
     return headers.toArray(new String[]{});
   }
-  
-  private void runScenario(Scenario scenario, List<TestTask> tasks, Parameters datain) {
-    Parameters dataout = new ParametersImpl();
-    datain = datain.clone();
-    for (TestTask task : tasks){
-      Parameters dataReturned = task.execute(datain);
-      
-      dataout.putAllUnwrappered(dataReturned);  
-      datain.putAllUnwrappered(dataReturned);
-      
-      updateSharedData(scenario, dataout);
-    }
-    
-    if (scenario.getOutcomes().getExpectClosure() != null){
-      Closure<?> expectClosure = (Closure)scenario.getOutcomes().getExpectClosure().clone();
-      
-      //Shared data need join into the running user code so that they can change it
-      Parameters dataToPassIntoExpectClosure = combineSharedAndInAndOut(scenario.getStory().getSharedDataMap(), datain, dataout);
-      
-      expectClosure.setDelegate(new ExpectClosureDelegate(dataToPassIntoExpectClosure));
-      expectClosure.setResolveStrategy(Closure.DELEGATE_ONLY);
-      
-      try {
-        //GroovyCategorySupport.use(ExpectObjectWrapper.class, scenario.getOutcomes().getExpectClosure());
-        expectClosure.call();
-      } catch (WrongPropertyNameInDslException e) {
-        StringBuilder sb = new StringBuilder(e.getPropertyName());
-        sb.append(" not able to found in properties list, do you mean : ")
-        .append(StringUtils.getBestMatch(e.getPropertyName(), dataToPassIntoExpectClosure.keySet()).or("notAbleToFoundBestMatchProperties"))
-        .append("\nthe avaiable properties we got:")
-        .append(dataToPassIntoExpectClosure.keySet())
-        .append("\nHere is the properties and the values for your reference:\n")
-        .append(dataToPassIntoExpectClosure.toString());
-        throw new DslException(sb.toString(), e);
-      } catch (java.lang.AssertionError e){
-        throw new detective.core.AssertionError(scenario.getStory(), scenario, scenario.getOutcomes(), e);
-      }
-    }else{
-      throw new DslException("There is no \"then\" section in DSL scenario part. \n " + scenario.toString());
-    }
-  }
 
   private void updateSharedData(Scenario scenario, Parameters dataout) {
     Story story = scenario.getStory();
     Set<String> sharedDataKeys = story.getSharedDataMap().keySet();
+    Set<String> unbindShareVarKeys = dataout.getUnbindShareVarKeys();
     for (String key : sharedDataKeys){
-      if (dataout.containsKey(key))
+      if (!unbindShareVarKeys.contains(key) && dataout.containsKey(key))
        story.putSharedData(key, dataout.get(key));
     }
   }
@@ -230,17 +206,5 @@ public class SimpleStoryRunner implements StoryRunner{
     p.putAllUnwrappered(dataout);
     return p;
   }
-  
-//  private Set<String> getPlaceHolderKeys(Story story){
-//    Set<String> keys = new HashSet<String>();
-//    Parameters parameters = story.getSharedDataMap();
-//    for (String key : parameters.keySet()){
-//      Object value = parameters.get(key);
-//      if (value != null && value.equals(SharedDataPlaceHolder.INSTANCE)){
-//        keys.add(key);
-//      }
-//    }
-//    return keys;
-//  }
 
 }

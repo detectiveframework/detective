@@ -5,25 +5,11 @@ import groovy.lang.Closure;
 import java.util.List;
 import java.util.Map;
 
+import detective.core.dsl.table.Row;
+
 public interface Scenario extends Titled{
   
-  public interface Context extends Titled{
-    /**
-     * @return immutable map for parameters;
-     */
-    Parameters getParameters();
-  }
-  
-  public interface Events extends Context{
-    
-  }
-  
-  public interface Outcomes extends Titled{
-    /**
-     * @return immutable outcomes
-     */
-    Map<String, Object> getOutcomes();
-    
+  public interface Step extends Titled{
     Closure<?> getExpectClosure();
   }
   
@@ -37,12 +23,8 @@ public interface Scenario extends Titled{
   
   Story getStory();
   
-  List<TestTask> getTasks();
+  List<Row> getScenarioTable();
   
-  List<? extends Context> getContexts();
-  
-  Events getEvents();
-
-  Outcomes getOutcomes();
+  List<Step> getSteps();
 
 }

@@ -1,14 +1,26 @@
 package detective.core.runner;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 
 import detective.core.Parameters;
+import detective.core.Scenario;
+import detective.core.Story;
+import detective.core.TestTask;
 import detective.core.dsl.DslException;
+import detective.core.dsl.ParametersImpl;
+import detective.core.dsl.builder.DslBuilder;
+import detective.core.dsl.table.Row;
+import detective.core.dsl.table.TableParser;
+import groovy.lang.Closure;
 import groovy.util.Expando;
 
 /**
@@ -63,4 +75,24 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
     return new ExpectClosureDelegate(parent, propertyName, values);
   }
   
+  public void runtask(Object obj){
+    throw new DslException("implement interface TestTask and your class is " + obj.getClass().getName());
+  }
+  
+  public void runtask(TestTask task){
+    Parameters datain = this.getValues();
+    
+    Parameters dataReturned = task.execute(datain);
+    
+    this.getValues().putAllUnwrappered(dataReturned);
+  }
+  
+  public List<Row> table(Closure<?> c){
+    List<Row> rows = TableParser.asListOfRows(values, c);
+    if (rows.size() < 2)
+      throw new DslException("datatable required at least 2 rows, first row for column names, the rest for the data.");
+    
+    return rows;
+  }
+ 
 }

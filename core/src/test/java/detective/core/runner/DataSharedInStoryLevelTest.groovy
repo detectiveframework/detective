@@ -25,26 +25,24 @@ public class DataSharedInStoryLevelTest {
       shared "shared"
       
       scenario "aa" {
-        task TestTaskFactory.echo()
-      
         given "shared data as a String Shared" {
           parameter1 = "Shared"
         }
         
         then "parameter should send back"{
+          runtask TestTaskFactory.echo()
           echotask.parameter1 << equalTo("Shared")
           echotask.parameter1 << equalTo(parameter1)
         }
       }
       
       scenario "echo2" {
-        task TestTaskFactory.echo()
-      
         given "shared data as a String" {
           parameter1 = "b"
         }
         
         then "parameter should send back"{
+          runtask TestTaskFactory.echo()
           echotask.parameter1 << equalTo("b")
           echotask.parameter1 << equalTo(parameter1)
         }

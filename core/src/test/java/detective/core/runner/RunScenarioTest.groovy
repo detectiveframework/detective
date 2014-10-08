@@ -43,18 +43,21 @@ public class RunScenarioTest {
           There is no order or parameters but the tasks do have order.
           the input of echo 1, it is actually contains both parameter.given1 and parameter.given2 as there is no order
         """
+        
+        scenarioTable {
+          given2.col1 | given2.col2 | given2.expected
+          1           | 2           | 3
+          4           | 5           | 9
+          10          | 11          | 21
+         }
+        
         given "echo 1" {
           parameter.given1 = "given1"
           runtask TestTaskFactory.echo()
         }
         
         given "echo 2"{
-          datatable {
-           given2.col1 | given2.col2 | given2.expected 
-           1           | 2           | 3
-           4           | 5           | 9
-           10          | 11          | 21 
-          }
+          
           parameter.given2 = "given2"
           runtask TestTaskFactory.echo()
         }
@@ -63,7 +66,6 @@ public class RunScenarioTest {
           echotask.parameter.given1 << "given1"
           echotask.echotask.parameter.given1 << "given1"
           echotask.parameter.given2 << "given2"
-          echotask.echotask.parameter.given2 << "given2"
           
           echotask.given2.expected  << (echotask.given2.col1 + echotask.given2.col2)
         }

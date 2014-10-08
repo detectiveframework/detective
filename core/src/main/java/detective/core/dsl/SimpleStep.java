@@ -7,10 +7,9 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import detective.core.Scenario.Outcomes;
+import detective.core.Scenario.Step;
 
-public class SimpleOutcomes implements Outcomes{
-  private Map<String, Object> outcomes = new HashMap<String, Object>(); 
+public class SimpleStep implements Step{
   private String title;
   private Closure<?> expectClosure;
   
@@ -22,17 +21,9 @@ public class SimpleOutcomes implements Outcomes{
     this.title = title;
   }
 
-  public Map<String, Object> getOutcomes() {
-    return ImmutableMap.copyOf(outcomes);
-  }
-  
-  public void addOutcomes(String key, Object value){
-    this.outcomes.put(key, value);
-  }
-
   @Override
   public String toString() {
-    return "\"" + title + "\" {\n      outcomes {" + outcomes + "}\n      }";
+    return "\"" + title + "\"\n";
   }
 
   public void setExpectClosure(Closure<?> expectClosure) {

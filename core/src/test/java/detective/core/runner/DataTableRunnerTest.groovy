@@ -39,16 +39,18 @@ public class DataTableRunnerTest {
       sothat "..."
       
       scenario_refund "Refunded items should be returned to stock" {
-        task TestTaskFactory.stockManagerTask()
-      
+        
+        scenarioTable {
+          sweater.black | sweater.refund.black  | expect.sweater.balck
+          3             | 1                     | 4
+          1             | 10                    | 11
+          100           | 50                    | 150
+        }
+        
         given "a list of black sweaters left in stock and customer returns the sweaters for a refund" {
-          datatable {
-            sweater.black | sweater.refund.black  | expect.sweater.balck
-            3             | 1                     | 4
-            1             | 10                    | 11
-            100           | 50                    | 150
-          }
           sweater.blue = 0
+          
+          runtask TestTaskFactory.stockManagerTask()
         }
         
         then "I should have expcected black sweaters in stock"{
@@ -67,15 +69,15 @@ public class DataTableRunnerTest {
       }
             
       scenario_refund "Refunded items should be returned to stock" {
-        task TestTaskFactory.stockManagerTask()
-      
+        scenarioTable {
+          sweater.black | sweater.refund.black  | expect.sweater.balck  | shared
+          3             | 1                     | 4                     | shared.data1
+          100           | 50                    | 150                   | shared.data1
+        }
+        
         given "read a shared data in given section shoudn't pause the parser thread" {
-          datatable {
-            sweater.black | sweater.refund.black  | expect.sweater.balck  | shared
-            3             | 1                     | 4                     | shared.data1
-            100           | 50                    | 150                   | shared.data1
-          }
           sweater.blue = 0
+          runtask TestTaskFactory.stockManagerTask()
         }
         
         then "I should have expcected black sweaters in stock"{
@@ -94,25 +96,23 @@ public class DataTableRunnerTest {
       sothat "..."
       
       scenario_refund "Refunded items should be returned to stock" {
-        task TestTaskFactory.stockManagerTask()
+        scenarioTable {
+          sweater.black | sweater.refund.black  | expect.sweater.balck
+          3             | 1                     | 4
+          1             | 10                    | 2
+          100           | 50                    | 101
+        }
       
         given "a list of black sweaters left in stock and customer returns the sweaters for a refund" {
-          expect.sweater.balck = "expected.name.here"  //This will replace the table header
-          datatable {            
-            sweater.black | sweater.refund.black  | expect.sweater.balck
-            3             | 1                     | 4
-            1             | 10                    | 11
-            100           | 50                    | 150
-          }
           sweater.blue = 0
-          sweater.refund.black = 1 //Data Table always overwrite individual parameter
+          sweater.refund.black = 1 //will overwrite table
+          
+          runtask TestTaskFactory.stockManagerTask()
         }
         
         then "I should have expected black sweaters in stock"{
-          expect.sweater.balck << equalTo("expected.name.here")
-          sweater.black << equalTo(expected.name.here)  //Working as this is the real parameter name in data table
-          
-          //sweater.black << equalTo(expect.sweater.balck)  //not working as expect.sweater.balck = "expected.name.here"          
+          expect.sweater.balck << equalTo(expect.sweater.balck)
+          sweater.black << equalTo(expect.sweater.balck)  //Working as this is the real parameter name in data table
         }
       }
     }
@@ -124,33 +124,30 @@ public class DataTableRunnerTest {
       inOrderTo "generate a lot of data table records"
       
       scenario_refund "Refunded items should be returned to stock" {
-        task TestTaskFactory.stockManagerTask()
+        scenarioTable {
+          sweater.black | sweater.refund.black  | expect.sweater.balck
+          3             | 1                     | 4
+          1             | 10                    | 11
+          100           | 50                    | 150
+        }
+        
+        (1..200).each { number ->
+          scenarioTable {
+            sweater.black | sweater.refund.black  | expect.sweater.balck
+            number        | 2                     | number + 2
+          }
+        }
       
         given "a list of black sweaters left in stock and customer returns the sweaters for a refund" {
-          expect.sweater.balck = "expected.name.here"  //This will replace the table header
-          
-          datatable {
-            sweater.black | sweater.refund.black  | expect.sweater.balck
-            3             | 1                     | 4
-            1             | 10                    | 11
-            100           | 50                    | 150
-          }
-          
-          (1..200).each { number ->
-            datatable {
-              sweater.black | sweater.refund.black  | expect.sweater.balck
-              number        | 1                     | number + 1
-            }
-          }
-          
           sweater.blue = 0
-          sweater.refund.black = 1 //Data Table always overwrite individual parameter
+          //sweater.refund.black = 1 //Data Table always overwrite individual parameter
+          
+          runtask TestTaskFactory.stockManagerTask()
         }
         
         then "I should have expected black sweaters in stock"{
-          println Thread.currentThread().getName() + " sweater.black=${sweater.black} sweater.black=${sweater.black} sweater.black=${sweater.black} sweater.black=${sweater.black} sweater.refund.black = ${sweater.refund.black}  expected.name.here = ${expected.name.here} Done, ${sweater.black} + ${sweater.refund.black} = ${expected.name.here}"
-          expect.sweater.balck << equalTo("expected.name.here")
-          sweater.black << equalTo(expected.name.here)  //Working as this is the real parameter name in data table
+          println Thread.currentThread().getName() + " sweater.black=${sweater.black} sweater.refund.black = ${sweater.refund.black}  expect.sweater.balck = ${expect.sweater.balck} Done, ${sweater.black} + ${sweater.refund.black} = ${expect.sweater.balck}"
+          sweater.black << equalTo(expect.sweater.balck)  
         }
       }
     }
@@ -166,23 +163,21 @@ public class DataTableRunnerTest {
         sothat "..."
         
         scenario_refund "Refunded items should be returned to stock" {
-          task TestTaskFactory.stockManagerTask()
+          scenarioTable {
+            sweater.black | sweater.refund.black  | expect.sweater.balck
+            3             | 1                     | 4
+            1             | 10                    | 11
+            100           | 50                    | 150
+          }
+          
+          scenarioTable {
+            ColumnIsNotSame | sweater.refund.black  | expect.sweater.balck
+            3             | 1                     | 4
+            1             | 10                    | 11
+            100           | 50                    | 150
+          }
         
           given "I currently have black sweaters left in stock and customer returns the sweaters for a refund" {
-            datatable {
-              sweater.black | sweater.refund.black  | expect.sweater.balck
-              3             | 1                     | 4
-              1             | 10                    | 11
-              100           | 50                    | 150
-            }
-            
-            datatable {
-              ColumnIsNotSame | sweater.refund.black  | expect.sweater.balck
-              3             | 1                     | 4
-              1             | 10                    | 11
-              100           | 50                    | 150
-            }
-            
             sweater.blue = 0
           }
           
@@ -209,13 +204,14 @@ public class DataTableRunnerTest {
         sothat "..."
         
         scenario_refund "Refunded items should be returned to stock" {
-          task TestTaskFactory.stockManagerTask()
+          scenarioTable {
+            sweater.black | sweater.refund.black  | expect.sweater.balck
+          }
         
           given "I currently have black sweaters left in stock and customer returns the sweaters for a refund" {
-            datatable {
-              sweater.black | sweater.refund.black  | expect.sweater.balck
-            }
             sweater.blue = 0
+            
+            runtask TestTaskFactory.stockManagerTask()
           }
           
           then "I should have four black sweaters in stock"{

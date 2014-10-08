@@ -171,7 +171,8 @@ public class ParametersImpl implements Parameters{
       throw new ImmutableElementException("Parameter is immutable, you may try to setup a parameter which comes from global settings.");
     
     for (String key : parameters.keySet()){
-       map.put(key, parameters.getUnwrappered(key));
+       //map.put(key, parameters.getUnwrappered(key));
+      this.put(key, parameters.getUnwrappered(key));
     }
   }
 

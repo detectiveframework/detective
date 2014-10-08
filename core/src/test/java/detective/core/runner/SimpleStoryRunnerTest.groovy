@@ -37,8 +37,6 @@ public class SimpleStoryRunnerTest {
       sothat "..."
       
       scenario_refund "Refunded items should be returned to stock" {
-        task TestTaskFactory.stockManagerTask()
-      
         given "a customer previously bought a black sweater from me" {
           
         }
@@ -50,6 +48,7 @@ public class SimpleStoryRunnerTest {
         
         when "he returns the sweater for a refund" {
           sweater.refund.black = 1
+          runtask TestTaskFactory.stockManagerTask()
         }
         
         then "I should have four black sweaters in stock"{
@@ -74,8 +73,6 @@ public class SimpleStoryRunnerTest {
       }
       
       scenario "data should able to share between scenario" {
-        task TestTaskFactory.echo()
-        
         given "shared data above"{
           
         }
@@ -83,6 +80,8 @@ public class SimpleStoryRunnerTest {
           shared.placeholder = "Place Holder assigned in scenario"
         }
         then "Shared data should updated and should able to exam"{
+          runtask TestTaskFactory.echo()
+          
           sharedData1 << equalTo("This Is Shared Data1")
           echotask.sharedData1 << equalTo("This Is Shared Data1")
           shared.data2 << equalTo("shared data with property format")
@@ -108,9 +107,9 @@ public class SimpleStoryRunnerTest {
       }
       
       before "login" {
-        task TestTaskFactory.echo()
         given "setup shared data"{
           loggedin = "James Luo"
+          runtask TestTaskFactory.echo()
         }
         then "shared data should updated" {
           loggedin << equalTo("James Luo")
@@ -118,16 +117,13 @@ public class SimpleStoryRunnerTest {
       }
       
       after "shutdown" {
-        task TestTaskFactory.echo()
-        
         then "shared data should updated" {
+          runtask TestTaskFactory.echo()
           loggedin << equalTo("James Luo")
         }
       }
       
       scenario "data should able to share between scenario" {
-        task TestTaskFactory.echo()
-        
         given "shared data above"{
           
         }
@@ -135,6 +131,7 @@ public class SimpleStoryRunnerTest {
           shared.placeholder = "Place Holder assigned in scenario"
         }
         then "Shared data should updated and should able to exam"{
+          runtask TestTaskFactory.echo()
           sharedData1 << equalTo("This Is Shared Data1")
           echotask.sharedData1 << equalTo("This Is Shared Data1")
           shared.data2 << equalTo("shared data with property format")
@@ -156,8 +153,6 @@ public class SimpleStoryRunnerTest {
         sothat "..."
         
         scenario_refund "Refunded items should be returned to stock" {
-          task TestTaskFactory.stockManagerTask()
-        
           given "a customer previously bought a black sweater from me" {
             
           }
@@ -169,6 +164,7 @@ public class SimpleStoryRunnerTest {
           
           when "he returns the sweater for a refund" {
             sweater.refund.black = 1
+            runtask TestTaskFactory.stockManagerTask()
           }
           
           then "I should have four black sweaters in stock"{
@@ -193,8 +189,6 @@ public class SimpleStoryRunnerTest {
       story() "Returns go to stock" {
         
         scenario_refund "Refunded items should be returned to stock" {
-          task TestTaskFactory.stockManagerTask()
-        
           given "a customer previously bought a black sweater from me" {
             
           }
@@ -206,6 +200,8 @@ public class SimpleStoryRunnerTest {
           
           when "he returns the sweater for a refund" {
             sweater.refund.black = 1
+            
+            runtask TestTaskFactory.stockManagerTask()
           }
           
           then "I should have four black sweaters in stock"{
@@ -225,30 +221,6 @@ public class SimpleStoryRunnerTest {
   }
   
   @Test
-  public void testEmptyTasks() {
-    try{
-      story() "Returns go to stock" {
-        inOrderTo "keep track of stock"
-        asa "store owner"
-        iwantto "add items back to stock when they're returned"
-        sothat "..."
-        
-        scenario_refund "Refunded items should be returned to stock" {
-          
-          given "a customer previously bought a black sweater from me" {
-            
-          }
-        }
-      }
-    }catch (StoryFailException e){
-      assert e.getMessage().contains("You need at least 1 task defined in task section");
-      return;
-    }
-    
-    fail("Should run into error")
-  }
-  
-  @Test
   public void testWrongTasks() {
     try{
       story() "Returns go to stock" {
@@ -258,13 +230,12 @@ public class SimpleStoryRunnerTest {
         sothat "..."
         
         scenario_refund "Refunded items should be returned to stock" {
-          task "This Is Wrong Task"
           given "a customer previously bought a black sweater from me" {
-            
+            runtask "This Is Wrong Task"
           }
         }
       }
-    }catch (DslException e){
+    }catch (StoryFailException e){
       assert e.getMessage().contains("implement interface TestTask and your class is java.lang.String");
       return;
     }
