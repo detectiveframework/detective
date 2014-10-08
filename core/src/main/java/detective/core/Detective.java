@@ -8,6 +8,8 @@ import groovy.xml.MarkupBuilder;
 
 import org.hamcrest.Matcher;
 
+import com.typesafe.config.Config;
+
 import detective.common.trace.TraceRecord;
 import detective.common.trace.TraceRecordBuilder;
 import detective.common.trace.TraceRecorder;
@@ -15,6 +17,7 @@ import detective.common.trace.impl.TraceRecorderElasticSearchImpl;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.matcher.IsEqual;
 import detective.core.runner.DslBuilderAndRun;
+import detective.core.services.DetectiveFactory;
 import detective.task.EchoTask;
 import detective.task.HttpClientTask;
 import detective.utils.StringUtils;
@@ -123,6 +126,10 @@ public class Detective {
   //Utilities
   public static String randomId() {
     return StringUtils.randomBase64UUID();
+  }
+  
+  public static Config getConfig(){
+    return DetectiveFactory.INSTANCE.getConfig();
   }
   
 }

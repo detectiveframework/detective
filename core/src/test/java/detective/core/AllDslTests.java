@@ -14,12 +14,14 @@ import detective.core.runner.ParallelRunnerTest;
 import detective.core.runner.ParameterResolveTest;
 import detective.core.runner.SimpleStoryRunnerTest;
 import detective.core.runner.TableParserTest;
+import detective.core.script.RunTestFromScriptTest;
 import detective.core.testdsl.DslBuilderTest;
 
 @RunWith(Suite.class)
 @SuiteClasses(
   {
     DslBuilderTest.class,
+    RunTestFromScriptTest.class,
     SimpleStoryRunnerTest.class,
     TableParserTest.class,
     DataTableRunnerTest.class,

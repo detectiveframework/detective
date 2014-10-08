@@ -27,5 +27,21 @@ public class RunTestFromScriptTest {
     story.run();
   }
   
+  @Test
+  public void testSimpleStory() {
+    SimpleStory story = new SimpleStory();
+    story.run();
+  }
   
+  @Test
+  public void testSimpleCompactStory() {
+    SimpleCompactStory story = new SimpleCompactStory();
+    story.run();
+  }
+  
+  @Test
+  public void testTaskDemoStory() {
+    TaskDemoStory story = new TaskDemoStory();
+    story.run();
+  }
 }
