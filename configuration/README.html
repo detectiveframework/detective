@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="4" data-basepath=".." data-revision="1412662137700">
+    <div class="book"  data-level="4" data-basepath=".." data-revision="1412827450844">
     
 
 <div class="book-summary">
@@ -93,6 +93,92 @@
                     </a>
                 
             
+            
+            <ul class="articles">
+                
+    
+        
+        <li class="chapter " data-level="2.1" data-path="story_structure/josn_process.html">
+            
+                
+                    <a href="../story_structure/josn_process.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.1.</b>
+                        
+                         Josn Support
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2.2" data-path="story_structure/scenario_table.html">
+            
+                
+                    <a href="../story_structure/scenario_table.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.2.</b>
+                        
+                         Scenario Table
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2.3" data-path="story_structure/table.html">
+            
+                
+                    <a href="../story_structure/table.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.3.</b>
+                        
+                         Table
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2.4" data-path="story_structure/run_task.html">
+            
+                
+                    <a href="../story_structure/run_task.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.4.</b>
+                        
+                         Run Task
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2.5" data-path="story_structure/check_the_result.html">
+            
+                
+                    <a href="../story_structure/check_the_result.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.5.</b>
+                        
+                         Check the result
+                    </a>
+                
+            
+            
+        </li>
+    
+
+            </ul>
             
         </li>
     
@@ -233,9 +319,22 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_118">
+                    <section class="normal" id="section-gitbook_517">
                     
                         <h1 id="configuration">Configuration</h1>
+<p>All configuration can be read in task as long as you got the right name</p>
+<h2 id="default-configuration">Default Configuration</h2>
+<p>Detective comes with a default config file which located at classpath://detective-config-default.conf</p>
+<p>To view the file content please visite <a href="https://github.com/detectiveframework/detective/blob/master/core/src/main/resources/detective-config-default.conf" target="_blank">detective-config-default.conf</a></p>
+<h2 id="application-configuration">Application Configuration</h2>
+<p>You can create a new configuration file which call &quot;detective.conf&quot; and put it into your classpath. Anything that defined in your conf file will overwrite default configuration file.</p>
+<h2 id="overwrite-from-commend-line">Overwrite from Commend Line</h2>
+<p>The config can be overwite from commend line for example:</p>
+<pre><code>java -Dparallel.max_poolsize=300
+</code></pre><h2 id="developer-secion">Developer Secion</h2>
+<p>To read config in your code or task, just invoke getConfig in Detective factory, for example:</p>
+<pre><code class="lang-java">Detective.getConfig().getString(<span class="hljs-string">"parallel.max_poolsize"</span>);
+</code></pre>
 
                     
                     </section>
