@@ -87,6 +87,14 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
     this.getValues().putAllUnwrappered(dataReturned);
   }
   
+  public void runtask(Map<?, ?> parameters, TestTask task){
+    for (Object key : parameters.keySet()){
+      if (key != null)
+        this.getValues().put(key.toString(), parameters.get(key));
+    }
+    this.runtask(task);
+  }
+  
   public void runtask(List<?> tasks){
     for (Object item : tasks){
       if (item instanceof TestTask){

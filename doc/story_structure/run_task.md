@@ -2,7 +2,7 @@
 
 ## Run a specific scenario
 
-If there is a system property called "detective.runner.scenario.index" has been setup, detective will run that scenario only.
+If there is a system property called "detective.runner.scenario.index" has been setup, detective will run that scenario only. Please note the index starts from **ZERO**
 
 For example you can config "VM arguments" in your eclipase with "-Ddetective.runner.scenario.index=1"
 
