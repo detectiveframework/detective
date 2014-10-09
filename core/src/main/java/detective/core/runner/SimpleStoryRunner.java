@@ -15,10 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.typesafe.config.ConfigException;
 
 import detective.core.Parameters;
 import detective.core.Scenario;
 import detective.core.Scenario.Step;
+import detective.core.Detective;
 import detective.core.Story;
 import detective.core.StoryRunner;
 import detective.core.TestTask;
@@ -44,24 +46,28 @@ public class SimpleStoryRunner implements StoryRunner{
   }
 
   public void run(final Story story, final Job job) {
+    int scenarioIndexConfig = getScenarioIndexConfig();
+    
     Map<Scenario, Promise<Object>> promises = new HashMap<Scenario, Promise<Object>>();
+    int currentIndex = 0;
     for (final Scenario scenario : story.getScenarios()){
       try {
+        if (scenarioIndexConfig == -1 || scenarioIndexConfig == currentIndex){
+          Promise<Object> p = DetectiveFactory.INSTANCE.getThreadGroup().task(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                  runScenario(scenario, new ParametersImpl());
+                } catch (Throwable e) {
+                  throw new StoryFailException(story, e.getMessage(), e);
+                }          
+            }});
+          promises.put(scenario, p);
+        }else{
+          scenario.setIgnored(true);
+        }
         
-        Promise<Object> p = DetectiveFactory.INSTANCE.getThreadGroup().task(new Runnable(){
-
-          @Override
-          public void run() {
-              try {
-                //runScenario(scenario);
-                runScenario(scenario, new ParametersImpl());
-              } catch (Throwable e) {
-                throw new StoryFailException(story, e.getMessage(), e);
-              }          
-          }});
-        
-        promises.put(scenario, p);
-        
+        currentIndex ++;
       } catch (Throwable e) {
         makeScenarioFail(scenario, e);
       }
@@ -80,6 +86,16 @@ public class SimpleStoryRunner implements StoryRunner{
         makeScenarioFail(s, e);
       }
     }
+  }
+
+  private int getScenarioIndexConfig() throws ConfigException.WrongType{
+    int scenarioIndex = -1;
+    try {
+      scenarioIndex = Detective.getConfig().getNumber("detective.runner.scenario.index").intValue();
+    } catch (ConfigException.Missing e1) {
+      
+    }
+    return scenarioIndex;
   }
 
   private void makeScenarioFail(Scenario s, Throwable e) {

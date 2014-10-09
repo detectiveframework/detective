@@ -18,6 +18,9 @@ public interface Scenario extends Titled{
   boolean getSuccessed();
   void setSuccessed(boolean success);
   
+  boolean getIgnored();
+  void setIgnored(boolean ignored);
+  
   Throwable getError();
   void setError(Throwable exception);
   

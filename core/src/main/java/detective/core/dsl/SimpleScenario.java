@@ -28,6 +28,7 @@ public class SimpleScenario extends GroovyObjectSupport implements Scenario{
   private Throwable error;
   private final String title;
   private final Story story;
+  private boolean ignored = false;
   
   private final List<Step> steps = new ArrayList<Step>();
   
@@ -103,6 +104,20 @@ public class SimpleScenario extends GroovyObjectSupport implements Scenario{
   @Override
   public List<Row> getScenarioTable() {
     return scenarioTable;
+  }
+
+
+
+  @Override
+  public boolean getIgnored() {
+    return ignored;
+  }
+
+
+
+  @Override
+  public void setIgnored(boolean ignored) {
+    this.ignored = ignored;
   }
   
 }

@@ -12,6 +12,7 @@ import detective.core.runner.JsonSupportTest;
 import detective.core.runner.MultTasksTest;
 import detective.core.runner.ParallelRunnerTest;
 import detective.core.runner.ParameterResolveTest;
+import detective.core.runner.RunSpecificScenarioOnly;
 import detective.core.runner.SimpleStoryRunnerTest;
 import detective.core.runner.TableParserTest;
 import detective.core.script.RunTestFromScriptTest;
@@ -31,7 +32,10 @@ import detective.core.testdsl.DslBuilderTest;
     JsonSupportTest.class,
     MultTasksTest.class,
     ParameterResolveTest.class,
-    JobCollectorTest.class
+    JobCollectorTest.class,
+    
+    //groovy
+    RunSpecificScenarioOnly.class
   })
 public class AllDslTests {
 

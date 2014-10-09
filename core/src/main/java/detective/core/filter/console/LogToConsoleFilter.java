@@ -19,7 +19,12 @@ public class LogToConsoleFilter implements RunnerFilter<Story> {
       boolean storyFailed = false;
       Throwable error  = null;
       for (Scenario s : story.getScenarios()){
-        if (!s.getSuccessed()){
+        if (s.getIgnored()){
+          logger.info("Scenario [" + s.getTitle() + "] ignored.");
+        } else if (s.getSuccessed()){
+          logger.info("Scenario [" + s.getTitle() + "] succeed.");
+        }
+        else if (!s.getSuccessed()){
           storyFailed = true;
           error = s.getError();
           logger.error(error.getMessage(), error);
