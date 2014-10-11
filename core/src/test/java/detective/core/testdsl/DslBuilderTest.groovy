@@ -61,6 +61,83 @@ public class DslBuilderTest {
     assert story.getSharedDataMap().getUnwrappered("shared.placeholder") instanceof SharedVariable;
   }
   
+  @Test
+  public void testMixedStory(){
+    Story story = story() "Returns go to stock" {
+      inOrderTo "keep track of stock"
+      asa "store owner"
+      iwantto "add items back to stock when they're returned"
+      sothat "..."
+      anything "abc"
+      
+      scenario "Refunded items should be returned to stock" {
+        given "a customer previously bought a black sweater from me" {
+          
+        }
+        
+        "given I currently have three black sweaters left in stock" {
+          sweater.black = 3
+        }
+        
+        when "he returns the sweater for a refund" {
+          sweater.refund.black = 1
+          runtask TestTaskFactory.stockManagerTask()
+        }
+        
+        then "I should have four black sweaters in stock"{
+          sweater.balck = equalTo(4)
+        }
+      }
+      
+      scenario_replace {  //You don't have to write description, just give a name is fine
+        given "a customer buys a blue garment"
+        when "he returns the garment for a replacement in black"
+        then "And two black garments in stock"
+      }
+      
+      "scenario just a description" {
+        given "I have two blue garments in stock"
+        when "he returns the garment for a replacement in black"
+        then "And two black garments in stock"
+      }
+    }
+    
+    assert story != null;
+    
+    Assert.assertThat(story.title, equalTo("Returns go to stock"))
+    Assert.assertThat(story.benefit, equalTo("add items back to stock when they're returned"))
+    Assert.assertThat(story.role, equalTo("store owner"))
+    Assert.assertThat(story.feature, equalTo("keep track of stock"))
+    
+    Assert.assertThat(story.scenarios.size(), equalTo(3));
+    
+    //Give
+    Scenario s0 = story.scenarios.get(0);
+    Assert.assertThat(s0.getId(), equalTo("scenario"));
+    Assert.assertThat(s0.getTitle(), equalTo("Refunded items should be returned to stock"));
+    
+    Assert.assertThat(s0.getSteps().size(), equalTo(4));
+    Assert.assertThat(s0.getSteps().get(0).getTitle(), equalTo("a customer previously bought a black sweater from me"));
+    Assert.assertThat(s0.getSteps().get(0).getExpectClosure(), is(notNullValue()));
+    Assert.assertThat(s0.getSteps().get(1).getTitle(), equalTo("given I currently have three black sweaters left in stock"));
+    Assert.assertThat(s0.getSteps().get(1).getExpectClosure(), is(notNullValue()));
+    Assert.assertThat(s0.getSteps().get(2).getTitle(), equalTo("he returns the sweater for a refund"));
+    Assert.assertThat(s0.getSteps().get(2).getExpectClosure(), is(notNullValue()));
+    Assert.assertThat(s0.getSteps().get(3).getTitle(), equalTo("I should have four black sweaters in stock"));
+    Assert.assertThat(s0.getSteps().get(3).getExpectClosure(), is(notNullValue()));
+    
+    Assert.assertThat(story.scenarios.get(1).getId(), equalTo(null));
+    Assert.assertThat(story.scenarios.get(1).getTitle(), equalTo("scenario_replace"));
+    
+    Scenario s1 = story.scenarios.get(1);
+    Assert.assertThat(s1.getId(), equalTo(null));
+    Assert.assertThat(s1.getTitle(), equalTo("scenario_replace"));
+    
+    Scenario s2 = story.scenarios.get(2);
+    Assert.assertThat(s2.getId(), equalTo(null));
+    Assert.assertThat(s2.getTitle(), equalTo("scenario just a description"));
+  }
+  
   /**
    * 
    */
@@ -127,7 +204,6 @@ public class DslBuilderTest {
     
     Assert.assertThat(story.scenarios.get(1).getId(), equalTo("scenario_replace"));
     Assert.assertThat(story.scenarios.get(1).getTitle(), equalTo("Replaced items should be returned to stock"));
-    
   }
   
   @Test

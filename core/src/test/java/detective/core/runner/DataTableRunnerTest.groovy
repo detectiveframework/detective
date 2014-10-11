@@ -10,6 +10,7 @@ import detective.core.TestTaskFactory;
 
 import detective.core.Story
 import detective.core.StoryRunner
+import java.util.concurrent.atomic.AtomicInteger
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -118,6 +119,8 @@ public class DataTableRunnerTest {
     }
   }
   
+  private AtomicInteger runningCounter = new AtomicInteger(0);
+  
   @Test
   public void testDataTableParamBatchAdd() {
     story() "DataTable support batch add" {
@@ -141,6 +144,7 @@ public class DataTableRunnerTest {
         given "a list of black sweaters left in stock and customer returns the sweaters for a refund" {
           sweater.blue = 0
           //sweater.refund.black = 1 //Data Table always overwrite individual parameter
+          this.runningCounter.andIncrement;
           
           runtask TestTaskFactory.stockManagerTask()
         }
@@ -151,6 +155,8 @@ public class DataTableRunnerTest {
         }
       }
     }
+    
+    assert this.runningCounter.get() == 203
   }
   
   @Test
@@ -187,7 +193,7 @@ public class DataTableRunnerTest {
         }
       }
     }catch (DslException e){
-      assert e.getMessage().contains("So far we support only one type of datatable in all given section");
+      assert e.getMessage().contains("Scenario table must have same header and columns");
       return;
     }
     
@@ -220,7 +226,7 @@ public class DataTableRunnerTest {
         }
       }    
     }catch (DslException e){
-      assert e.getMessage().contains("datatable required at least 2 rows");
+      assert e.getMessage().contains("table requires at least 2 rows");
       return;
     }
     fail("Should run into error")

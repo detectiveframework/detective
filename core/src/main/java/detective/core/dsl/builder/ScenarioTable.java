@@ -27,24 +27,19 @@ public class ScenarioTable {
   
   public List<Row> scenarioTable(Closure<?> c){
     List<Row> rows = TableParser.asListOfRows(values, c);
-    if (rows.size() < 2)
-      throw new DslException("datatable required at least 2 rows, first row for column names, the rest for the data.");
     
     List<Row> table = makeSureExistsDataTable();
     
     List<Row> existsRows = new ArrayList<Row>();
-    if (table != null && table.size() > 1){
+    if (table != null && table.size() > 0){
       if (! checkHasSameColumn(table.get(0), rows.get(0))){
-        throw new DslException("So far we support only one type of datatable in all given section. datatable must have same header and columns, exists datatable:" + table.get(0) + " your datatable " + rows.get(0));
+        throw new DslException("Scenario table must have same header and columns, exists table:" + table.get(0) + " your datatable " + rows.get(0));
       };
       
       for (Row row : table){
         existsRows.add(row);
       }
     }
-    
-    if (existsRows.size() > 1)
-      rows.remove(0); //remove header
     
     for (Row row : rows)
       existsRows.add(row);
@@ -54,28 +49,12 @@ public class ScenarioTable {
   }
 
   private List<Row> makeSureExistsDataTable() {
-    List<Row> table = null;
-    //Object datatable = this.getProperties().get(DslBuilder.DATATABLE_PARAMNAME);
-    Object datatable = scenario.getScenarioTable();
-    if ((datatable != null)){
-      if ((datatable instanceof List)){
-        table = (List<Row>)datatable;
-        if (table.size() == 0)
-          return table;
-        
-        if (table.size() < 2 && (! (table.get(0) instanceof Row))){
-          throw new DslException("You have a parameter named " + DslBuilder.DATATABLE_PARAMNAME + " exists but not a DataTable type, please check document for Datatable.");
-        }
-      }else{
-        throw new DslException("You have a parameter named " + DslBuilder.DATATABLE_PARAMNAME + " exists but not a DataTable type, please check document for Datatable.");
-      }
-    }
-    return table;
+    return scenario.getScenarioTable();
   }
   
   private boolean checkHasSameColumn(Row oldRow, Row newRole){
-    Object[] oldArray = oldRow.asArray();
-    Object[] newArray = newRole.asArray();
+    Object[] oldArray = oldRow.getHeader().asArray();
+    Object[] newArray = newRole.getHeader().asArray();
     
     if (oldArray.length != newArray.length)
       return false;

@@ -15,7 +15,7 @@ import detective.core.runner.ParameterResolveTest;
 import detective.core.runner.RunSpecificScenarioOnly;
 import detective.core.runner.SimpleStoryRunnerTest;
 import detective.core.runner.TableParserTest;
-import detective.core.script.RunTestFromScriptTest;
+import detective.core.story.RunTestFromScriptTest;
 import detective.core.testdsl.DslBuilderTest;
 
 @RunWith(Suite.class)

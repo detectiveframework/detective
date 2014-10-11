@@ -1,11 +1,22 @@
 package detective.core.dsl.table;
 
-import java.util.ArrayList;
-import java.util.List;
+import groovy.lang.GroovyObject;
+import groovy.lang.GroovyObjectSupport;
+import groovy.lang.MetaClass;
 
-public class Row {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import detective.core.dsl.DslException;
+import detective.core.runner.PropertyToStringDelegate;
+
+public class Row extends GroovyObjectSupport implements GroovyObject{
   
   private List<Object> values = new ArrayList<Object>();
+  private Map<Object, Integer> headToIndexMap = new HashMap<Object, Integer>();
+  private Row header = null;
   
   public Row(Object firstValue){
     this.values.add(firstValue);
@@ -19,10 +30,62 @@ public class Row {
   public Object[] asArray() {
     return values.toArray();
   }
+  
+  public int size(){
+    return values.size();
+  }
 
   @Override
   public String toString() {
-    return "Row " + values;
+    return "Row " + values + " Header " + header.values;
+  }
+  
+  /**
+   * Setup header if have
+   * @param header
+   */
+  public void setRowHeader(Row header){
+    this.header = header;
+    
+    if (header == null || header.size() == 0)
+      return;
+    
+    if (header.size() != this.size())
+      throw new DslException("Size of header and row not same, header we got " + header + " row we got: " + this);
+    
+    this.headToIndexMap.clear();
+    for (int i = 0; i < header.size(); i++){
+      headToIndexMap.put(getHeaderText(header.values.get(i)), i);
+    }
+  }
+  
+  public Row getHeader(){
+    return this.header;
+  }
+  
+  public String[] getHeaderAsStrings(){
+    Row headerRow = getHeader();
+    List<String> headers = new ArrayList<String>();
+    for (Object obj : headerRow.asArray()){
+      String header = Row.getHeaderText(obj);
+      headers.add(header);
+    }
+    return headers.toArray(new String[]{});
+  }
+
+  @Override
+  public Object getProperty(String propertyName) {
+    if (this.headToIndexMap.containsKey(propertyName))
+      return values.get(headToIndexMap.get(propertyName));
+    
+    return super.getProperty(propertyName);
+  }
+  
+  public static String getHeaderText(Object obj){
+    String header = obj.toString();
+    if (obj instanceof PropertyToStringDelegate)
+      header = ((PropertyToStringDelegate)obj).getFullPropertyName();
+    return header;
   }
 
 }

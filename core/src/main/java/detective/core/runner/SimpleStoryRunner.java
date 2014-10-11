@@ -111,9 +111,9 @@ public class SimpleStoryRunner implements StoryRunner{
     
     List<Row> datatable = scenario.getScenarioTable();
     if (datatable != null && datatable.size() > 1){
-      String[] headers = checkGetFirstRow(datatable);
+      String[] headers = checkGetHeader(datatable);
       List<Promise<Object>> promises = new ArrayList<Promise<Object>>();
-      for (int i = 1; i < datatable.size(); i++){
+      for (int i = 0; i < datatable.size(); i++){
         Row row = datatable.get(i);
         
         prepareDataIn(datain, headers, row);
@@ -187,18 +187,8 @@ public class SimpleStoryRunner implements StoryRunner{
     return datain;
   }
 
-  private String[] checkGetFirstRow(List<Row> datatable){
-    
-    Row headerRow = datatable.get(0);
-    List<String> headers = new ArrayList<String>();
-    for (Object obj : headerRow.asArray()){
-      String header = obj.toString();
-      if (obj instanceof PropertyToStringDelegate)
-        header = ((PropertyToStringDelegate)obj).getFullPropertyName();
-      
-      headers.add(header);
-    }
-    return headers.toArray(new String[]{});
+  private String[] checkGetHeader(List<Row> datatable){
+    return datatable.get(0).getHeaderAsStrings();
   }
 
   private void updateSharedData(Scenario scenario, Parameters dataout) {

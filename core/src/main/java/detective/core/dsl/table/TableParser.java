@@ -10,6 +10,7 @@ import java.util.Map;
 import org.codehaus.groovy.runtime.GroovyCategorySupport;
 
 import detective.core.Parameters;
+import detective.core.dsl.DslException;
 import detective.core.dsl.builder.ShareDataAwardDelegate;
 import detective.core.runner.PropertyToStringDelegate;
 
@@ -41,7 +42,19 @@ public class TableParser {
     tableData.setResolveStrategy(Closure.DELEGATE_FIRST);
 
     GroovyCategorySupport.use(TableParser.class, tableData);
-    return context.get();
+    List<Row> rows = context.get();
+    
+    if (rows.size() <= 1)
+      throw new DslException("table requires at least 2 rows, first row for column names, the rest for the data.");
+    
+    if (rows.size() > 0){
+      for (int i = 0; i < rows.size(); i++){
+        rows.get(i).setRowHeader(rows.get(0));
+      }
+    }
+    rows.remove(0);
+    
+    return rows;
   }
 
 }

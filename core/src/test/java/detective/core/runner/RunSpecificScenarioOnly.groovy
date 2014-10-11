@@ -2,7 +2,7 @@ package detective.core.runner
 
 import static detective.core.Detective.*;
 
-System.setProperty("detective.runner.scenario.index", "1");
+System.setProperty("detective.runner.scenario.index", "1")
 
 story() "Run scenario number 1 only" {
   """

@@ -1,4 +1,4 @@
-package detective.core.script
+package detective.core.story
 
 import static detective.core.Detective.*;
 import detective.task.EchoTask
@@ -42,6 +42,23 @@ story() "Simple Story with Echo Task" {
     
     when "run echo task"{
       runtask echoTask(), "parameterA" : "This Will Overwrite parameterA in give section", parameterNew : "This is new parameter"
+    }
+    
+    then "parameters will echo back twice"{
+      echotask.parameterA << "This Will Overwrite parameterA in give section"
+      echotask.parameterNew << "This is new parameter"
+    }
+  }
+  
+  scenario "runtask with map type method call - new line" {
+    given "a parameter" {
+      parameterA = "This is the value"
+    }
+    
+    when "run echo task"{
+      runtask echoTask(), 
+        "parameterA" : "This Will Overwrite parameterA in give section", 
+        parameterNew : "This is new parameter"
     }
     
     then "parameters will echo back twice"{

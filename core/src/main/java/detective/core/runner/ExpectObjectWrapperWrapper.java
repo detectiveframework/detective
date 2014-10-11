@@ -3,6 +3,7 @@ package detective.core.runner;
 import java.util.Map;
 
 import groovy.lang.Closure;
+import groovy.lang.GroovyInterceptable;
 import groovy.lang.GroovyObjectSupport;
 import groovy.lang.MetaClass;
 import groovy.lang.MetaClassRegistry;
@@ -26,7 +27,7 @@ import detective.core.matcher.IsEqual;
  * @author James Luo
  *
  */
-public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements WrappedObject<Object>{
+public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements WrappedObject<Object>, GroovyInterceptable{
   
   private final Object realValue;
   private final MetaClassRegistry registry;
@@ -135,9 +136,9 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements W
         return ((String)realValue) + ((String)otherValue);
     }
       
-    throw new RuntimeException("minus support only number and String so far, please log a issue if you got this error, Thanks");
+    throw new RuntimeException("plus support only number and String so far, please log a issue if you got this error, Thanks. Currnet values we got:" + realValue + ":" + obj );
   }
-
+  
   public Object getRealValue() {
     return realValue;
   }
@@ -170,20 +171,47 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements W
     return super.getProperty(property);
   }
   
+  /**
+   * All method call will goes here first as we implements GroovyInterceptable
+   */
   public Object invokeMethod(String name, Object args) {
+    if (name.equals("leftShift"))
+      return this.getMetaClass().invokeMethod(this, name, args);
+    
     if (realValue != null){
       if (realValue instanceof GroovyObjectSupport){
-        Object value = ((GroovyObjectSupport)realValue).invokeMethod(name, args);
+        Object value = ((GroovyObjectSupport)realValue).invokeMethod(name, getRealValue(args));
         return new ExpectObjectWrapperWrapper(value);
       }else {
         MetaClass metaClass = registry.getMetaClass(realValue.getClass());
         if (metaClass != null){
-          Object value = metaClass.invokeMethod(realValue, name, args);
+          Object value = metaClass.invokeMethod(realValue, name, getRealValue(args));
           return new ExpectObjectWrapperWrapper(value);
         }
       }
     }
     return getMetaClass().invokeMethod(this, name, args);
+  }
+  
+  
+  private Object getRealValue(Object obj){
+    if (obj == null)
+      return null;
+    
+    if (obj instanceof WrappedObject)
+      return ((WrappedObject<?>)obj).getValue();
+    
+    if (obj instanceof Object[]){
+      Object[] array = (Object[])obj;
+      Object[] results = new Object[array.length];
+      for (int i = 0; i < array.length; i++){
+        Object item = array[i];
+        results[i] = getRealValue(item);
+      }
+      return results;
+    }
+    
+    return obj;
   }
 
 }

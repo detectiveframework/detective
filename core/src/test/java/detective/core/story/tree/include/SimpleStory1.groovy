@@ -1,4 +1,4 @@
-package detective.core.script.tree.include
+package detective.core.story.tree.include
 
 import static detective.core.Detective.*;
 import static detective.core.Matchers.*;

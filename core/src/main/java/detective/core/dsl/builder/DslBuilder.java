@@ -60,6 +60,12 @@ public class DslBuilder extends BuilderSupport{
             sub.setScenario((SimpleScenario)current);
             sub.setTitle(name.toString());
             sub.setClosure(closure);
+            
+            SimpleStep outcomes = new SimpleStep();
+            outcomes.setTitle(sub.title);
+            outcomes.setExpectClosure(sub.closure);
+            sub.scenario.addStep(outcomes);
+            
             return sub;
           }
         }else if (current instanceof Story && (methodName.equalsIgnoreCase("share"))){
@@ -135,10 +141,7 @@ public class DslBuilder extends BuilderSupport{
 //      }else if (name.toString().equalsIgnoreCase("then"))
       {
         //SimpleOutcomes outcomes = (SimpleOutcomes)sub.scenario.getOutcomes();
-        SimpleStep outcomes = new SimpleStep();
-        outcomes.setTitle(sub.title);
-        outcomes.setExpectClosure(sub.closure);
-        sub.scenario.addStep(outcomes);
+        
       }
       return sub.scenario;
     }else if (getCurrent() == null){

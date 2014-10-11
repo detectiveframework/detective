@@ -19,7 +19,7 @@ public class TableParserTest {
       "James"      |  "Bond"        |  "Agent"
     }
     
-    assert rows.size() == 3;
+    assert rows.size() == 2;
   }
   
   @Test
@@ -30,10 +30,10 @@ public class TableParserTest {
       "James"      |  "Bond"        |  "Agent"
     }
     
-    assert rows.size() == 3;
-    assert rows.get(1).values.getAt(0).equals(1);
-    assert rows.get(1).values.getAt(1).equals(2);
-    assert rows.get(1).values.getAt(2).equals(3);
+    assert rows.size() == 2;
+    assert rows.get(0).values.getAt(0).equals(1);
+    assert rows.get(0).values.getAt(1).equals(2);
+    assert rows.get(0).values.getAt(2).equals(3);
   }
   
   @Test
@@ -44,7 +44,7 @@ public class TableParserTest {
       "James"               |  "Bond"                 |  "Agent"
     }
     
-    assert rows.size() == 3;
+    assert rows.size() == 2;
   }
   
   @Test
@@ -55,7 +55,7 @@ public class TableParserTest {
       "James"               |  "Bond"                 |  "Agent"
     }
     
-    assert rows.size() == 3;
-    assert rows.get(0).values.getAt(2).equals("The Real Name");
+    assert rows.size() == 2;
+    assert rows.get(0).getHeaderAsStrings().getAt(2).equals("The Real Name");
   }
 }
