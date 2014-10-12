@@ -143,7 +143,6 @@ public class DataTableRunnerTest {
       
         given "a list of black sweaters left in stock and customer returns the sweaters for a refund" {
           sweater.blue = 0
-          //sweater.refund.black = 1 //Data Table always overwrite individual parameter
           this.runningCounter.andIncrement;
           
           runtask TestTaskFactory.stockManagerTask()
