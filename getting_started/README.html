@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="1" data-basepath=".." data-revision="1412827450844">
+    <div class="book"  data-level="1" data-basepath=".." data-revision="1413159628628">
     
 
 <div class="book-summary">
@@ -177,6 +177,38 @@
             
         </li>
     
+        
+        <li class="chapter " data-level="2.6" data-path="story_structure/junit.html">
+            
+                
+                    <a href="../story_structure/junit.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.6.</b>
+                        
+                         JUnit
+                    </a>
+                
+            
+            
+        </li>
+    
+        
+        <li class="chapter " data-level="2.7" data-path="story_structure/matchers.html">
+            
+                
+                    <a href="../story_structure/matchers.html">
+                        <i class="fa fa-check"></i>
+                        
+                            <b>2.7.</b>
+                        
+                         Matchers
+                    </a>
+                
+            
+            
+        </li>
+    
 
             </ul>
             
@@ -215,10 +247,10 @@
         </li>
     
         
-        <li class="chapter " data-level="5" data-path="parallelism/README">
+        <li class="chapter " data-level="5" data-path="parallelism/README.html">
             
                 
-                    <a href="../parallelism/README">
+                    <a href="../parallelism/README.html">
                         <i class="fa fa-check"></i>
                         
                             <b>5.</b>
@@ -319,9 +351,86 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_518">
+                    <section class="normal" id="section-gitbook_408">
                     
                         <h1 id="getting-started">Getting Started</h1>
+<p>A story structure</p>
+<pre><code class="lang-groovy"><span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> detective.core.Detective.*;
+
+story() <span class="hljs-string">"Your Descritpion for this story"</span> {
+  scenario [Option Your Description <span class="hljs-keyword">for</span> <span class="hljs-keyword">this</span> scenario] {
+    scenarioTable | [Option verb, <span class="hljs-keyword">for</span> example given, when, then] <span class="hljs-string">"Your description for this step"</span>{
+      parameterName = <span class="hljs-string">"your value"</span>
+      runtask taskName()
+    }
+
+    step*
+  }
+
+  scenario*
+}
+</code></pre>
+<h2 id="helloworld">HelloWorld</h2>
+<pre><code class="lang-groovy"><span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> detective.core.Detective.*;
+
+story() <span class="hljs-string">"Demostrate hello world"</span> {
+  scenario {
+    step1 <span class="hljs-string">"print out hello world"</span>{
+      println <span class="hljs-string">"HelloWorld"</span>
+    }
+  }
+}
+</code></pre>
+<p>print out a word is not a test, let&#39;s do something useful</p>
+<pre><code class="lang-groovy">story() <span class="hljs-string">"Demostrate test string concat"</span> {
+  scenario <span class="hljs-string">"String concat"</span> {
+    give <span class="hljs-string">"word Hello"</span>{
+      word1 = <span class="hljs-string">"Hello"</span>
+    }
+    give <span class="hljs-string">"word World"</span>{
+      word2 = <span class="hljs-string">"World"</span>;
+    }
+    when <span class="hljs-string">"run String.concat"</span>{
+      helloworld = word1.concat(word2)
+    }
+    then <span class="hljs-string">"word1 and word2 should concated"</span>{
+      helloworld &lt;&lt; <span class="hljs-string">"HelloWorld"</span>
+    }
+  }
+}
+</code></pre>
+<p>If you change expected in &quot;then&quot; section from &quot;HelloWorld&quot; to &quot;HelloWorldWrong&quot;, you will see some exception in your log.</p>
+<pre><code class="lang-log">Caused by: java.lang.AssertionError:
+Expected: &quot;HelloWorldWrong&quot;
+     got: &lt;HelloWorld&gt;
+</code></pre>
+<h2 id="task">Task</h2>
+<p>A story must friendly to testers / BAs and Project Managers, detective introduce &quot;Task&quot; for this purpose.
+A task normally created by a developer, it usually represent a business function, for example a web page, a web service.</p>
+<p>In last example &quot;word1.concat(word2)&quot; is too hard for tester.</p>
+<p>In our guide we will use a task called &quot;echoTask&quot; a lot, it only echo back all parameters pass to it by add &quot;echotask.&quot; in front.</p>
+<pre><code class="lang-groovy"><span class="hljs-keyword">package</span> detective.core.story
+
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> detective.core.Detective.*;
+
+story() <span class="hljs-string">"Simple Story with Echo Task"</span> {
+  inOrderTo <span class="hljs-string">"demostrate simple story"</span>
+
+  scenario <span class="hljs-string">"Echo parameters back"</span> {
+    given <span class="hljs-string">"a parameter"</span> {
+      parameterA = <span class="hljs-string">"This is the value"</span>
+    }
+
+    when <span class="hljs-string">"run echo task"</span>{
+      runtask echoTask();
+    }
+
+    then <span class="hljs-string">"parameters will echo back"</span>{
+      echotask.parameterA &lt;&lt; <span class="hljs-string">"This is the value"</span>
+    }
+  }
+}
+</code></pre>
 
                     
                     </section>

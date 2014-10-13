@@ -4,7 +4,7 @@
     <head>
         
         <meta charset="UTF-8">
-        <title>Check the result | Introduction</title>
+        <title>JUnit | Introduction</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="generator" content="GitBook 1.0.3">
@@ -18,10 +18,10 @@
     
     
     
-    <link rel="next" href="../story_structure/junit.html" />
+    <link rel="next" href="../story_structure/matchers.html" />
     
     
-    <link rel="prev" href="../story_structure/run_task.html" />
+    <link rel="prev" href="../story_structure/check_the_result.html" />
     
 
         
@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="2.5" data-basepath=".." data-revision="1413159628628">
+    <div class="book"  data-level="2.6" data-basepath=".." data-revision="1413159628628">
     
 
 <div class="book-summary">
@@ -162,7 +162,7 @@
         </li>
     
         
-        <li class="chapter active" data-level="2.5" data-path="story_structure/check_the_result.html">
+        <li class="chapter " data-level="2.5" data-path="story_structure/check_the_result.html">
             
                 
                     <a href="../story_structure/check_the_result.html">
@@ -178,7 +178,7 @@
         </li>
     
         
-        <li class="chapter " data-level="2.6" data-path="story_structure/junit.html">
+        <li class="chapter active" data-level="2.6" data-path="story_structure/junit.html">
             
                 
                     <a href="../story_structure/junit.html">
@@ -351,10 +351,72 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_411">
+                    <section class="normal" id="section-gitbook_413">
                     
-                        <h1 id="check-the-result">Check the result</h1>
-<h2 id="matchers">Matchers</h2>
+                        <h1 id="junit">JUnit</h1>
+<p>you can embed all detective stories into a JUnit test.</p>
+<p>please create a Groovy junit file</p>
+<pre><code class="lang-groovy">  <span class="hljs-annotation">@Test</span>
+  <span class="hljs-keyword">public</span> <span class="hljs-typename">void</span> testEchoTask(){
+    story() <span class="hljs-string">"Simple Story with Echo Task"</span> {
+      inOrderTo <span class="hljs-string">"demostrate simple story"</span>
+
+      scenario <span class="hljs-string">"Echo parameters back"</span> {
+        given <span class="hljs-string">"a parameter"</span> {
+          parameterA = <span class="hljs-string">"This is the value"</span>
+        }
+
+        when <span class="hljs-string">"run echo task"</span>{
+          runtask echoTask();
+        }
+
+        then <span class="hljs-string">"parameters will echo back"</span>{
+          echotask.parameterA &lt;&lt; <span class="hljs-string">"This is the value"</span>
+        }
+      }
+    }
+  }
+</code></pre>
+<h2 id="access-variables-outside-story">Access Variables outside story</h2>
+<pre><code class="lang-groovy">  <span class="hljs-keyword">private</span> AtomicInteger runningCounter = <span class="hljs-keyword">new</span> AtomicInteger(<span class="hljs-number">0</span>);
+
+  <span class="hljs-annotation">@Test</span>
+  <span class="hljs-keyword">public</span> <span class="hljs-typename">void</span> testDataTableParamBatchAdd() {
+    story() <span class="hljs-string">"DataTable support batch add"</span> {
+      inOrderTo <span class="hljs-string">"generate a lot of data table records"</span>
+
+      scenario_refund <span class="hljs-string">"Refunded items should be returned to stock"</span> {
+        scenarioTable {
+          sweater.black | sweater.refund.black  | expect.sweater.balck
+          <span class="hljs-number">3</span>             | <span class="hljs-number">1</span>                     | <span class="hljs-number">4</span>
+          <span class="hljs-number">1</span>             | <span class="hljs-number">10</span>                    | <span class="hljs-number">11</span>
+          <span class="hljs-number">100</span>           | <span class="hljs-number">50</span>                    | <span class="hljs-number">150</span>
+        }
+
+        (<span class="hljs-number">1.</span><span class="hljs-number">.200</span>).each { number -&gt;
+          scenarioTable {
+            sweater.black | sweater.refund.black  | expect.sweater.balck
+            number        | <span class="hljs-number">2</span>                     | number + <span class="hljs-number">2</span>
+          }
+        }
+
+        given <span class="hljs-string">"a list of black sweaters left in stock and customer returns the sweaters for a refund"</span> {
+          sweater.blue = <span class="hljs-number">0</span>
+          <span class="hljs-comment">//sweater.refund.black = 1 //Data Table always overwrite individual parameter</span>
+          <span class="hljs-keyword">this</span>.runningCounter.andIncrement;
+
+          runtask TestTaskFactory.stockManagerTask()
+        }
+
+        then <span class="hljs-string">"I should have expected black sweaters in stock"</span>{
+          println Thread.currentThread().getName() + <span class="hljs-string">" sweater.black=${sweater.black} sweater.refund.black = ${sweater.refund.black}  expect.sweater.balck = ${expect.sweater.balck} Done, ${sweater.black} + ${sweater.refund.black} = ${expect.sweater.balck}"</span>
+          sweater.black &lt;&lt; equalTo(expect.sweater.balck)
+          <span class="hljs-keyword">assert</span> <span class="hljs-keyword">this</span>.runningCounter.get() == <span class="hljs-number">203</span>
+        }
+      }
+    }
+  }
+</code></pre>
 
                     
                     </section>
@@ -365,10 +427,10 @@
         </div>
 
         
-        <a href="../story_structure/run_task.html" class="navigation navigation-prev " aria-label="Previous page: Run Task"><i class="fa fa-angle-left"></i></a>
+        <a href="../story_structure/check_the_result.html" class="navigation navigation-prev " aria-label="Previous page: Check the result"><i class="fa fa-angle-left"></i></a>
         
         
-        <a href="../story_structure/junit.html" class="navigation navigation-next " aria-label="Next page: JUnit"><i class="fa fa-angle-right"></i></a>
+        <a href="../story_structure/matchers.html" class="navigation navigation-next " aria-label="Next page: Matchers"><i class="fa fa-angle-right"></i></a>
         
     </div>
 </div>
