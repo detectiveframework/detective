@@ -61,12 +61,12 @@ Expected: "HelloWorldWrong"
 
 ##Task
 
-A story must friendly to testers / BAs and Project Managers, introduce task is a good idea.
+A story must friendly to testers / BAs and Project Managers, detective introduce "Task" for this purpose.
 A task normally created by a developer, it usually represent a business function, for example a web page, a web service.
 
 In last example "word1.concat(word2)" is too hard for tester.
 
-In our guide we will use a task called "echoTask" a lot, it only echo back all parameters pass to it by add "echotask." inforent.
+In our guide we will use a task called "echoTask" a lot, it only echo back all parameters pass to it by add "echotask." in front.
 
 ```groovy
 package detective.core.story

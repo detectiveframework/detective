@@ -9,7 +9,8 @@
    * [Run Task](story_structure/run_task.md)
    * [Check the result](story_structure/check_the_result.md)
    * [JUnit](story_structure/junit.md)
+   * [Matchers](story_structure/matchers.md)
 * [Tasks](tasks/README.md)
 * [Configuration](configuration/README.md)
-* [Parallelism](parallelism/README)
+* [Parallelism](parallelism/README.md)
 

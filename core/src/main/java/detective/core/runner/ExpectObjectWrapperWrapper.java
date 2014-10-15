@@ -168,6 +168,9 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements W
       } 
     }
     
+    if (realValue == null)
+      throw new DslException("you try to access a property on a null object. property name: " + property);
+    
     return super.getProperty(property);
   }
   

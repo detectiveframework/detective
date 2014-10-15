@@ -37,3 +37,5 @@ story() "Run scenario number 1 only" {
   }
 }
 
+System.setProperty("detective.runner.scenario.index", "-1")
+

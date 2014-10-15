@@ -14,8 +14,10 @@ import detective.common.trace.TraceRecord;
 import detective.common.trace.TraceRecordBuilder;
 import detective.common.trace.TraceRecorder;
 import detective.common.trace.impl.TraceRecorderElasticSearchImpl;
+import detective.core.dsl.WrappedObject;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.matcher.IsEqual;
+import detective.core.matcher.Subset;
 import detective.core.runner.DslBuilderAndRun;
 import detective.core.services.DetectiveFactory;
 import detective.task.EchoTask;
@@ -121,6 +123,13 @@ public class Detective {
   //Matches ==============
   public static <T> Matcher<T> equalTo(T operand) {
     return IsEqual.equalTo(operand);
+  }
+  
+  public static <T> Matcher<T> subsetOf(T operand) {
+    if (operand != null && operand instanceof WrappedObject){
+      operand = (T)((WrappedObject)operand).getValue();
+    }
+    return Subset.subsetOf(operand);
   }
   
   //Utilities
