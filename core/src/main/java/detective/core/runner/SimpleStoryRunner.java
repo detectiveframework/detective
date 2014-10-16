@@ -110,7 +110,7 @@ public class SimpleStoryRunner implements StoryRunner{
     Parameters datain = new ParametersImpl(config);
     
     List<Row> datatable = scenario.getScenarioTable();
-    if (datatable != null && datatable.size() > 1){
+    if (datatable != null && datatable.size() >= 1){
       String[] headers = checkGetHeader(datatable);
       List<Promise<Object>> promises = new ArrayList<Promise<Object>>();
       for (int i = 0; i < datatable.size(); i++){

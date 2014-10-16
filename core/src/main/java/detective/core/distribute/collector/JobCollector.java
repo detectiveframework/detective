@@ -5,6 +5,9 @@ import groovy.lang.Script;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import detective.common.ClassUtils;
 import detective.core.Detective;
 import detective.core.Scenario;
@@ -26,6 +29,7 @@ import detective.core.runner.SimpleStoryRunner;
  */
 public class JobCollector {
   
+  private static Logger logger = LoggerFactory.getLogger(JobCollector.class);
   private FilterChainFactory chainFactory;
   
   private JobCollector(){
@@ -52,15 +56,21 @@ public class JobCollector {
     DslBuilderAndRun.setFilterChainCurrentThread(null);
   }
   
-  public static List<Job> collectAll(String packageName){
+  public static List<Job> collectAll(String packageOrClassName){
     List<Job> jobs = new ArrayList<Job>();
     
     try {
-      ArrayList<Class<?>> classes = ClassUtils.getClassesForPackage(packageName);
+      List<Class<?>> classes = collectClass(packageOrClassName);
+      if (classes == null || classes.size() == 0)
+        classes = ClassUtils.getClassesForPackage(packageOrClassName);
+      
       for (Class<?> clazz : classes){
         //if (clazz.isAssignableFrom(Script.class)){ //not work for some reason
         if (clazz.getSuperclass().getName().equals("groovy.lang.Script")){
           jobs.addAll(collectJobs(clazz));
+        }else{
+          //logger.warn(clazz.getName() + " is not a groovy script or story, ignored.");
+          //Don't log, too much info
         }
       }
     } catch (Exception e) {
@@ -68,6 +78,18 @@ public class JobCollector {
     }
     
     return jobs;
+  }
+  
+  private static List<Class<?>> collectClass(String className){
+    try {
+      Class<?> clazz = Class.forName(className);
+      List<Class<?>> result = new ArrayList<Class<?>>();
+      result.add(clazz);
+      return result;
+    } catch (ClassNotFoundException e) {
+      return null;
+    }
+    
   }
 
   private static List<Job> collectJobs(Class<?> clazz) throws InstantiationException,

@@ -16,10 +16,22 @@ public class SparkDriver {
 
   private final static Logger logger = LoggerFactory.getLogger(SparkDriver.class);
   
-  public static void run(String packageName, String... args) {
+  /**
+   * ./bin/spark-submit --class detective.core.distribute.SparkDriver --master spark://127.0.0.1:7000 your.jar spark://127.0.0.1:7000
+   * 
+   * @param args classOrPackageName
+   * @return
+   */
+  public static int main(String[] args) {
+    if (args == null || args.length < 1){
+      System.err.println("Usage: detective.core.distribute.SparkDriver packageOrClassName \n"
+          + "  if you'd like to setup master, please change your detective.conf file or -Dspark.master=yourMasterUrl");
+      return -1;
+    }
+    
     String master = DetectiveFactory.INSTANCE.getConfig().getString("spark.master");
-    if (args != null && args.length >= 1)
-      master = args[0];
+    
+    String packageName = args[0];
     
     SparkConf sparkConf = new SparkConf()
       .setAppName("Detective-" + packageName)
@@ -43,6 +55,10 @@ public class SparkDriver {
         JobRunner runner = new JobRunnerFilterImpl();
         runner.run(job);
       }});
+    
+    return 0;
   }
   
+
+
 }

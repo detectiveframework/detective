@@ -105,8 +105,6 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
   
   public List<Row> table(Closure<?> c){
     List<Row> rows = TableParser.asListOfRows(values, c);
-    if (rows.size() < 2)
-      throw new DslException("datatable required at least 2 rows, first row for column names, the rest for the data.");
     
     return rows;
   }

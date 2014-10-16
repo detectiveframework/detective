@@ -62,6 +62,34 @@ public class DataTableRunnerTest {
   }
   
   @Test
+  public void testOneDataRow() {
+    story() "Returns go to stock" {
+      inOrderTo "keep track of stock"
+      asa "store owner"
+      iwantto "add items back to stock when they're returned"
+      sothat "..."
+      
+      scenario_refund "Refunded items should be returned to stock" {
+        
+        scenarioTable {
+          sweater.black | sweater.refund.black  | expect.sweater.balck
+          3             | 1                     | 4
+        }
+        
+        given "a list of black sweaters left in stock and customer returns the sweaters for a refund" {
+          sweater.blue = 0
+          
+          runtask TestTaskFactory.stockManagerTask()
+        }
+        
+        then "I should have expcected black sweaters in stock"{
+          sweater.black << equalTo(expect.sweater.balck)
+        }
+      }
+    }
+  }
+  
+  @Test
   public void testTableWithShareData() {
     story() "Returns go to stock" {
 
