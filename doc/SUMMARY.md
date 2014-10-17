@@ -13,4 +13,5 @@
 * [Tasks](tasks/README.md)
 * [Configuration](configuration/README.md)
 * [Parallelism](parallelism/README.md)
+   * [Filters](parallelism/filters.md)
 

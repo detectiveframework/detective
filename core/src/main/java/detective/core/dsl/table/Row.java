@@ -59,6 +59,10 @@ public class Row extends GroovyObjectSupport implements GroovyObject{
     }
   }
   
+  public boolean headExists(String header){
+    return headToIndexMap.containsKey(header);
+  }
+  
   public Row getHeader(){
     return this.header;
   }
