@@ -5,12 +5,14 @@ import static detective.core.Matchers.*;
 
 import detective.core.TestTaskFactory;
 
-story() "Story with one scenario and no shared data" {
+import detective.core.distribute.ScenarioThreadRecorder;
+
+story() "Story_1_Scenario_1" {
   desc """
     Just a simple story
   """
   
-  scenario "Simple Scenario" {
+  scenario "Scenario1" {
     given "parameterA" {
       parameterA = 0
     }
@@ -22,6 +24,8 @@ story() "Story with one scenario and no shared data" {
     then "I should have parameterA echo back"{
       echotask.parameterA << parameterA
       echotask.parameterA << 0
+      
+      ScenarioThreadRecorder.recordThread("sparkTest", "Story_1_Scenario_1 - Scenario1")
     }
   }
 }

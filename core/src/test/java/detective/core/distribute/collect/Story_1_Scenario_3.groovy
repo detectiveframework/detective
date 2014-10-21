@@ -4,13 +4,15 @@ import static detective.core.Detective.*;
 import static detective.core.Matchers.*;
 
 import detective.core.TestTaskFactory;
+import detective.core.distribute.ScenarioThreadRecorder;
 
-story() "Story with one scenario and no shared data" {
+
+story() "Story_1_Scenario_3" {
   desc """
     Just a simple story
   """
   
-  scenario "Simple Scenario" {
+  scenario1 "Story_1_Scenario_3 Simple Scenario 1" {
     given "parameterA" {
       parameterA = 0
     }
@@ -22,10 +24,11 @@ story() "Story with one scenario and no shared data" {
     then "I should have parameterA echo back"{
       echotask.parameterA << parameterA
       echotask.parameterA << 0
+      ScenarioThreadRecorder.recordThread("sparkTest", "Story_1_Scenario_3 - Scenario1")
     }
   }
   
-  scenario "Simple Scenario 2" {
+  scenario2 "Story_1_Scenario_3 Simple Scenario 2" {
     given "parameterA" {
       parameterA = 0
     }
@@ -37,10 +40,12 @@ story() "Story with one scenario and no shared data" {
     then "I should have parameterA echo back"{
       echotask.parameterA << parameterA
       echotask.parameterA << 0
+      
+      ScenarioThreadRecorder.recordThread("sparkTest", "Story_1_Scenario_3 - Scenario2")
     }
   }
   
-  scenario "Simple Scenario 3" {
+  scenario3 "Story_1_Scenario_3 Simple Scenario 3" {
     given "parameterA" {
       parameterA = 0
     }
@@ -52,6 +57,8 @@ story() "Story with one scenario and no shared data" {
     then "I should have parameterA echo back"{
       echotask.parameterA << parameterA
       echotask.parameterA << 0
+      
+      ScenarioThreadRecorder.recordThread("sparkTest", "Story_1_Scenario_3 - Scenario3")
     }
   }
 }

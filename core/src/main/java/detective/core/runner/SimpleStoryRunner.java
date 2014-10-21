@@ -39,10 +39,7 @@ public class SimpleStoryRunner implements StoryRunner{
   
   private static final Logger logger = LoggerFactory.getLogger(SimpleStoryRunner.class); 
   
-  private final RunnerFilterChain filterChain;
-  
-  public SimpleStoryRunner(RunnerFilterChain chain){
-    this.filterChain = chain;
+  public SimpleStoryRunner(){
   }
 
   public void run(final Story story, final Job job) {

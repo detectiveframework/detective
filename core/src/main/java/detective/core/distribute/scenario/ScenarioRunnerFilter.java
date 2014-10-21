@@ -1,8 +1,11 @@
 package detective.core.distribute.scenario;
 
 import detective.core.Story;
+import detective.core.StoryRunner;
+import detective.core.dsl.ParametersImpl;
 import detective.core.filter.RunnerFilter;
 import detective.core.filter.RunnerFilterChain;
+import detective.core.runner.SimpleStoryRunner;
 
 public class ScenarioRunnerFilter implements RunnerFilter<ScenarioRunContext>{
 
@@ -20,10 +23,15 @@ public class ScenarioRunnerFilter implements RunnerFilter<ScenarioRunContext>{
     }
     
     try {
-      //runScenario(context.getScenario());
+      runScenario(context);
     } catch (Throwable e) {
       throw new RuntimeException(e);
     }
+  }
+  
+  private void runScenario(ScenarioRunContext context) throws Throwable{
+    StoryRunner runner = new SimpleStoryRunner();
+    runner.runScenario(context.getScenario(), new ParametersImpl());
   }
 
 }

@@ -28,6 +28,7 @@ public class JobStoryScenarioFilter implements RunnerFilter<JobStoryRunContext>{
       context.setJobStoryRunContext(t);
       context.setScenario(scenario);
       
+      this.scenarioChain.resetChainPosition();
       this.scenarioChain.doFilter(context);
     }
     

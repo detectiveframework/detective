@@ -16,7 +16,7 @@ public class SimpleStoryRunnerFilter implements RunnerFilter<Story> {
   @Override
   public void doFilter(Story story, RunnerFilterChain<Story> chain) {
 
-    new SimpleStoryRunner(null).run(story, null);
+    new SimpleStoryRunner().run(story, null);
 
     chain.doFilter(story);
   }
