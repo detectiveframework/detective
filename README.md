@@ -1,4 +1,5 @@
 # The Bug Detective
+A BDD / Testing framework with pure Groovy DSL, running in a Spark cluster, advanced reporting and clearly define the boundary between BA Tester / developer  
 
 [Visit Our Documentation Page](http://detectiveframework.github.io/detective)
 
