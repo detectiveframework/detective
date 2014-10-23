@@ -14,4 +14,5 @@
 * [Configuration](configuration/README.md)
 * [Parallelism](parallelism/README.md)
    * [Filters](parallelism/filters.md)
+   * [Spark integration](parallelism/spark_integration.md)
 
