@@ -42,6 +42,13 @@ public class ClassUtils {
             // do nothing. this class hasn't been found by the
             // loader, and we don't care.
           }
+        }
+      }
+      
+      //Loop two times as we want always process current folder first then sub folders
+      for (final String file : files) {
+        if (file.endsWith(".class")) {
+          
         } else if ((tmpDirectory = new File(directory, file)).isDirectory()) {
           checkDirectory(tmpDirectory, pckgname + "." + file, classes);
         }
