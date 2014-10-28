@@ -6,7 +6,7 @@ public class StoryFailException extends RuntimeException {
   
   private static final long serialVersionUID = 1L;
   
-  private final Story story;
+  private final transient Story story;
   private final int precentCompleted;
 
   public StoryFailException(Story story, String message) {

@@ -29,7 +29,7 @@ public class Detective {
   private enum Recorder {
     INSTANCE;
     
-    private final TraceRecorderElasticSearchImpl recorder = new TraceRecorderElasticSearchImpl();
+    private final transient TraceRecorderElasticSearchImpl recorder = new TraceRecorderElasticSearchImpl();
 
     public TraceRecorder getRecorder() {
       return recorder;

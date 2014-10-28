@@ -35,7 +35,6 @@ public class DslBuilderAndRun extends DslBuilder {
       if (story.getTitle() != null && story.getTitle().equals(methodName)){
         doFinishedBuilding(story);
       }
-      
     }
     return obj;
   }

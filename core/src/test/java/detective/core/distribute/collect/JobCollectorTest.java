@@ -6,14 +6,14 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import detective.core.distribute.Job;
+import detective.core.distribute.JobToRun;
 import detective.core.distribute.collector.JobCollector;
 
 public class JobCollectorTest {
 
   @Test
   public void testStoryWithMoreThen1Scenarios_ShouldRunInDifferentThreadInSpark() {
-    List<Job> jobs = JobCollector.collectAll("detective.core.distribute.collect");
+    List<JobToRun> jobs = JobCollector.collectAll("detective.core.distribute.collect");
     
     Assert.assertEquals(jobs.size(), 1 + 3 + 4 + 4);
     

@@ -12,7 +12,7 @@ story() "Story 1 with one scenario and no shared data" {
     Just a simple story
   """
   
-  scenario "Simple Scenario" {
+  scenario "Simple Scenario which can't pass the check" {
     given "parameterA" {
       parameterA = 0
     }
@@ -25,6 +25,9 @@ story() "Story 1 with one scenario and no shared data" {
       echotask.parameterA << parameterA
       echotask.parameterA << 0
       ScenarioThreadRecorder.recordThread("sparkTest", "Story_2_Scenario_2_subpackage_FirstStory - Scenario1")
+      
+      //We create a issue here
+      echotask.parameterA << 1
     }
   }
   

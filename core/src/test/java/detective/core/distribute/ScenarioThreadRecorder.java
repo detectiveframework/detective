@@ -28,8 +28,8 @@ public class ScenarioThreadRecorder {
   public static String getThread(String testCaseName, String scenarioOrStoryName){
     if (datas.containsKey(testCaseName))
       return datas.get(testCaseName).get(scenarioOrStoryName);
-    
-    return null;
+    else
+      return null;
   }
 
 }

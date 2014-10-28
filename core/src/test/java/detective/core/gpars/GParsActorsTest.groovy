@@ -9,7 +9,7 @@ import groovyx.gpars.actor.DefaultActor
 
 class GParsActorsTest {
 
-  class GameMaster extends DefaultActor {
+  static class GameMaster extends DefaultActor {
     int secretNum
 
     void afterStart() {
@@ -32,7 +32,7 @@ class GParsActorsTest {
     }
   }
 
-  class Player extends DefaultActor {
+  static class Player extends DefaultActor {
     String name
     Actor server
     int myNum

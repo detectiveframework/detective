@@ -15,4 +15,5 @@
 * [Parallelism](parallelism/README.md)
    * [Filters](parallelism/filters.md)
    * [Spark integration](parallelism/spark_integration.md)
+   * [Jenkins Integration](parallelism/jenkins_integration.md)
 

@@ -15,14 +15,14 @@ import detective.core.runner.DslBuilderAndRun;
 public class JobRunnerFilterImpl implements JobRunner {
   
   class StoryFilterChainAdapter implements RunnerFilterChain<Story>{
-    private final Job job;
+    private final JobToRun job;
     private final RunnerFilterChain<JobStoryRunContext> jobStoryChain;
     
     private final RunnerFilterChain<Story> internalChain;
     
     private int storyPositionIndex = -1;
     
-    public StoryFilterChainAdapter(Job job, RunnerFilterChain<JobStoryRunContext> chain){
+    public StoryFilterChainAdapter(JobToRun job, RunnerFilterChain<JobStoryRunContext> chain){
       this.job = job;
       this.jobStoryChain = chain;
       this.internalChain = new RunnerFilterChainImpl<Story>(createFilters());
@@ -66,7 +66,7 @@ public class JobRunnerFilterImpl implements JobRunner {
   } 
 
   @Override
-  public void run(Job job) {
+  public void run(JobToRun job) {
     RunnerFilterChain<JobStoryRunContext> chain = createFilterChain();
     StoryFilterChainAdapter adapter = new StoryFilterChainAdapter(job, chain);
     DslBuilderAndRun.setFilterChainCurrentThread(adapter);
