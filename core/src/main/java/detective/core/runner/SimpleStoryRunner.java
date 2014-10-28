@@ -24,7 +24,7 @@ import detective.core.Detective;
 import detective.core.Story;
 import detective.core.StoryRunner;
 import detective.core.TestTask;
-import detective.core.distribute.Job;
+import detective.core.distribute.JobToRun;
 import detective.core.dsl.DslException;
 import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.SharedDataPlaceHolder;
@@ -42,7 +42,7 @@ public class SimpleStoryRunner implements StoryRunner{
   public SimpleStoryRunner(){
   }
 
-  public void run(final Story story, final Job job) {
+  public void run(final Story story, final JobToRun job) {
     int scenarioIndexConfig = getScenarioIndexConfig();
     
     Map<Scenario, Promise<Object>> promises = new HashMap<Scenario, Promise<Object>>();
@@ -76,9 +76,7 @@ public class SimpleStoryRunner implements StoryRunner{
         promise.join();
         if (promise.isError()){
           makeScenarioFail(s, promise.getError());
-        }else{
-          s.setSuccessed(true);
-        }          
+        }       
       } catch (Throwable e) {
         makeScenarioFail(s, e);
       }
@@ -103,7 +101,7 @@ public class SimpleStoryRunner implements StoryRunner{
   }
   
   //Handle Scenario Role
-  public void runScenario(final Scenario scenario, Parameters config) throws Throwable{
+  public void runScenario(final Scenario scenario, Parameters config){
     Parameters datain = new ParametersImpl(config);
     
     List<Row> datatable = scenario.getScenarioTable();
@@ -124,19 +122,35 @@ public class SimpleStoryRunner implements StoryRunner{
       }
       
       for (Promise<Object> p : promises){
-        p.join();
-        if (p.isError()){
-          makeScenarioFail(scenario, p.getError());
-          throw p.getError();
+        try {
+          p.join();
+          if (p.isError()){
+            makeScenarioFail(scenario, p.getError());
+          }else
+            scenario.setSuccessed(true);
+        } catch (InterruptedException e) {
+          makeScenarioFail(scenario, e);
         }
+        
       }
     }else{
       datain = datain.clone();
-      runScenarioNew(scenario, datain);
+      try {
+        runScenarioNew(scenario, datain);
+        scenario.setSuccessed(true);
+      } catch (Throwable e) {
+        makeScenarioFail(scenario, e);
+      }
+      
     }
   }
   
-  public void runScenarioNew(final Scenario scenario, Parameters datain) {
+  /**
+   * Run Scenario in current thread
+   * @param scenario
+   * @param datain
+   */
+  private void runScenarioNew(final Scenario scenario, Parameters datain) {
     //Shared data need join into the running user code so that they can change it
     Parameters parameterForWholeScenario = new ParametersImpl(scenario.getStory().getSharedDataMap());
     parameterForWholeScenario.putAll(datain);

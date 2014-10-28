@@ -35,10 +35,18 @@ public class IdleConnectionMonitorThread extends Thread {
   }
 
   public void shutdown() {
-    shutdown = true;
     synchronized (this) {
+      setShutdown(true);
       notifyAll();
     }
+  }
+
+  public boolean isShutdown() {
+    return shutdown;
+  }
+
+  public void setShutdown(boolean shutdown) {
+    this.shutdown = shutdown;
   }
 
 }

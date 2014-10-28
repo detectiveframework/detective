@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import detective.core.Detective;
 import detective.core.Scenario;
 import detective.core.Story;
-import detective.core.distribute.Job;
+import detective.core.distribute.JobToRun;
 import detective.core.distribute.JobFactory;
 import detective.core.exception.StoryFailException;
 import detective.core.filter.RunnerFilter;
@@ -21,7 +21,7 @@ public class JobCollectorFilter implements RunnerFilter<Story> {
   
   private int currentSotryIndex = 0;
   
-  private List<Job> jobs = new ArrayList<Job>();
+  private List<JobToRun> jobs = new ArrayList<JobToRun>();
 
   @Override
   public void doFilter(Story story, RunnerFilterChain<Story> chain) {
@@ -46,7 +46,7 @@ public class JobCollectorFilter implements RunnerFilter<Story> {
     }
   }
   
-  public List<Job> getJobs(){
+  public List<JobToRun> getJobs(){
     return jobs;
   }
 

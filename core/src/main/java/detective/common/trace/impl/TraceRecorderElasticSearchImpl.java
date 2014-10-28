@@ -28,49 +28,52 @@ public class TraceRecorderElasticSearchImpl implements TraceRecorder {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   public void record(TraceRecord trace) {
-    if (trace.getThreadName() == null)
-      trace.setThreadName(Thread.currentThread().getName());
+    logger.info(trace.toString());
+    return;
     
-    TransportClient client = ElasticSearchClientFactory.getTransportClient();
-    IndexRequestBuilder builder = client.prepareIndex(TRACE_INDEX, trace.getType());
-      
-    try {
-      XContentBuilder source = jsonBuilder()
-          .startObject()
-            .field("timestamp", trace.getTimestamp())
-            .field("type", trace.getType())
-            .field("hashKey", trace.getHashKey())
-            .field("caption", trace.getCaption())
-            .field("accountId", trace.getAccountId())
-            .field("fundId", trace.getFundId())
-            .field("operator", trace.getOperator())
-            .field("threadName", trace.getThreadName())
-            .field("cpu", trace.getCpu())
-            .field("queue", trace.getQueue());
-      
-      if (trace.getExtendDatas().size() > 0){
-        for (String key : trace.getExtendDatas().keySet()){
-          Object value = trace.getExtendDatas().get(key);
-          if (value instanceof String || value instanceof Number || null == value){
-            source.field(key, value);
-          }else{
-            throw new RuntimeException("We support only String and Number, if it's a Date please format as String first, the key contains error data type:" + key);
-          }          
-        }
-      }
-      if (trace.getExtendJsonData() != null && trace.getExtendJsonData().length() > 0){
-        source.rawField("extendJsonData", trace.getExtendJsonData().getBytes());
-        source.field("extendJsonDataOriginal", trace.getExtendJsonData());
-      }
-      source.endObject();
-      
-      builder.setSource(source);
-    } catch (IOException e) {
-      throw new RuntimeException(e.getMessage(), e);
-    }
-    
-    ListenableActionFuture<IndexResponse> future = builder.execute();
-    future.actionGet();
+//    if (trace.getThreadName() == null)
+//      trace.setThreadName(Thread.currentThread().getName());
+//    
+//    TransportClient client = ElasticSearchClientFactory.getTransportClient();
+//    IndexRequestBuilder builder = client.prepareIndex(TRACE_INDEX, trace.getType());
+//      
+//    try {
+//      XContentBuilder source = jsonBuilder()
+//          .startObject()
+//            .field("timestamp", trace.getTimestamp())
+//            .field("type", trace.getType())
+//            .field("hashKey", trace.getHashKey())
+//            .field("caption", trace.getCaption())
+//            .field("accountId", trace.getAccountId())
+//            .field("fundId", trace.getFundId())
+//            .field("operator", trace.getOperator())
+//            .field("threadName", trace.getThreadName())
+//            .field("cpu", trace.getCpu())
+//            .field("queue", trace.getQueue());
+//      
+//      if (trace.getExtendDatas().size() > 0){
+//        for (String key : trace.getExtendDatas().keySet()){
+//          Object value = trace.getExtendDatas().get(key);
+//          if (value instanceof String || value instanceof Number || null == value){
+//            source.field(key, value);
+//          }else{
+//            throw new RuntimeException("We support only String and Number, if it's a Date please format as String first, the key contains error data type:" + key);
+//          }          
+//        }
+//      }
+//      if (trace.getExtendJsonData() != null && trace.getExtendJsonData().length() > 0){
+//        source.rawField("extendJsonData", trace.getExtendJsonData().getBytes());
+//        source.field("extendJsonDataOriginal", trace.getExtendJsonData());
+//      }
+//      source.endObject();
+//      
+//      builder.setSource(source);
+//    } catch (IOException e) {
+//      throw new RuntimeException(e.getMessage(), e);
+//    }
+//    
+//    ListenableActionFuture<IndexResponse> future = builder.execute();
+//    future.actionGet();
   }
 
   private void buildString(TraceRecord trace) {

@@ -33,4 +33,12 @@ public class WebDriverTask extends AbstractTask implements TestTask{
     driver.get(url);
   }
 
+  public WebDriver getDriver() {
+    return driver;
+  }
+
+  public void setDriver(WebDriver driver) {
+    this.driver = driver;
+  }
+
 }

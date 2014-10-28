@@ -12,7 +12,7 @@ import detective.common.ClassUtils;
 import detective.core.Detective;
 import detective.core.Scenario;
 import detective.core.Story;
-import detective.core.distribute.Job;
+import detective.core.distribute.JobToRun;
 import detective.core.filter.FilterChainFactory;
 import detective.core.filter.RunnerFilter;
 import detective.core.filter.RunnerFilterChain;
@@ -41,7 +41,7 @@ public class JobCollector {
     DslBuilderAndRun.setFilterChainCurrentThread((RunnerFilterChain<Story>) chainFactory.getChain());
   }
   
-  private List<Job> getJobs(){
+  private List<JobToRun> getJobs(){
    for (RunnerFilter<?> filter : chainFactory.getChain()){
      if (filter instanceof JobCollectorFilter){
        return ((JobCollectorFilter)filter).getJobs();
@@ -56,8 +56,8 @@ public class JobCollector {
     DslBuilderAndRun.setFilterChainCurrentThread(null);
   }
   
-  public static List<Job> collectAll(String packageOrClassName){
-    List<Job> jobs = new ArrayList<Job>();
+  public static List<JobToRun> collectAll(String packageOrClassName){
+    List<JobToRun> jobs = new ArrayList<JobToRun>();
     
     try {
       List<Class<?>> classes = collectClass(packageOrClassName);
@@ -92,14 +92,14 @@ public class JobCollector {
     
   }
 
-  private static List<Job> collectJobs(Class<?> clazz) throws InstantiationException,
+  private static List<JobToRun> collectJobs(Class<?> clazz) throws InstantiationException,
       IllegalAccessException {
     JobCollector dis = new JobCollector();
     try{
       Script script = (Script)clazz.newInstance();
       script.run();
       
-      for (Job job : dis.getJobs())
+      for (JobToRun job : dis.getJobs())
         job.setStoryClassName(clazz.getName());
     }finally{
       dis.shutdown();

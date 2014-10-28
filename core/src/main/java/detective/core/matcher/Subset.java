@@ -115,7 +115,7 @@ public class Subset<T> extends BaseMatcher<T> {
           for (Object item : actualList){
             Object resultFromBooleanSearch = booleanSearch.call(item); 
             if (resultFromBooleanSearch instanceof Boolean){
-              if (Boolean.TRUE.equals(booleanSearch))
+              if (Boolean.TRUE.equals(resultFromBooleanSearch))
                 return item;
             }
           }

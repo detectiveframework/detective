@@ -12,7 +12,7 @@ public class JobStoryRunContext {
   /**
    * The job description currently trying to run
    */
-  private Job job;
+  private JobToRun job;
   
   /**
    * Current story which is trying to run
@@ -29,11 +29,11 @@ public class JobStoryRunContext {
     this.scriptClassName = scriptClass;
   }
 
-  public Job getJob() {
+  public JobToRun getJob() {
     return job;
   }
 
-  public void setJob(Job job) {
+  public void setJob(JobToRun job) {
     this.job = job;
   }
 
