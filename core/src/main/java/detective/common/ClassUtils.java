@@ -37,11 +37,6 @@ public class ClassUtils {
         if (file.endsWith(".class")) {
           try {
             String classname = pckgname + '.' + file.substring(0, file.length() - 6);
-            //GroovyClassLoader loader = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());
-            //Class clazz = loader.loadClass(classname, true, false, true);
-            //classes.add(clazz);
-            //Class.forName(classname, true, ClassUtils.class.getClassLoader()).isAssignableFrom(groovy.lang.Script.class);
-            //Class.forName(classname, true, loader).getSuperclass() == "groovy.lang.Script";
             classes.add(Class.forName(classname));
           } catch (final NoClassDefFoundError e) {
             // do nothing. this class hasn't been found by the
