@@ -89,7 +89,7 @@ public class AppTest extends TestCase {
 
     // "config1" is just an example of using a file other than
     // application.conf
-    Config config1 = ConfigFactory.load("detective/core/AppTest.conf");
+    Config config1 = ConfigFactory.load("detective/core/common/AppTest.conf");
 
     // use the config ourselves
     System.out.println("config1, complex-app.something="
@@ -102,7 +102,7 @@ public class AppTest extends TestCase {
 
     // "config2" shows how to configure a library with a custom settings
     // subtree
-    Config config2 = ConfigFactory.load("detective/core/AppTest1.conf");
+    Config config2 = ConfigFactory.load("detective/core/common/AppTest1.conf");
 
     // use the config ourselves
     System.out.println("config2, complex-app.something="
