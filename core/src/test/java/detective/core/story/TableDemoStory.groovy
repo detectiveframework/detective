@@ -2,8 +2,6 @@ package detective.core.story
 
 import static detective.core.Detective.*;
 
-System.setProperty("detective.runner.scenario.index", "1");
-
 story() "Demo for tables" {
   """
     In order to organize data easier, we provide scenario table and normal table.
@@ -18,7 +16,7 @@ story() "Demo for tables" {
       10          | 11          | 21
      }
     
-    given "echo 1" {
+    given "a parameter out side of scenario table" {
       parameter.given1 = "given1"
       runtask echoTask()
     }

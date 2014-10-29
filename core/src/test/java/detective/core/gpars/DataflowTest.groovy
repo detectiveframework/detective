@@ -67,7 +67,11 @@ public class DataflowTest {
     }
     
     task {
-        while(true) println buffer.val  //read from the buffer in a loop
+        def index = 0
+        while(true){
+          println index++
+          println buffer.val  //read from the buffer in a loop
+        } 
     }
     
     println buffer.val

@@ -23,10 +23,10 @@ import detective.utils.GroovyUtils;
  */
 public class Subset<T> extends BaseMatcher<T> {
 
-  private final Object expectedValue;
+  private final Object fullValue;
   
-  public Subset(T expectedValue) {
-    this.expectedValue = expectedValue;
+  public Subset(T fullValue) {
+    this.fullValue = fullValue;
   }
   
   @Factory
@@ -35,8 +35,8 @@ public class Subset<T> extends BaseMatcher<T> {
   }
   
   @Override
-  public boolean matches(Object actualValue) {
-    isMatches(actualValue, expectedValue);
+  public boolean matches(Object subValue) {
+    isMatches(fullValue, subValue);
     
     return true;
   }
@@ -48,40 +48,45 @@ public class Subset<T> extends BaseMatcher<T> {
 
   @Override
   public void describeTo(Description description) {
-    description.appendValue(expectedValue);
+    description.appendValue(fullValue);
   }
   
-  private void isMatches(Object actualValue, Object expectedValue){
+  private void isMatches(Object fullValue, Object subValue){
     //List
-    if (actualValue instanceof List && expectedValue instanceof List){
-      final List<?> actualList = (List<?>)actualValue;
-      final List<?> expectedList = (List<?>)expectedValue;
+    if (fullValue instanceof List && subValue instanceof List){
+      final List<?> fulllList = (List<?>)fullValue;
+      final List<?> subList = (List<?>)subValue;
       
-      if (actualList.size() == 0)
-        throw new java.lang.AssertionError("List can't be empty:" + actualList);
+      if (fulllList.size() == 0)
+        throw new java.lang.AssertionError("List can't be empty:" + fulllList);
       
-      if (expectedList.size() == 0)
-        throw new java.lang.AssertionError("List can't be empty:" + expectedList);
+      if (subList.size() == 0)
+        throw new java.lang.AssertionError("List can't be empty:" + subList);
       
-      if (actualList.size() < expectedList.size())
-        throw new java.lang.AssertionError("acutal data is smaller then expected list. actual item size:" + actualList.size() + " expected item size:" + expectedList.size());
+      if (fulllList.size() < subList.size())
+        throw new java.lang.AssertionError("acutal data is smaller then expected list. actual item size:" + fulllList.size() + " expected item size:" + subList.size());
       
-      //The first column is the key, which identify how to identify a row
-      //it can be a row number (if it's a number), or it's a closure which return a boolean to identify a row
-      Object expectedItem = expectedList.get(0);
-      
-      
+      matchToList(fulllList, subList);
+    }else{
+      throw new java.lang.AssertionError("subset for now support only list to list. you types " + fullValue.getClass() + ":" + subValue.getClass());
+    }
+  }
+
+  private void matchToList(final List<?> fulllList, final List<?> subList) throws AssertionError {
+    //The first column is the key, which identify how to identify a row
+    //it can be a row number (if it's a number), or it's a closure which return a boolean to identify a row
+    for (Object expectedItem : subList){
       if (expectedItem instanceof Row){
         //we support row/table first
         Row row = (Row)expectedItem;
-        Object actualRowFound = findRightRowInActualList(actualList, row);
+        Object actualRowFound = findRightRowInFullList(fulllList, row);
         if (actualRowFound == null){
           throw new java.lang.AssertionError("couldn't found any item in actual list based on first column of row" + row);
         }
         compareTwoRow(actualRowFound, row);
+      }else{
+        throw new java.lang.AssertionError("Subset have to be a Row type, type you provided: " + expectedItem.getClass().getName());
       }
-    }else{
-      throw new java.lang.AssertionError("subset for now support only list to list. you types " + actualValue.getClass() + ":" + expectedValue.getClass());
     }
   }
   
@@ -94,7 +99,7 @@ public class Subset<T> extends BaseMatcher<T> {
     }
   }
 
-  private Object findRightRowInActualList(final List<?> actualList, Row row)
+  private Object findRightRowInFullList(final List<?> fullList, Row row)
       throws AssertionError {
     String[] headers = row.getHeaderAsStrings();
     
@@ -102,17 +107,17 @@ public class Subset<T> extends BaseMatcher<T> {
     Closure<Object> rowSearcher = null;
     if (firstColumn instanceof Number){
       //Number
-      rowSearcher = new Closure<Object>(this, actualList){
+      rowSearcher = new Closure<Object>(this, fullList){
         public Object call() {
-          return actualList.get(((Number)firstColumn).intValue());
+          return fullList.get(((Number)firstColumn).intValue());
         }
       };
     }else if (firstColumn instanceof Closure){
       //A closure which return boolean
       final Closure booleanSearch = (Closure)firstColumn;
-      rowSearcher = new Closure<Object>(this, actualList){
+      rowSearcher = new Closure<Object>(this, fullList){
         public Object call() {
-          for (Object item : actualList){
+          for (Object item : fullList){
             Object resultFromBooleanSearch = booleanSearch.call(item); 
             if (resultFromBooleanSearch instanceof Boolean){
               if (Boolean.TRUE.equals(resultFromBooleanSearch))

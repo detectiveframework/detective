@@ -132,7 +132,7 @@ public class Detective {
     return Subset.subsetOf(operand);
   }
   
-  //Utilities
+  //Utilities ================
   public static String randomId() {
     return StringUtils.randomBase64UUID();
   }

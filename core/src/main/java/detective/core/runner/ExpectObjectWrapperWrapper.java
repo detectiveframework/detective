@@ -105,7 +105,12 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements W
     try {
       Assert.assertThat("", realValue, (Matcher)obj);
     } catch (AssertionError e) {
-      Assert.assertThat("", this, (Matcher)obj);
+      try {
+        Assert.assertThat("", this, (Matcher)obj);
+      } catch (AssertionError e1) {
+        // we got AssertionError still? most likely because of first try, we throw out the original error
+        throw e;
+      }
     }
   }
   

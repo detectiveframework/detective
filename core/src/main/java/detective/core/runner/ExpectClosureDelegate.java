@@ -103,10 +103,25 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
     }
   }
   
-  public List<Row> table(Closure<?> c){
-    List<Row> rows = TableParser.asListOfRows(values, c);
-    
-    return rows;
+  public List<Row> table(Closure<?> closure){
+    return TableParser.asListOfRows(values, closure);
   }
  
+  public void expect(String errorMsg, Closure<?> closure){
+    try {
+      closure.setDelegate(this);
+      closure.setResolveStrategy(Closure.DELEGATE_FIRST);
+      closure.call();
+    } catch (Exception e) {
+      if (e.getMessage() == null && errorMsg == null)
+        return;
+      
+      if (e.getMessage() == null && errorMsg != null)
+        throw new AssertionError("Get a null error message but expect " + errorMsg);
+      
+      if (e.getMessage() != null){
+        e.getMessage().contains(errorMsg);
+      }
+    }
+  }
 }
