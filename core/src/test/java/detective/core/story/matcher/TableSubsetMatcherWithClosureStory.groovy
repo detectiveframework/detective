@@ -3,9 +3,6 @@ package detective.core.story.matcher
 import static detective.core.Detective.*;
 
 story() "Detective Subset matcher story with row index number" {
-  """
-    In order to simplify table to table, json to table, list<Map> to table comparasion, we offer a subset matcher
-  """
   
   scenario "two table equals to each other, subset should still matched" {
     given "table for actual value" {

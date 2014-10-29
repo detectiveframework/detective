@@ -3,6 +3,9 @@ package detective.core.story;
 import static org.junit.Assert.*;
 
 import detective.core.story.matcher.ErrorExpectStory
+import detective.core.story.matcher.SubsetJsonTableStory
+import detective.core.story.matcher.SubsetListClassTableStory
+import detective.core.story.matcher.SubsetListMapTableStory
 import detective.core.story.matcher.TableSubsetMatcherWithClosureStory
 import detective.core.story.matcher.TableSubsetMatcherWithRowIndexMoreCaseStory
 import detective.core.story.matcher.TableSubsetMatcherWithRowIndexStory
@@ -104,6 +107,24 @@ public class RunTestFromScriptTest {
   @Test
   public void testTableSubsetMatcherWithRowIndexStory(){
     TableSubsetMatcherWithRowIndexStory story = new TableSubsetMatcherWithRowIndexStory();
+    story.run();
+  }
+  
+  @Test
+  public void testSubsetJsonTableStory(){
+    SubsetJsonTableStory story = new SubsetJsonTableStory();
+    story.run();
+  }
+  
+  @Test
+  public void testSubsetListClassTableStory(){
+    SubsetListClassTableStory story = new SubsetListClassTableStory();
+    story.run();
+  }
+  
+  @Test
+  public void testSubsetListMapTableStory(){
+    SubsetListMapTableStory story = new SubsetListMapTableStory();
     story.run();
   }
 }
