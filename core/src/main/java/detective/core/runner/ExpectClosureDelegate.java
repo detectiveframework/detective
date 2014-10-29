@@ -108,20 +108,33 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
   }
  
   public void expect(String errorMsg, Closure<?> closure){
+    List<String> list = new ArrayList<String>();
+    list.add(errorMsg);
+    expect(list, closure);
+  }
+
+  private void errorMsgContains(String errorMsg, Throwable e) throws AssertionError {
+    if (e.getMessage() == null && errorMsg == null)
+      return;
+    
+    if (e.getMessage() == null && errorMsg != null)
+      throw new AssertionError("Get a null error message but expect " + errorMsg);
+    
+    if (e.getMessage() != null){
+      if (!e.getMessage().contains(errorMsg)){
+        throw new AssertionError("\nExpected: " + errorMsg + "\n     got:" + e.getMessage());
+      }
+    }
+  }
+  
+  public void expect(List<String> errorMsgs, Closure<?> closure){
     try {
       closure.setDelegate(this);
       closure.setResolveStrategy(Closure.DELEGATE_FIRST);
       closure.call();
-    } catch (Exception e) {
-      if (e.getMessage() == null && errorMsg == null)
-        return;
-      
-      if (e.getMessage() == null && errorMsg != null)
-        throw new AssertionError("Get a null error message but expect " + errorMsg);
-      
-      if (e.getMessage() != null){
-        e.getMessage().contains(errorMsg);
-      }
+    } catch (Throwable e) {
+      for (String errorMsg : errorMsgs)
+        errorMsgContains(errorMsg, e);
     }
   }
 }

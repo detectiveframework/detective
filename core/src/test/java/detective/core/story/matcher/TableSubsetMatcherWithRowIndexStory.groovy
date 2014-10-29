@@ -52,5 +52,32 @@ story() "Detective Subset matcher story with row index number" {
       expectedTable << subsetOf(actualTable)
     }
   }
+  
+  scenario "full table smaller then subset table should return an error" {
+    given "table for actual value" {
+      actualTable = table {
+        intColumn   | stringColumn   | stringColumn2
+        1           | "row1"         | "row1 column2"
+        4           | "row2"         | "row2 column2"
+        10          | "row3"         | "row2 column2"
+     }
+    }
+    
+    given "table for expected value" {
+      expectedTable = table {
+        rowNumber   |intColumn   | stringColumn   | stringColumn2
+        0           |1           | "row1"         | "row1 column2"
+        1           |4           | "row2"         | "row2 column2"
+        2           |10          | "row3"         | "row2 column2"
+        3           |20          | "row4"         | "row4 column2"
+      }
+    }
+
+    then "expectedTable is a subset of actual table"{
+      expect ("actual item size:3 expected item size:4"){
+        expectedTable << subsetOf(actualTable)
+      }      
+    }
+  }
 }
 

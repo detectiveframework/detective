@@ -107,6 +107,10 @@ public class Subset<T> extends BaseMatcher<T> {
     Closure<Object> rowSearcher = null;
     if (firstColumn instanceof Number){
       //Number
+      Integer intIndex = ((Number)firstColumn).intValue();
+      if (intIndex < 0 || intIndex >= fullList.size())
+        throw new DslException("Row index number have to in right range, in your case the number have to between 0 and " + (fullList.size() - 1) + "");
+      
       rowSearcher = new Closure<Object>(this, fullList){
         public Object call() {
           return fullList.get(((Number)firstColumn).intValue());

@@ -6,7 +6,7 @@ detective.core.distribute.SparkDriver applicationName packageOrClassName
 
 you can config master via -Dspark.master=yourMasterUrl
 
-opt/spark/bin/spark-submit --class detective.core.distribute.SparkDriver --master MASTER_URL YOURJARFile ___YourPackageNameOrStoryName___ ___YourApplicationNameWillShowInSparkUI___ -Dspark.master=MASTER_URL
+sudo /opt/spark/bin/spark-submit --class detective.core.distribute.SparkDriver --master [masterURL] --conf "spark.executor.memory=2G" ./six-test-0.5.0-SNAPSHOT.jar [packageName] [applicationName] -Dspark.master=[masterURLAgain]
 
 ## Jenkins with
 
