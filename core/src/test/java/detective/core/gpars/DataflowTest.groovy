@@ -70,6 +70,9 @@ public class DataflowTest {
         def index = 0
         while(true){
           println index++
+          if (index >= 8)
+            return;
+            
           println buffer.val  //read from the buffer in a loop
         } 
     }
