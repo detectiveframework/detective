@@ -61,8 +61,11 @@ public class SparkDriver {
       ;
     JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
-    List<JobToRun> jobs = JobCollector.collectAll(packageName);
-    JavaRDD<JobToRun> dataset = jsc.parallelize(jobs);
+    int duplicatedtasks = DetectiveFactory.INSTANCE.getConfig().getInt("spark.pressureTest.duplicateTasks");
+    logger.info("Detective pressure test, jobs duplication: " + duplicatedtasks);
+    List<JobToRun> jobs = JobCollector.collectAll(packageName, duplicatedtasks);
+    
+    JavaRDD<JobToRun> dataset = jsc.parallelize(jobs, jobs.size());
     
     JavaRDD<JobRunResult> datasetResult = dataset.map(new Function<JobToRun, JobRunResult>(){
 

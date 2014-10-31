@@ -97,5 +97,25 @@ story() "Detective Subset matcher story with row index number more cases" {
       }      
     }
   }
+  
+  scenario "fullset / subset table contains null value" {
+    given "table for actual value" {
+      actualTable = table {
+        intColumn   | stringColumn   | stringColumn2
+        1           | null         | "row1 column2"
+     }
+    }
+    
+    given "table for expected value" {
+      expectedTable = table {
+        rowNumber   |intColumn   | stringColumn   | stringColumn2  
+        0           |1           | null           | "row1 column2"  
+      }
+    }
+
+    then "should still matches"{
+      expectedTable << subsetOf(actualTable)
+    }
+  }
 }
 

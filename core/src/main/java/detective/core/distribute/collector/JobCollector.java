@@ -56,6 +56,24 @@ public class JobCollector {
     DslBuilderAndRun.setFilterChainCurrentThread(null);
   }
   
+  /**
+   * 
+   * @param packageOrClassName
+   * @param duplicates how many jobs you'd like to duplicate
+   * @return
+   */
+  public static List<JobToRun> collectAll(String packageOrClassName, int duplicates){
+    List<JobToRun> jobs = collectAll(packageOrClassName);
+    List<JobToRun> duplicatedJobs = new ArrayList<JobToRun>();
+    if (duplicates > 0){
+      for (int i = 0; i < duplicates; i++){
+        duplicatedJobs.addAll(jobs);
+      }
+    }
+    
+    return duplicatedJobs;
+  }
+  
   public static List<JobToRun> collectAll(String packageOrClassName){
     List<JobToRun> jobs = new ArrayList<JobToRun>();
     
