@@ -4,7 +4,7 @@
     <head>
         
         <meta charset="UTF-8">
-        <title>Spark integration | Introduction</title>
+        <title>sqs | Introduction</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="generator" content="GitBook 1.0.3">
@@ -18,10 +18,10 @@
     
     
     
-    <link rel="next" href="../parallelism/jenkins_integration.html" />
+    <link rel="next" href="../configuration/README.html" />
     
     
-    <link rel="prev" href="../parallelism/filters.html" />
+    <link rel="prev" href="../tasks/s3.html" />
     
 
         
@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="6.2" data-basepath=".." data-revision="1414927174856">
+    <div class="book"  data-level="4.3.2" data-basepath=".." data-revision="1414927174856">
     
 
 <div class="book-summary">
@@ -421,7 +421,7 @@
         </li>
     
         
-        <li class="chapter " data-level="4.3.2" data-path="tasks/sqs.html">
+        <li class="chapter active" data-level="4.3.2" data-path="tasks/sqs.html">
             
                 
                     <a href="../tasks/sqs.html">
@@ -496,7 +496,7 @@
         </li>
     
         
-        <li class="chapter active" data-level="6.2" data-path="parallelism/spark_integration.html">
+        <li class="chapter " data-level="6.2" data-path="parallelism/spark_integration.html">
             
                 
                     <a href="../parallelism/spark_integration.html">
@@ -621,15 +621,9 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_1068">
+                    <section class="normal" id="section-gitbook_1080">
                     
-                        <h1 id="spark-integration">Spark integration</h1>
-<p>By default Detective has been configed to connect spark master &quot;local[200]&quot;, which means you don&#39;t need config anything, a new spark &quot;cluster&quot; will start up in your local machine with 200 threads capacity.</p>
-<h2 id="run-with-spark-local-server">Run with spark local server</h2>
-<p>bin/spark-submit --class detective.core.distribute.SparkDriver --master local[8]  [YourJarFile] [YourPackageOrSotry] [YourApplicationName] -Dspark.master=local[8]</p>
-<h2 id="build-a-true-spark-cluster">Build a true Spark cluster</h2>
-<p>To build your own spark cluster, please reference to <a href="https://spark.apache.org/docs/latest/cluster-overview.html" target="_blank">Spark documentation </a></p>
-<p>however, we require you do one change as we have to use a newer HttpClient component but Spark shipped a older one. To overcome this issue, for now please make a change in</p>
+                        <h1 id="sqs">sqs</h1>
 
                     
                     </section>
@@ -640,10 +634,10 @@
         </div>
 
         
-        <a href="../parallelism/filters.html" class="navigation navigation-prev " aria-label="Previous page: Filters"><i class="fa fa-angle-left"></i></a>
+        <a href="../tasks/s3.html" class="navigation navigation-prev " aria-label="Previous page: s3"><i class="fa fa-angle-left"></i></a>
         
         
-        <a href="../parallelism/jenkins_integration.html" class="navigation navigation-next " aria-label="Next page: Jenkins Integration"><i class="fa fa-angle-right"></i></a>
+        <a href="../configuration/README.html" class="navigation navigation-next " aria-label="Next page: Configuration"><i class="fa fa-angle-right"></i></a>
         
     </div>
 </div>

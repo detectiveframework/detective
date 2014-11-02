@@ -4,7 +4,7 @@
     <head>
         
         <meta charset="UTF-8">
-        <title>Spark integration | Introduction</title>
+        <title>httpclient | Introduction</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="generator" content="GitBook 1.0.3">
@@ -18,10 +18,10 @@
     
     
     
-    <link rel="next" href="../parallelism/jenkins_integration.html" />
+    <link rel="next" href="../tasks/aws.html" />
     
     
-    <link rel="prev" href="../parallelism/filters.html" />
+    <link rel="prev" href="../tasks/echo.html" />
     
 
         
@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="6.2" data-basepath=".." data-revision="1414927174856">
+    <div class="book"  data-level="4.2" data-basepath=".." data-revision="1414927174856">
     
 
 <div class="book-summary">
@@ -372,7 +372,7 @@
         </li>
     
         
-        <li class="chapter " data-level="4.2" data-path="tasks/httpclient.html">
+        <li class="chapter active" data-level="4.2" data-path="tasks/httpclient.html">
             
                 
                     <a href="../tasks/httpclient.html">
@@ -496,7 +496,7 @@
         </li>
     
         
-        <li class="chapter active" data-level="6.2" data-path="parallelism/spark_integration.html">
+        <li class="chapter " data-level="6.2" data-path="parallelism/spark_integration.html">
             
                 
                     <a href="../parallelism/spark_integration.html">
@@ -621,15 +621,155 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_1068">
+                    <section class="normal" id="section-gitbook_1078">
                     
-                        <h1 id="spark-integration">Spark integration</h1>
-<p>By default Detective has been configed to connect spark master &quot;local[200]&quot;, which means you don&#39;t need config anything, a new spark &quot;cluster&quot; will start up in your local machine with 200 threads capacity.</p>
-<h2 id="run-with-spark-local-server">Run with spark local server</h2>
-<p>bin/spark-submit --class detective.core.distribute.SparkDriver --master local[8]  [YourJarFile] [YourPackageOrSotry] [YourApplicationName] -Dspark.master=local[8]</p>
-<h2 id="build-a-true-spark-cluster">Build a true Spark cluster</h2>
-<p>To build your own spark cluster, please reference to <a href="https://spark.apache.org/docs/latest/cluster-overview.html" target="_blank">Spark documentation </a></p>
-<p>however, we require you do one change as we have to use a newer HttpClient component but Spark shipped a older one. To overcome this issue, for now please make a change in</p>
+                        <h1 id="httpclient">httpclient</h1>
+<p>Httpclient task act as a http client. it can do most your browser can do except renderering.</p>
+<p>HTTP Client Task</p>
+  <p>
+  Support GET, PUT, POST, DELETE, HEAD and OPTIONS
+
+  <h4>Input</h4>
+
+  <pre>
+
+    http.use_shared_cookies: default true, identify if this httpclient will read cookies from share data section
+
+    http.cookies: optional, output of other HTTPClientTask
+
+    http.address: a String or a Java URI
+
+    http.method: GET, PUT, POST, DELETE, HEAD, OPTIONS, optional, default to POST
+
+
+
+    http.post.string: optional, the data as a plain text which will post to server
+
+
+
+    http.post.file.filename: optional, the file you&#39;d like to upload
+
+
+
+  </pre>
+
+  <h4>Output</h4>
+
+  <pre>
+
+    http.cookies: the http context current task have (may created by this task or passed in from input)
+
+    http.content: http content returned from server
+    http.content.string: http content returned from server, converted into string
+
+    http.status.code
+
+    http.header. : all headers returned from server
+
+  </pre>
+
+
+
+  <ul>
+
+   <li>
+
+     GET  The HTTP GET method is defined in section 9.3 of
+
+  <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC2616</a>:
+
+  The GET method means retrieve whatever information (in the form of an
+
+  entity) is identified by the Request-URI.
+
+   </li>
+
+   <li>
+
+     PUT HTTP PUT method.
+
+  The HTTP PUT method is defined in section 9.6 of
+
+  <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC2616</a>:
+
+  The PUT method requests that the enclosed entity be stored under the
+
+  supplied Request-URI.
+
+   </li>
+
+   <li>
+
+     POST HTTP POST method.
+
+  The HTTP POST method is defined in section 9.5 of
+
+  <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC2616</a>:
+
+  The POST method is used to request that the origin server accept the entity
+
+  enclosed in the request as a new subordinate of the resource identified by
+
+  the Request-URI in the Request-Line.
+
+   </li>
+
+   <li>
+
+     DELETE HTTP DELETE method
+
+  The HTTP DELETE method is defined in section 9.7 of
+
+  <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC2616</a>:
+
+  The DELETE method requests that the origin server delete the resource
+
+  identified by the Request-URI.
+
+   </li>
+
+   <li>
+
+     HEAD HTTP HEAD method.
+
+  The HTTP HEAD method is defined in section 9.4 of
+
+  <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC2616</a>:
+
+  The HEAD method is identical to GET except that the server MUST NOT
+
+  return a message-body in the response.
+
+   </li>
+
+   <li>
+
+   OPTIONS HTTP OPTIONS method.
+
+  The HTTP OPTIONS method is defined in section 9.2 of
+
+  <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC2616</a>:
+
+   The OPTIONS method represents a request for information about the
+
+   communication options available on the request/response chain
+
+   identified by the Request-URI.
+
+   </li>
+
+
+
+  </ul>
+
+  It able to share cookies which means you can share session between different requests in most cases.
+
+
+  HttpClient Connection Manager Document Link: <a href="http://hc.apache.org/httpcomponents-client-4.3.x/tutorial/html/connmgmt.html" target="_blank">http://hc.apache.org/httpcomponents-client-4.3.x/tutorial/html/connmgmt.html</a>
+
+  </p>
+
+
 
                     
                     </section>
@@ -640,10 +780,10 @@
         </div>
 
         
-        <a href="../parallelism/filters.html" class="navigation navigation-prev " aria-label="Previous page: Filters"><i class="fa fa-angle-left"></i></a>
+        <a href="../tasks/echo.html" class="navigation navigation-prev " aria-label="Previous page: echo"><i class="fa fa-angle-left"></i></a>
         
         
-        <a href="../parallelism/jenkins_integration.html" class="navigation navigation-next " aria-label="Next page: Jenkins Integration"><i class="fa fa-angle-right"></i></a>
+        <a href="../tasks/aws.html" class="navigation navigation-next " aria-label="Next page: aws"><i class="fa fa-angle-right"></i></a>
         
     </div>
 </div>
