@@ -1,15 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
+	<name>io.bddhub:detective.core</name>
+	<description>A BDD / Testing framework with pure Groovy DSL, running in a Spark cluster, advanced reporting and clearly define the boundary between BA Tester / developer</description>
+	<url>https://github.com/detectiveframework/detective</url>
 
 	<groupId>io.bddhub</groupId>
 	<artifactId>detective.core</artifactId>
 	<!-- <version>1.0.0-SNAPSHOT</version> -->
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
-
-	<name>io.bddhub:detective.core</name>
-	<url>https://github.com/detectiveframework/detective.git</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,21 +21,21 @@
 		<license>
 			<name>Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
 		</license>
 	</licenses>
 
 	<scm>
 		<connection>scm:git:git://github.com/detectiveframework/detective.git</connection>
 		<developerConnection>scm:git:git@github.com:detectiveframework/detective.git</developerConnection>
-		<url>https://github.com/detectiveframework/detective.git</url>
+		<url>git@github.com:detectiveframework/detective.git</url>
 	</scm>
 
 	<developers>
 		<developer>
 			<name>James Luo</name>
 			<email>jamesluo.au@gmail.com</email>
-			<organizationUrl>http://www.sonatype.com</organizationUrl>
+			<organization>Luo</organization>
+			<organizationUrl>https://github.com/detectiveframework/detective.git</organizationUrl>
 		</developer>
 	</developers>
 

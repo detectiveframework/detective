@@ -3,6 +3,16 @@ A BDD / Testing framework with pure Groovy DSL, running in a Spark cluster, adva
 
 [Visit Our Documentation Page](http://detectiveframework.github.io/detective)
 
+We have release our 1.0.0 on Maven central repository.
+
+"""xml
+<dependency>
+	<groupId>io.bddhub</groupId>
+	<artifactId>detective.core</artifactId>
+	<version>1.0.0</version>
+</dependency>
+"""
+
 ## Introduction
 
 * A DSL with pure groovy, no additional compile process required
