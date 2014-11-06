@@ -25,6 +25,10 @@ public class TableParser {
   public static Row or(Integer self, Integer arg) {
     return appendRow(self, arg);
   }
+  
+  public static Row or(Integer self, Number arg) {
+    return appendRow(self, arg);
+  }
 
   public static Row or(Boolean self, Boolean arg) {
     return appendRow(self, arg);

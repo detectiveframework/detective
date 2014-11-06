@@ -19,7 +19,7 @@ import detective.core.services.DetectiveFactory;
  * Create a tree like parameters. 
  * always try to get/set parent parameter first.
  * 
- * @author bglcorp
+ * @author James Luo
  *
  */
 public class ParametersImpl implements Parameters{
@@ -27,6 +27,8 @@ public class ParametersImpl implements Parameters{
   private static final Logger logger = LoggerFactory.getLogger(ParametersImpl.class);
   
   private Parameters parent;
+  
+  public static Parameters EMPTY_PARAMETERS = new ParametersImpl();
   
   public Parameters getParent() {
     return parent;
