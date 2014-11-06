@@ -95,5 +95,26 @@ story() "Demo for tables" {
       }
     }
   }
+  
+  scenario "Read variable from out side of table scope" {
+    given "a table with col1, col2, and expected" {
+      headerName = "newName"
+      expectedValue = 3
+      mytable = table {
+        col1    | col2    | expected        | headerName 
+        1       | 2       | expectedValue   | "header name effected by variable"
+       }
+      
+      runtask echoTask()
+    }
+    
+    then "I can read my table a lot of ways"{
+      mytable.each { row ->
+        row.expected << row.col1 + row.col2;
+        row.newName << "header name effected by variable"
+      }
+      
+    }
+  }
 }
 

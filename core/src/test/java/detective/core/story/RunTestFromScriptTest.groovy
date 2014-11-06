@@ -9,6 +9,7 @@ import detective.core.story.matcher.SubsetListMapTableStory
 import detective.core.story.matcher.TableSubsetMatcherWithClosureStory
 import detective.core.story.matcher.TableSubsetMatcherWithRowIndexMoreCaseStory
 import detective.core.story.matcher.TableSubsetMatcherWithRowIndexStory
+import detective.core.story.table.TableMoreCaseStory
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,6 +80,13 @@ public class RunTestFromScriptTest {
     TaskDemoStory story = new TaskDemoStory();
     story.run();
   }
+  
+  @Test
+  public void testTaskMoreCaseStory() {
+    TableMoreCaseStory story = new TableMoreCaseStory();
+    story.run();
+  }
+  
   
   @Test
   public void testTableDemoStory(){

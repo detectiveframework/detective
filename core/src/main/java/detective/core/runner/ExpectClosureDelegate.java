@@ -104,7 +104,7 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
   }
   
   public List<Row> table(Closure<?> closure){
-    return TableParser.asListOfRows(ParametersImpl.EMPTY_PARAMETERS, closure);
+    return TableParser.asListOfRows(values, closure);
   }
  
   public void expect(String errorMsg, Closure<?> closure){
