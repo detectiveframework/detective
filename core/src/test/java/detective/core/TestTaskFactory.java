@@ -1,6 +1,7 @@
 package detective.core;
 
 import detective.core.testdsl.stock.SweaterStockManagerTask;
+import detective.core.testdsl.superstream.centralhub.GetAbnStatusTask;
 import detective.task.EchoTask;
 
 public class TestTaskFactory {
@@ -34,6 +35,10 @@ public class TestTaskFactory {
   
   public static EchoTask echo(){
     return new EchoTask();
+  }
+  
+  public static GetAbnStatusTask getAbnStatusTask(){
+  	return new GetAbnStatusTask();
   }
 
 }
