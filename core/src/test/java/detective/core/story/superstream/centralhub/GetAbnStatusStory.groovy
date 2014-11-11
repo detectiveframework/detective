@@ -9,7 +9,8 @@ story() "Get abn status from centralhub Story" {
   
   scenario "for stress test" {
     given "random fundid" {
-			centralhubHost = 'http://localhost:8080'
+//			centralhubHost = 'http://localhost:8080'
+			centralhubHost = 'https://superstream.sf360test.com.au/'
       fundid = UUID.randomUUID().toString().replaceAll('-', '')
     }
     
