@@ -33,12 +33,12 @@ public class SparkDriver {
    * @param args classOrPackageName
    * @return
    */
-  public static int main(String[] args) {
+  public static void main(String[] args) {
     if (args == null || args.length < 1){
       System.err.println("Usage: detective.core.distribute.SparkDriver packageOrClassName applicationName(Optional)\n"
           + "  if you'd like to setup master, please change your detective.conf file or -Dspark.master=yourMasterUrl\n"
           + "  -Dspark.driver.host is the host name if you'd like to use");
-      return -1;
+      System.exit(-1);
     }
     
     String master = DetectiveFactory.INSTANCE.getConfig().getString("spark.master");
@@ -93,8 +93,6 @@ public class SparkDriver {
     for (JobRunResult job : jobsAfterRun){
       logger.info(job.toString());
     }
-    
-    return 0;
   }
   
 
