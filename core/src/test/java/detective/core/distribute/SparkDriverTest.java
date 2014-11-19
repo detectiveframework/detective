@@ -11,7 +11,9 @@ public class SparkDriverTest {
   @Test
   public void test() {
     runningThreads.clear();
-    SparkDriver.main(new String[]{"detective.core.distribute.collect"});
+    Long errors = SparkDriver.run(new String[]{"detective.core.distribute.collect"});
+    
+    Assert.assertEquals(errors.intValue(), 1);
     
     checkThread("Story_1_Scenario_1 - Scenario1");
     checkThread("Story_1_Scenario_3 - Scenario1");

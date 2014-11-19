@@ -41,6 +41,18 @@ public class SparkDriver {
       System.exit(-1);
     }
     
+    long errors = run(args);
+    
+    if (errors > 0)
+      System.exit(-1);
+  }
+
+  /**
+   * 
+   * @param args
+   * @return how many jobs failed
+   */
+  public static long run(String[] args) {
     String master = DetectiveFactory.INSTANCE.getConfig().getString("spark.master");
     logger.info("Detective is running with master " + master);
     String packageName = args[0];
@@ -78,16 +90,6 @@ public class SparkDriver {
         return job.getJobResult();
       }});
     
-//    dataset.foreach(new VoidFunction<JobToRun>(){
-//
-//      @Override
-//      public void call(JobToRun job) throws Exception {
-//        logger.info(job.toString());
-//        
-//        JobRunner runner = new JobRunnerFilterImpl();
-//        runner.run(job);
-//      }});
-    
     List<JobRunResult> jobsAfterRun = datasetResult.collect();
     Collections.sort(jobsAfterRun);
     long errors = 0;
@@ -98,10 +100,8 @@ public class SparkDriver {
       logger.info(job.toString());      
     }
     
-    logger.info(jobsAfterRun.size() + " tasks ran, " + errors + " failed " + (jobsAfterRun.size() - errors) + " successed");
-    
-    if (errors > 0)
-      System.exit(-1);
+    logger.info(jobsAfterRun.size() + " tasks ran, " + errors + " failed, " + (jobsAfterRun.size() - errors) + " successed");
+    return errors;
   }
   
 
