@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -77,6 +78,8 @@ public class SparkDriver {
     logger.info("Detective pressure test, jobs duplication: " + duplicatedtasks);
     List<JobToRun> jobs = JobCollector.collectAll(packageName, duplicatedtasks);
     
+    Long startTime = System.nanoTime();
+    
     JavaRDD<JobToRun> dataset = jsc.parallelize(jobs, jobs.size());
     
     JavaRDD<JobRunResult> datasetResult = dataset.map(new Function<JobToRun, JobRunResult>(){
@@ -91,16 +94,23 @@ public class SparkDriver {
       }});
     
     List<JobRunResult> jobsAfterRun = datasetResult.collect();
+    
+    Long endTime = System.nanoTime();
+    
     Collections.sort(jobsAfterRun);
     long errors = 0;
+    long skipped = 0;
     for (JobRunResult job : jobsAfterRun){
       if (! job.getSuccessed())
         errors = errors + 1;
+      if (job.isIgnored())
+        skipped ++;
       
       logger.info(job.toString());      
     }
     
-    logger.info(jobsAfterRun.size() + " tasks ran, " + errors + " failed, " + (jobsAfterRun.size() - errors) + " successed");
+    Long timeElapsedSec = TimeUnit.SECONDS.convert(endTime - startTime, TimeUnit.NANOSECONDS);
+    logger.info("Tests run: "+jobsAfterRun.size()+", Errors: "+errors+", Skipped: "+skipped+", Time elapsed: " + timeElapsedSec + "Seconds ");
     return errors;
   }
   
