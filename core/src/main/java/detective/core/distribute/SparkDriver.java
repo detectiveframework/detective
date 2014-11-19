@@ -92,7 +92,8 @@ public class SparkDriver {
           JobRunner runner = new JobRunnerFilterImpl();
           runner.run(job);
           return job.getJobResult();
-        } catch (Exception e) {
+        } catch (Throwable e) {
+          //We never throw a exception into spark as we don't want it retry
           logger.error(e.getMessage(), e);
           JobRunResult result = new JobRunResult();
           result.setStoryName(job.getStoryClassName());
