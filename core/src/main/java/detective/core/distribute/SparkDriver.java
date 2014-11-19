@@ -86,11 +86,21 @@ public class SparkDriver {
 
       @Override
       public JobRunResult call(JobToRun job) throws Exception {
-        logger.info(job.toString());
+        logger.info("Running Job:" + job.toString());
         
-        JobRunner runner = new JobRunnerFilterImpl();
-        runner.run(job);
-        return job.getJobResult();
+        try {
+          JobRunner runner = new JobRunnerFilterImpl();
+          runner.run(job);
+          return job.getJobResult();
+        } catch (Exception e) {
+          logger.error(e.getMessage(), e);
+          JobRunResult result = new JobRunResult();
+          result.setStoryName(job.getStoryClassName());
+          result.setScenarioName("ScenarioIndex:" + job.getScenarioIndex());
+          result.setError(e);
+          result.setSuccessed(false);
+          return result;
+        }
       }});
     
     List<JobRunResult> jobsAfterRun = datasetResult.collect();
@@ -110,7 +120,7 @@ public class SparkDriver {
     }
     
     Long timeElapsedSec = TimeUnit.SECONDS.convert(endTime - startTime, TimeUnit.NANOSECONDS);
-    logger.info("Tests run: "+jobsAfterRun.size()+", Errors: "+errors+", Skipped: "+skipped+", Time elapsed: " + timeElapsedSec + "Seconds ");
+    logger.info("Tests run: "+jobsAfterRun.size()+", Errors: "+errors+", Skipped: "+skipped+", Time elapsed: " + timeElapsedSec + " Seconds ");
     return errors;
   }
   

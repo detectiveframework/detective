@@ -104,7 +104,7 @@
 			<artifactId>elasticsearch</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-
+ 
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
@@ -116,7 +116,21 @@
 			<version>1.9.13</version>
 		</dependency>
 
+		<!-- Change the version as Spark.HadoopClient using this -->
+		<!-- 
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		 -->
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
