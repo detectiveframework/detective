@@ -90,9 +90,18 @@ public class SparkDriver {
     
     List<JobRunResult> jobsAfterRun = datasetResult.collect();
     Collections.sort(jobsAfterRun);
+    long errors = 0;
     for (JobRunResult job : jobsAfterRun){
-      logger.info(job.toString());
+      if (! job.getSuccessed())
+        errors = errors + 1;
+      
+      logger.info(job.toString());      
     }
+    
+    logger.info(jobsAfterRun.size() + " tasks ran, " + errors + " failed " + (jobsAfterRun.size() - errors) + " successed");
+    
+    if (errors > 0)
+      System.exit(-1);
   }
   
 

@@ -5,7 +5,7 @@
 * [Story](story_structure/README.md)
    * [Josn Support](story_structure/josn_process.md)
    * [Table](story_structure/table.md)
-   * [Run Task](story_structure/run_task.md)
+   * [Run Scenario](story_structure/run_task.md)
    * [Check the result](story_structure/check_the_result.md)
    * [JUnit](story_structure/junit.md)
 * [Matchers](matchers/README.md)
