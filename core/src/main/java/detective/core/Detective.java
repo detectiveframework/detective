@@ -1,5 +1,9 @@
 package detective.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import groovy.json.JsonBuilder;
 import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
@@ -7,6 +11,8 @@ import groovy.util.XmlSlurper;
 import groovy.xml.MarkupBuilder;
 
 import org.hamcrest.Matcher;
+import org.hamcrest.core.AllOf;
+import org.hamcrest.core.IsNot;
 
 import com.typesafe.config.Config;
 
@@ -130,6 +136,70 @@ public class Detective {
       operand = (T)((WrappedObject)operand).getValue();
     }
     return Subset.subsetOf(operand);
+  }
+  
+  public static <T> Matcher<T> not(T value) {
+    return IsNot.not(equalTo(value));
+  }
+  
+  /**
+   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
+   * <p/>
+   * For example:
+   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
+   */
+  public static <T> Matcher<T> allOf(Matcher<? super T>... matchers) {
+      return AllOf.allOf(Arrays.asList(matchers));
+  }
+
+  /**
+   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
+   * <p/>
+   * For example:
+   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
+   */
+  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second) {
+      return AllOf.allOf(first, second);
+  }
+
+  /**
+   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
+   * <p/>
+   * For example:
+   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
+   */
+  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second, Matcher<? super T> third) {
+      return AllOf.allOf(first, second, third);
+  }
+
+  /**
+   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
+   * <p/>
+   * For example:
+   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
+   */
+  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second, Matcher<? super T> third, Matcher<? super T> fourth) {
+      return AllOf.allOf(first, second, third, fourth);
+  }
+
+  /**
+   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
+   * <p/>
+   * For example:
+   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
+   */
+  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second, Matcher<? super T> third, Matcher<? super T> fourth, Matcher<? super T> fifth) {
+      return AllOf.allOf(first, second, third, fourth, fifth);
+  }
+
+  /**
+   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
+   * <p/>
+   * For example:
+   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
+   */
+  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second, Matcher<? super T> third, Matcher<? super T> fourth, Matcher<? super T> fifth, Matcher<? super T> sixth) {
+    return AllOf.allOf(first, second, third, fourth, fifth, sixth);
   }
   
   //Utilities ================
