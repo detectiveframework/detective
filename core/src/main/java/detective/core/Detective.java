@@ -28,6 +28,7 @@ import detective.core.runner.DslBuilderAndRun;
 import detective.core.services.DetectiveFactory;
 import detective.task.EchoTask;
 import detective.task.HttpClientTask;
+import detective.task.InRangeValidatinoTask;
 import detective.utils.StringUtils;
 
 public class Detective {
@@ -125,6 +126,11 @@ public class Detective {
   public static HttpClientTask httpclientTask(){
     return new HttpClientTask();
   }
+  
+  public static InRangeValidatinoTask inRangeValidatinoTask(){
+	    return new InRangeValidatinoTask();
+	  }
+  
   
   //Matches ==============
   public static <T> Matcher<T> equalTo(T operand) {
