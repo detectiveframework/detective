@@ -171,4 +171,6 @@ What's the task looks like
 	
 	
 	
-  
+ ## Developers
+   To release, please run
+   mvn clean deploy -Dgpg.passphrase=yourpass
