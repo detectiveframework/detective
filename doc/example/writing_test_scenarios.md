@@ -1,12 +1,10 @@
-# Example
+# Writing test scenarios
 
-Below example will guide you through the steps to follow in order to write a test script covering both positive and negative cases.
-
-
-
+Below are some of the testing scenarios to dipict how the testing team can test the specific feature.
 
 ```groovy
-story() "Detective Number Range Story" {
+
+story() "Number Range Test" {
 
   scenario "A provided number is not within the specified range" {
     give "a number"{ number = "17" }
@@ -18,7 +16,7 @@ story() "Detective Number Range Story" {
     then "The value is NOT within the provided range"{ inRange << false }
   }
 
-	scenario "A provided number is within the specified range" {
+  scenario "A provided number is within the specified range" {
 		give "a number"{ number = "25" }
 		give "a begin value"{ begin = "18"; }
 		give "a end value"{ end = "50"; }
@@ -42,5 +40,5 @@ story() "Detective Number Range Story" {
       }
     }
   }
-}```
-
+}
+```
