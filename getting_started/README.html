@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="1" data-basepath=".." data-revision="1414927174856">
+    <div class="book"  data-level="1" data-basepath=".." data-revision="1416967202905">
     
 
 <div class="book-summary">
@@ -138,7 +138,7 @@
                         
                             <b>2.3.</b>
                         
-                         Run Task
+                         Run Scenario
                     </a>
                 
             
@@ -621,10 +621,83 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_1055">
+                    <section class="normal" id="section-gitbook_589">
                     
                         <h1 id="getting-started">Getting Started</h1>
-<p>A story structure</p>
+<h2 id="quick-start-with-out-ide">Quick Start (with out IDE)</h2>
+<ul>
+<li><p>Download Groovy from <a href="http://groovy.codehaus.org/Download" target="_blank">this link (http://groovy.codehaus.org/Download)</a></p>
+</li>
+<li><p>Unzip, try to run &quot;groovy&quot; script in bin folder and you should see groovy print out help messages</p>
+</li>
+<li><p>Create your story as below and name it as HelloWorldStory.groovy</p>
+</li>
+</ul>
+<pre><code class="lang-groovy"><span class="hljs-annotation">@Grab</span>(group=<span class="hljs-string">'io.bddhub'</span>, module=<span class="hljs-string">'detective.core'</span>, version=<span class="hljs-string">'1.1.0'</span>)
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> detective.core.Detective.*;
+
+story() <span class="hljs-string">"Demostrate test string concat"</span> {
+  scenario <span class="hljs-string">"String concat"</span> {
+    give <span class="hljs-string">"word Hello"</span>{
+      word1 = <span class="hljs-string">"Hello"</span>
+    }
+    give <span class="hljs-string">"word World"</span>{
+      word2 = <span class="hljs-string">"World"</span>;
+    }
+    when <span class="hljs-string">"run String.concat"</span>{
+      helloworld = word1.concat(word2)
+    }
+    then <span class="hljs-string">"word1 and word2 should concated"</span>{
+      helloworld &lt;&lt; <span class="hljs-string">"HelloWorld"</span>
+      println <span class="hljs-string">"Passed!"</span>
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>Run your story<pre><code>groovy HelloWorldStory.groovy
+</code></pre></li>
+</ul>
+<ul>
+<li><p>If you run this first time, please wait for few minutes for groovy to download all the depandences, and you should able to see a message says &quot;<strong>Passed</strong>!&quot; <strong>Congratulations</strong>! You just did a test for method concat!</p>
+</li>
+<li><p>Now let&#39;s change expected part of our story</p>
+</li>
+</ul>
+<pre><code class="lang-groovy"><span class="hljs-annotation">@Grab</span>(group=<span class="hljs-string">'io.bddhub'</span>, module=<span class="hljs-string">'detective.core'</span>, version=<span class="hljs-string">'1.1.0'</span>)
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> detective.core.Detective.*;
+
+story() <span class="hljs-string">"Demostrate test string concat"</span> {
+  scenario <span class="hljs-string">"String concat"</span> {
+    give <span class="hljs-string">"word Hello"</span>{
+      word1 = <span class="hljs-string">"Hello"</span>
+    }
+    give <span class="hljs-string">"word World"</span>{
+      word2 = <span class="hljs-string">"World"</span>;
+    }
+    when <span class="hljs-string">"run String.concat"</span>{
+      helloworld = word1.concat(word2)
+    }
+    then <span class="hljs-string">"word1 and word2 should concated"</span>{
+      helloworld &lt;&lt; <span class="hljs-string">"Hello World"</span> <span class="hljs-comment">//---&lt;&lt;&lt; we added a space here</span>
+      println <span class="hljs-string">"Passed!"</span>
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>Now run our story again<pre><code>groovy HelloWorldStory.groovy
+</code></pre>you will see there is a assert error raised.</li>
+</ul>
+<pre><code>groovy HelloWorldStory.groovy
+Caught: detective.core.exception.StoryFailException:
+Expected: &quot;Hello World&quot;
+     but: was &quot;HelloWorld&quot;
+ scenario [String concat] step [word1 and word2 should concated] in story [Demostrate test string concat]
+detective.core.exception.StoryFailException:
+Expected: &quot;Hello World&quot;
+     but: was &quot;HelloWorld&quot;
+</code></pre><h2 id="a-story-structure">A story structure</h2>
 <pre><code class="lang-groovy"><span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> detective.core.Detective.*;
 
 story() <span class="hljs-string">"Your Descritpion for this story"</span> {
