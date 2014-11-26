@@ -1,9 +1,10 @@
-package detective.task;
+package detective.core.example;
 
 import java.math.BigInteger;
 
 import detective.core.Parameters;
 import detective.core.config.ConfigException;
+import detective.task.AbstractTask;
 
 /**
  * Validates a give number is within a range
