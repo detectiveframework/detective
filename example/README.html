@@ -4,7 +4,7 @@
     <head>
         
         <meta charset="UTF-8">
-        <title>Parallelism | Introduction</title>
+        <title>Example | Introduction</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="generator" content="GitBook 1.0.3">
@@ -18,10 +18,10 @@
     
     
     
-    <link rel="next" href="../parallelism/filters.html" />
+    <link rel="next" href="../file_name_should_be_unique.html" />
     
     
-    <link rel="prev" href="../configuration/README.html" />
+    <link rel="prev" href="../parallelism/jenkins_integration.html" />
     
 
         
@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="6" data-basepath=".." data-revision="1417128924617">
+    <div class="book"  data-level="7" data-basepath=".." data-revision="1417128924617">
     
 
 <div class="book-summary">
@@ -463,7 +463,7 @@
         </li>
     
         
-        <li class="chapter active" data-level="6" data-path="parallelism/README.html">
+        <li class="chapter " data-level="6" data-path="parallelism/README.html">
             
                 
                     <a href="../parallelism/README.html">
@@ -533,7 +533,7 @@
         </li>
     
         
-        <li class="chapter " data-level="7" data-path="example/README.html">
+        <li class="chapter active" data-level="7" data-path="example/README.html">
             
                 
                     <a href="../example/README.html">
@@ -723,9 +723,48 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_26">
+                    <section class="normal" id="section-gitbook_10">
                     
-                        <h1 id="parallelism">Parallelism</h1>
+                        <h1 id="example">Example</h1>
+<p>Below example will guide you through the steps to follow in order to write a test script covering both positive and negative cases.</p>
+<pre><code class="lang-groovy">story() <span class="hljs-string">"Detective Number Range Story"</span> {
+
+  scenario <span class="hljs-string">"A provided number is not within the specified range"</span> {
+    give <span class="hljs-string">"a number"</span>{ number = <span class="hljs-string">"17"</span> }
+    give <span class="hljs-string">"a begin value"</span>{ begin = <span class="hljs-string">"18"</span>; }
+    give <span class="hljs-string">"a end value"</span>{ end = <span class="hljs-string">"50"</span>; }
+
+    when <span class="hljs-string">"run inRangeValidatinoTask task"</span>{ runtask inRangeValidatinoTask() }
+
+    then <span class="hljs-string">"The value is NOT within the provided range"</span>{ inRange &lt;&lt; <span class="hljs-literal">false</span> }
+  }
+
+    scenario <span class="hljs-string">"A provided number is within the specified range"</span> {
+        give <span class="hljs-string">"a number"</span>{ number = <span class="hljs-string">"25"</span> }
+        give <span class="hljs-string">"a begin value"</span>{ begin = <span class="hljs-string">"18"</span>; }
+        give <span class="hljs-string">"a end value"</span>{ end = <span class="hljs-string">"50"</span>; }
+
+        when <span class="hljs-string">"run inRangeValidatinoTask task"</span>{ runtask inRangeValidatinoTask() }
+
+        then <span class="hljs-string">"The value IS within the provided range"</span>{ inRange &lt;&lt; <span class="hljs-literal">true</span> }
+    }
+
+  scenario <span class="hljs-string">"This should fail with an exception since parameter is not provided"</span> {
+    give <span class="hljs-string">"a begin value"</span>{
+      begin = <span class="hljs-string">"18"</span>;
+    }
+    give <span class="hljs-string">"a end value"</span>{
+      end = <span class="hljs-string">"50"</span>;
+    }
+
+    then <span class="hljs-string">"run inRangeValidatinoTask task should return an error"</span>{
+      expect(<span class="hljs-string">"The value to check against the range cannot be empty!"</span>){
+        runtask inRangeValidatinoTask()
+      }
+    }
+  }
+}
+</code></pre>
 
                     
                     </section>
@@ -736,10 +775,10 @@
         </div>
 
         
-        <a href="../configuration/README.html" class="navigation navigation-prev " aria-label="Previous page: Configuration"><i class="fa fa-angle-left"></i></a>
+        <a href="../parallelism/jenkins_integration.html" class="navigation navigation-prev " aria-label="Previous page: Jenkins Integration"><i class="fa fa-angle-left"></i></a>
         
         
-        <a href="../parallelism/filters.html" class="navigation navigation-next " aria-label="Next page: Filters"><i class="fa fa-angle-right"></i></a>
+        <a href="../file_name_should_be_unique.html" class="navigation navigation-next " aria-label="Next page: Task breakdown"><i class="fa fa-angle-right"></i></a>
         
     </div>
 </div>
