@@ -28,4 +28,10 @@
    * [Filters](parallelism/filters.md)
    * [Spark integration](parallelism/spark_integration.md)
    * [Jenkins Integration](parallelism/jenkins_integration.md)
+* [Example](example/README.md)
+   * [Task breakdown](file_name_should_be_unique.md)
+   * [Requirements](example/task_breakdown.md)
+   * [Development of the Task](example/development_of_the_test.md)
+   * [Development of the Demo script](example/development_of_the_demo_script.md)
+   * [Writing test scenarios](example/writing_test_scenarios.md)
 

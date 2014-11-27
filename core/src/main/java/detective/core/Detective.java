@@ -22,6 +22,7 @@ import detective.common.trace.TraceRecorder;
 import detective.common.trace.impl.TraceRecorderElasticSearchImpl;
 import detective.core.dsl.WrappedObject;
 import detective.core.dsl.builder.DslBuilder;
+import detective.core.example.InRangeValidatinoTask;
 import detective.core.matcher.IsEqual;
 import detective.core.matcher.Subset;
 import detective.core.runner.DslBuilderAndRun;
