@@ -18,6 +18,7 @@ import detective.core.dsl.DslException;
 import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.WrappedObject;
 import detective.core.matcher.IsEqual;
+import detective.utils.Utils;
 
 /**
  * see groovy.time.TimeCategory
@@ -188,12 +189,12 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements W
     
     if (realValue != null){
       if (realValue instanceof GroovyObjectSupport){
-        Object value = ((GroovyObjectSupport)realValue).invokeMethod(name, getRealValue(args));
+        Object value = ((GroovyObjectSupport)realValue).invokeMethod(name, Utils.getRealValue(args));
         return new ExpectObjectWrapperWrapper(value);
       }else {
         MetaClass metaClass = registry.getMetaClass(realValue.getClass());
         if (metaClass != null){
-          Object value = metaClass.invokeMethod(realValue, name, getRealValue(args));
+          Object value = metaClass.invokeMethod(realValue, name, Utils.getRealValue(args));
           return new ExpectObjectWrapperWrapper(value);
         }
       }
@@ -201,25 +202,4 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements W
     return getMetaClass().invokeMethod(this, name, args);
   }
   
-  
-  private Object getRealValue(Object obj){
-    if (obj == null)
-      return null;
-    
-    if (obj instanceof WrappedObject)
-      return ((WrappedObject<?>)obj).getValue();
-    
-    if (obj instanceof Object[]){
-      Object[] array = (Object[])obj;
-      Object[] results = new Object[array.length];
-      for (int i = 0; i < array.length; i++){
-        Object item = array[i];
-        results[i] = getRealValue(item);
-      }
-      return results;
-    }
-    
-    return obj;
-  }
-
 }

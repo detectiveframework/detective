@@ -19,10 +19,10 @@ story() "Demostrate test string concat" {
       word2 = "World";
     }
     when "run String.concat"{
-      helloworld = word1.concat(word2)
+      helloworld = word1.concat(" ").concat(word2)
     }
-    then "word1 and word2 should concated"{
-      helloworld << "HelloWorld"
+    then "word1 and word2 should concated with a space between"{
+      helloworld << "Hello World"
     }
   }
 }

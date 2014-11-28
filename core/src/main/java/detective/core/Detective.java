@@ -1,14 +1,12 @@
 package detective.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import groovy.json.JsonBuilder;
 import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
 import groovy.util.XmlSlurper;
 import groovy.xml.MarkupBuilder;
+
+import java.util.Arrays;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.core.AllOf;
@@ -22,7 +20,6 @@ import detective.common.trace.TraceRecorder;
 import detective.common.trace.impl.TraceRecorderElasticSearchImpl;
 import detective.core.dsl.WrappedObject;
 import detective.core.dsl.builder.DslBuilder;
-import detective.core.example.InRangeValidatinoTask;
 import detective.core.matcher.IsEqual;
 import detective.core.matcher.Subset;
 import detective.core.runner.DslBuilderAndRun;
@@ -31,6 +28,12 @@ import detective.task.EchoTask;
 import detective.task.HttpClientTask;
 import detective.utils.StringUtils;
 
+/**
+ * The Factory / Entry Point class for Detective Framework
+ * 
+ * @author James Luo
+ *
+ */
 public class Detective {
   
   private enum Recorder {

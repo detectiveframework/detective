@@ -9,7 +9,7 @@ import groovy.lang.MetaClassRegistry;
 
 public class GroovyUtils {
   
-  private static final MetaClassRegistry registry = MetaClassRegistryImpl.getInstance(MetaClassRegistryImpl.LOAD_DEFAULT);;
+  private static final MetaClassRegistry REGISTRY = MetaClassRegistryImpl.getInstance(MetaClassRegistryImpl.LOAD_DEFAULT);;
   
   public static Object getProperty(Object object, String property) {
     //still have get property? it's maybe a map or list
@@ -18,7 +18,7 @@ public class GroovyUtils {
         Object value = ((GroovyObjectSupport)object).getProperty(property);
         return value;
       }else{     
-        MetaClass metaClass = registry.getMetaClass(object.getClass());
+        MetaClass metaClass = REGISTRY.getMetaClass(object.getClass());
         if (metaClass != null){
           Object value = metaClass.getProperty(object, property);
           return value;

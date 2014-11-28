@@ -9,6 +9,11 @@ package detective.core.dsl;
  */
 public interface WrappedObject<T> {
 
+  /**
+   * Get the underline object, please note this may still return a WrappedObject
+   * 
+   * @return the underline object, please note this may still return a WrappedObject
+   */
   T getValue();
   
   

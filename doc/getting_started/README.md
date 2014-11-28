@@ -1,6 +1,91 @@
 # Getting Started
 
-A story structure
+## Quick Start (with out IDE)
+
+* Download Groovy from [this link (http://groovy.codehaus.org/Download)](http://groovy.codehaus.org/Download)
+
+* Unzip, try to run "groovy" script in bin folder and you should see groovy print out help messages
+
+* Create your story as below and name it as HelloWorldStory.groovy
+
+
+```groovy
+@Grab(group='io.bddhub', module='detective.core', version='1.1.0')
+import static detective.core.Detective.*;
+
+story() "Demostrate test string concat" {
+  scenario "String concat" {
+    give "word Hello"{
+      word1 = "Hello"
+    }
+    give "word World"{
+      word2 = "World";
+    }
+    when "run String.concat"{
+      helloworld = word1.concat(word2)
+    }
+    then "word1 and word2 should concated"{
+      helloworld << "HelloWorld"
+      println "Passed!"
+    }
+  }
+}
+```
+
+* Run your story
+```
+groovy HelloWorldStory.groovy
+```
+
+
+* If you run this first time, please wait for few minutes for groovy to download all the depandences, and you should able to see a message says "**Passed**!" **Congratulations**! You just did a test for method concat!
+
+* Now let's change expected part of our story
+
+```groovy
+@Grab(group='io.bddhub', module='detective.core', version='1.1.0')
+import static detective.core.Detective.*;
+
+story() "Demostrate test string concat" {
+  scenario "String concat" {
+    give "word Hello"{
+      word1 = "Hello"
+    }
+    give "word World"{
+      word2 = "World";
+    }
+    when "run String.concat"{
+      helloworld = word1.concat(word2)
+    }
+    then "word1 and word2 should concated"{
+      helloworld << "Hello World" //---<<< we added a space here
+      println "Passed!"
+    }
+  }
+}
+```
+
+* Now run our story again
+```
+groovy HelloWorldStory.groovy
+```
+you will see there is a assert error raised.
+
+```
+groovy HelloWorldStory.groovy
+Caught: detective.core.exception.StoryFailException:
+Expected: "Hello World"
+     but: was "HelloWorld"
+ scenario [String concat] step [word1 and word2 should concated] in story [Demostrate test string concat]
+detective.core.exception.StoryFailException:
+Expected: "Hello World"
+     but: was "HelloWorld"
+```
+
+
+
+##A story structure
+
 ```groovy
 import static detective.core.Detective.*;
 
