@@ -30,7 +30,7 @@ public class ConfigTest extends Assert {
     Assert.assertEquals(DetectiveConfig.getConfig().getString("data.folder"), "changed");
     
     Assert.assertEquals(DetectiveConfig.getConfig().getInt("httpclient.max_connections"), 200);
-    Assert.assertEquals(DetectiveConfig.getConfig().getInt("webdriver.server.port"), 4444);
+    Assert.assertEquals(DetectiveConfig.getConfig().getString("browser.default_driver"), "firefox");
   }
 
 }
