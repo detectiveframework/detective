@@ -1,5 +1,6 @@
 package detective.core;
 
+import geb.Browser;
 import groovy.json.JsonBuilder;
 import groovy.json.JsonSlurper;
 import groovy.lang.Closure;
@@ -215,4 +216,44 @@ public class Detective {
     return DetectiveFactory.INSTANCE.getConfig();
   }
   
+  
+  //GEB====================
+  /**
+   * The browser is the centre of Geb. It encapsulates a {@link org.openqa.selenium.WebDriver} implementation and references
+   * a {@link geb.Page} object that provides access to the content.
+   * <p>
+   * Browser objects dynamically delegate all method calls and property read/writes that it doesn't implement to the current
+   * page instance via {@code propertyMissing()} and {@code methodMissing()}.
+   * 
+   * If a call come from This class, it resolved first
+   * Then get.Browser
+   * Then currentPage
+   * 
+   * @see geb.Browser
+   * @return
+   */
+  public static Browser newBrowser(){
+    Browser browser = new Browser();
+    //Setup driver
+    //browser.setDriver(null);
+    browser.setBaseUrl(getConfig().getString("global.baseurl"));
+    return browser;
+  }
+  
+  /**
+   * Creates a new browser object via the default constructor and executes the closure
+   * with the browser instance as the closure's delegate.
+   *
+   * @return the created browser
+   */
+  public static Browser browser(Closure script) {
+    Browser browser = newBrowser();
+    try {
+      script.setResolveStrategy(Closure.DELEGATE_FIRST);
+      Browser.drive(browser, script);
+    } finally{
+      browser.close();
+    }
+    return browser;
+  }
 }
