@@ -14,7 +14,7 @@ import detective.core.dsl.DslException;
  * {"abc.def":"abc"}
  *
  */
-public class PropertyToStringDelegate extends Expando{
+public class PropertyToStringDelegate extends PropertyToStringAdapter{
   private final String propertyName;
   private final PropertyToStringDelegate parent;
   
@@ -120,6 +120,10 @@ public class PropertyToStringDelegate extends Expando{
       return super.getProperty(property);
     } else
       return value;
+  }
+  
+  public boolean hasProperty(String property){
+    return values.containsKey(getFullPropertyName(property));
   }
   
   protected PropertyToStringDelegate newNextLevelProperty(PropertyToStringDelegate parent, String propertyName){

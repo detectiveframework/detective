@@ -20,7 +20,11 @@ import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.dsl.table.Row;
 import detective.core.dsl.table.TableParser;
+import geb.Browser;
 import groovy.lang.Closure;
+import groovy.lang.GroovyObject;
+import groovy.lang.GroovyObjectSupport;
+import groovy.lang.GroovyRuntimeException;
 import groovy.util.Expando;
 
 /**
@@ -38,6 +42,8 @@ import groovy.util.Expando;
  *
  */
 public class ExpectClosureDelegate extends PropertyToStringDelegate{
+  
+  private Browser browser;
   
   /**
    * Create a new ROOT expect closure delegate
@@ -64,6 +70,13 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
   }
   
   public Object getProperty(String property){
+//    if (browser != null){
+//      browser.getPage();
+//      Object gebField = ((GroovyObject)browser).getProperty(property);
+//      if (gebField != null)
+//        return gebField;
+//    }
+//      
     Object result = super.getProperty(property);
     if (! (result instanceof PropertyToStringDelegate)){
       return new ExpectObjectWrapperWrapper(result);
@@ -136,5 +149,26 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
       for (String errorMsg : errorMsgs)
         errorMsgContains(errorMsg, e);
     }
+  }
+  
+  public Object invokeMethod(String name, Object args) {
+    try {
+      return super.invokeMethod(name, args);
+    }
+    catch (GroovyRuntimeException e) {    
+      if (browser != null){
+        return ((GroovyObject)browser).invokeMethod(name, args);
+      }else{
+        throw e;
+      }
+    }
+  }
+
+  public Browser getBrowser() {
+    return browser;
+  }
+
+  public void setBrowser(Browser browser) {
+    this.browser = browser;
   }
 }

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import groovy.lang.Closure;
 import groovy.lang.GroovyInterceptable;
+import groovy.lang.GroovyObject;
 import groovy.lang.GroovyObjectSupport;
 import groovy.lang.MetaClass;
 import groovy.lang.MetaClassRegistry;
@@ -188,8 +189,8 @@ public class ExpectObjectWrapperWrapper extends GroovyObjectSupport implements W
       return this.getMetaClass().invokeMethod(this, name, args);
     
     if (realValue != null){
-      if (realValue instanceof GroovyObjectSupport){
-        Object value = ((GroovyObjectSupport)realValue).invokeMethod(name, Utils.getRealValue(args));
+      if (realValue instanceof GroovyObject){
+        Object value = ((GroovyObject)realValue).invokeMethod(name, Utils.getRealValue(args));
         return new ExpectObjectWrapperWrapper(value);
       }else {
         MetaClass metaClass = registry.getMetaClass(realValue.getClass());

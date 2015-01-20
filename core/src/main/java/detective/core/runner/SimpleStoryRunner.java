@@ -1,5 +1,6 @@
 package detective.core.runner;
 
+import geb.Browser;
 import groovy.lang.Closure;
 import groovyx.gpars.dataflow.Promise;
 
@@ -154,14 +155,14 @@ public class SimpleStoryRunner implements StoryRunner{
     //Shared data need join into the running user code so that they can change it
     Parameters parameterForWholeScenario = new ParametersImpl(scenario.getStory().getSharedDataMap());
     parameterForWholeScenario.putAll(datain);
-    
     for (Step step : scenario.getSteps()){
       if (step.getExpectClosure() != null){
         Closure<?> expectClosure = (Closure)step.getExpectClosure().clone();
         
         Parameters dataToPassIntoExpectClosure = parameterForWholeScenario;
-        
-        expectClosure.setDelegate(new ExpectClosureDelegate(dataToPassIntoExpectClosure));
+        ExpectClosureDelegate delegate = new ExpectClosureDelegate(dataToPassIntoExpectClosure);
+        delegate.setBrowser(null);
+        expectClosure.setDelegate(delegate);
         //expectClosure.setResolveStrategy(Closure.DELEGATE_ONLY);
         expectClosure.setResolveStrategy(Closure.DELEGATE_FIRST);
         

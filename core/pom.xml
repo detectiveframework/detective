@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<name>io.bddhub:detective.core</name>
 	<description>A BDD / Testing framework with pure Groovy DSL, running in a Spark cluster, advanced reporting and clearly define the boundary between BA Tester / developer</description>
 	<url>https://github.com/detectiveframework/detective</url>
@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>2.1.5</version>
+			<version>2.3.0</version>
 		</dependency>
 
 		<dependency>
@@ -104,7 +104,7 @@
 			<artifactId>elasticsearch</artifactId>
 			<version>1.0.0</version>
 		</dependency>
- 
+
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
@@ -117,20 +117,10 @@
 		</dependency>
 
 		<!-- Change the version as Spark.HadoopClient using this -->
-		<!-- 
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>1.0.1</version>
-		</dependency>
+		<!-- <dependency> <groupId>org.codehaus.jackson</groupId> <artifactId>jackson-core-asl</artifactId> 
+			<version>1.0.1</version> </dependency> <dependency> <groupId>org.codehaus.jackson</groupId> 
+			<artifactId>jackson-mapper-asl</artifactId> <version>1.0.1</version> </dependency> -->
 
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-		 -->
-		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -180,9 +170,15 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.gebish</groupId>
+			<artifactId>geb-core</artifactId>
+			<version>0.10.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>2.42.2</version>
+			<version>2.43.1</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>httpclient</artifactId>
@@ -193,6 +189,12 @@
 					<groupId>org.seleniumhq.selenium</groupId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-firefox-driver</artifactId>
+			<version>2.43.1</version>
 		</dependency>
 
 		<!-- <dependency> <groupId>org.seleniumhq.selenium</groupId> <artifactId>selenium-server</artifactId> 
@@ -415,22 +417,9 @@
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
-			<!-- 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			 -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
+				<version>1.5</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
+				<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin> -->
 		</plugins>
 		<pluginManagement>
 			<plugins>

@@ -11,7 +11,9 @@ import java.util.Arrays;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.core.AllOf;
+import org.hamcrest.core.AnyOf;
 import org.hamcrest.core.IsNot;
+import org.junit.Assert;
 
 import com.typesafe.config.Config;
 
@@ -207,6 +209,79 @@ public class Detective {
     return AllOf.allOf(first, second, third, fourth, fifth, sixth);
   }
   
+  /**
+   * Creates a matcher that matches if the examined object matches <b>Any</b> of the specified matchers.
+   * <p/>
+   * For example:
+   * <pre>assertThat("myValue", anyOf(startsWith("my"), containsString("Val")))</pre>
+   */
+  public static <T> Matcher<T> anyOf(Matcher<? super T>... matchers) {
+    return AnyOf.anyOf(Arrays.asList(matchers));
+ }
+  
+  /**
+   * Asserts that <code>actual</code> satisfies the condition specified by
+   * <code>matcher</code>. If not, an {@link AssertionError} is thrown with
+   * information about the matcher and failing value. Example:
+   * 
+   * <pre>
+   *   assertThat(0, is(1)); // fails:
+   *     // failure message:
+   *     // expected: is &lt;1&gt; 
+   *     // got value: &lt;0&gt;
+   *   assertThat(0, is(not(1))) // passes
+   * </pre>
+   * 
+   * @param <T>
+   *            the static type accepted by the matcher (this can flag obvious
+   *            compile-time problems such as {@code assertThat(1, is("a"))}
+   * @param actual
+   *            the computed value being compared
+   * @param matcher
+   *            an expression, built of {@link Matcher}s, specifying allowed
+   *            values
+   * 
+   * @see org.hamcrest.CoreMatchers
+   * @see org.junit.matchers.JUnitMatchers
+   */
+  public static <T> void assertThat(T actual, Matcher<T> matcher) {
+    assertThat("", actual, matcher);
+  }
+
+  /**
+   * Asserts that <code>actual</code> satisfies the condition specified by
+   * <code>matcher</code>. If not, an {@link AssertionError} is thrown with
+   * the reason and information about the matcher and failing value. Example:
+   * 
+   * <pre>
+   * :
+   *   assertThat(&quot;Help! Integers don't work&quot;, 0, is(1)); // fails:
+   *     // failure message:
+   *     // Help! Integers don't work
+   *     // expected: is &lt;1&gt; 
+   *     // got value: &lt;0&gt;
+   *   assertThat(&quot;Zero is one&quot;, 0, is(not(1))) // passes
+   * </pre>
+   * 
+   * @param reason
+   *            additional information about the error
+   * @param <T>
+   *            the static type accepted by the matcher (this can flag obvious
+   *            compile-time problems such as {@code assertThat(1, is("a"))}
+   * @param actual
+   *            the computed value being compared
+   * @param matcher
+   *            an expression, built of {@link Matcher}s, specifying allowed
+   *            values
+   * 
+   * @see org.hamcrest.CoreMatchers
+   * @see org.junit.matchers.JUnitMatchers
+   */
+  public static <T> void assertThat(String reason, T actual,
+      Matcher<T> matcher) {
+    Assert.assertThat(reason, actual, matcher);
+  }
+  
   //Utilities ================
   public static String randomId() {
     return StringUtils.randomBase64UUID();
@@ -215,7 +290,6 @@ public class Detective {
   public static Config getConfig(){
     return DetectiveFactory.INSTANCE.getConfig();
   }
-  
   
   //GEB====================
   /**
