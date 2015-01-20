@@ -4,7 +4,7 @@ import static detective.core.Detective.*;
 
 story() "Demostrate Geb" {
   scenario "first result for wikipedia search should be wikipedia"{
-    browser(){
+    browser {
       to GoogleHomePage
       assert at(GoogleHomePage)
       search.field.value("wikipedia")
