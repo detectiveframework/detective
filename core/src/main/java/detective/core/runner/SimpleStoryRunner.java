@@ -155,40 +155,58 @@ public class SimpleStoryRunner implements StoryRunner{
     //Shared data need join into the running user code so that they can change it
     Parameters parameterForWholeScenario = new ParametersImpl(scenario.getStory().getSharedDataMap());
     parameterForWholeScenario.putAll(datain);
-    for (Step step : scenario.getSteps()){
-      if (step.getExpectClosure() != null){
-        Closure<?> expectClosure = (Closure)step.getExpectClosure().clone();
-        
-        Parameters dataToPassIntoExpectClosure = parameterForWholeScenario;
-        ExpectClosureDelegate delegate = new ExpectClosureDelegate(dataToPassIntoExpectClosure);
-        delegate.setBrowser(null);
-        expectClosure.setDelegate(delegate);
-        //expectClosure.setResolveStrategy(Closure.DELEGATE_ONLY);
-        expectClosure.setResolveStrategy(Closure.DELEGATE_FIRST);
-        
-        try {
-          //GroovyCategorySupport.use(ExpectObjectWrapper.class, scenario.getOutcomes().getExpectClosure());
-          expectClosure.call();
-        } catch (WrongPropertyNameInDslException e) { 
-          StringBuilder sb = new StringBuilder(e.getPropertyName());
-          sb.append(" not able to found in properties list, do you mean : ")
-          .append(StringUtils.getBestMatch(e.getPropertyName(), dataToPassIntoExpectClosure.keySet()).or("notAbleToFoundBestMatchProperties"))
-          .append("\nthe avaiable properties we got:")
-          .append(dataToPassIntoExpectClosure.keySet())
-          .append("\nHere is the properties and the values for your reference:\n")
-          .append(dataToPassIntoExpectClosure.toString());
-          throw new DslException(sb.toString(), e);
-        } catch (java.lang.AssertionError e){
-          throw new detective.core.AssertionError(scenario.getStory(), scenario, step, e);
-        } catch (groovy.lang.MissingPropertyException e){
-          throw new DslException(e.getMessage() +  ". Please note we have a know ambiguousness for parent child relationship, for example login.username is a valid identifier for us, but when you add login.username.lastname, we have no idea it is going to access a property from identifier login.username or it is a new identifier.", e);
+    //All steps will share same browser
+    Browser browser = null;
+    try {
+      for (Step step : scenario.getSteps()){
+        if (step.getExpectClosure() != null){
+          Closure<?> expectClosure = (Closure)step.getExpectClosure().clone();
+          if (step.getTitle().equalsIgnoreCase("browser")){
+            if (browser == null)
+              browser = Detective.newBrowser();
+            
+            Detective._browser(browser, expectClosure);
+          }else{
+            runAsNormal(scenario, parameterForWholeScenario, step, expectClosure);
+          }        
+        }else{
+          throw new DslException("There is no \"then\" section in DSL scenario part. \n " + scenario.toString());
         }
-        
-        //this.updateSharedData(scenario, dataToPassIntoExpectClosure);
-      }else{
-        throw new DslException("There is no \"then\" section in DSL scenario part. \n " + scenario.toString());
       }
+    } finally {
+      if (browser != null)
+        browser.close();
     }
+  }
+
+  private void runAsNormal(final Scenario scenario, Parameters parameterForWholeScenario,
+      Step step, Closure<?> expectClosure) {
+    Parameters dataToPassIntoExpectClosure = parameterForWholeScenario;
+    ExpectClosureDelegate delegate = new ExpectClosureDelegate(dataToPassIntoExpectClosure);
+    delegate.setBrowser(null);
+    expectClosure.setDelegate(delegate);
+    //expectClosure.setResolveStrategy(Closure.DELEGATE_ONLY);
+    expectClosure.setResolveStrategy(Closure.DELEGATE_FIRST);
+    
+    try {
+      //GroovyCategorySupport.use(ExpectObjectWrapper.class, scenario.getOutcomes().getExpectClosure());
+      expectClosure.call();
+    } catch (WrongPropertyNameInDslException e) { 
+      StringBuilder sb = new StringBuilder(e.getPropertyName());
+      sb.append(" not able to found in properties list, do you mean : ")
+      .append(StringUtils.getBestMatch(e.getPropertyName(), dataToPassIntoExpectClosure.keySet()).or("notAbleToFoundBestMatchProperties"))
+      .append("\nthe avaiable properties we got:")
+      .append(dataToPassIntoExpectClosure.keySet())
+      .append("\nHere is the properties and the values for your reference:\n")
+      .append(dataToPassIntoExpectClosure.toString());
+      throw new DslException(sb.toString(), e);
+    } catch (java.lang.AssertionError e){
+      throw new detective.core.AssertionError(scenario.getStory(), scenario, step, e);
+    } catch (groovy.lang.MissingPropertyException e){
+      throw new DslException(e.getMessage() +  ". Please note we have a know ambiguousness for parent child relationship, for example login.username is a valid identifier for us, but when you add login.username.lastname, we have no idea it is going to access a property from identifier login.username or it is a new identifier.", e);
+    }
+    
+    //this.updateSharedData(scenario, dataToPassIntoExpectClosure);
   }
 
   private Parameters prepareDataIn(Parameters datain, String[] headers, Row row) {

@@ -320,14 +320,20 @@ public class Detective {
    *
    * @return the created browser
    */
-  public static Browser browser(Closure script) {
+  public static Browser _browser(Closure script) {
     Browser browser = newBrowser();
     try {
-      script.setResolveStrategy(Closure.DELEGATE_FIRST);
-      Browser.drive(browser, script);
+      _browser(browser, script);
     } finally{
       browser.close();
     }
+    return browser;
+  }
+  
+  public static Browser _browser(Browser browser, Closure script) {    
+    script.setResolveStrategy(Closure.DELEGATE_FIRST);
+    Browser.drive(browser, script);
+    
     return browser;
   }
 }

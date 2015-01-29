@@ -13,28 +13,5 @@ story() "Demostrate Geb" {
       firstResultLink.click()
       waitFor { at WikipediaPage }
     }
-    
-    given {
-      
-//      to GoogleHomePage
-//      at GoogleHomePage
-    }
-    
-//    when {
-//      search.field.value("wikipedia")
-//    }   
-//    
-//    then {
-//      waitFor { at GoogleResultsPage }
-//      firstResultLink.text() == "Wikipedia"
-//    }
-//    
-//    when {
-//      firstResultLink.click()
-//    }
-//    
-//    then {
-//      waitFor { at WikipediaPage }
-//    }
   }
 }
