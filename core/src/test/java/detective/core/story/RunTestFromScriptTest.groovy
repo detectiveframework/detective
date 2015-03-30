@@ -2,6 +2,7 @@ package detective.core.story;
 
 import static org.junit.Assert.*;
 
+import detective.core.geb.GebStory
 import detective.core.story.matcher.ErrorExpectStory
 import detective.core.story.matcher.SubsetJsonTableStory
 import detective.core.story.matcher.SubsetListClassTableStory
@@ -135,4 +136,11 @@ public class RunTestFromScriptTest {
     SubsetListMapTableStory story = new SubsetListMapTableStory();
     story.run();
   }
+  
+  @Test
+  public void testGetStory(){
+    GebStory story = new GebStory();
+    story.run();
+  }
+  
 }

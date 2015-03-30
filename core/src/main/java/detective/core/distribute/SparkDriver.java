@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import detective.core.distribute.collector.JobCollector;
+import detective.core.distribute.resultrender.ResultRender;
+import detective.core.distribute.resultrender.ResultRenderAnsiConsoleImpl;
 import detective.core.services.DetectiveFactory;
 
 public class SparkDriver {
@@ -57,6 +59,7 @@ public class SparkDriver {
     String master = DetectiveFactory.INSTANCE.getConfig().getString("spark.master");
     logger.info("Detective is running with master " + master);
     String packageName = args[0];
+    logger.info("Detective is running with package or class " + packageName);
     
     String appName = null;
     if (args.length >= 2){
@@ -122,9 +125,16 @@ public class SparkDriver {
     
     Long timeElapsedSec = TimeUnit.SECONDS.convert(endTime - startTime, TimeUnit.NANOSECONDS);
     logger.info("Tests run: "+jobsAfterRun.size()+", Errors: "+errors+", Skipped: "+skipped+", Time elapsed: " + timeElapsedSec + " Seconds ");
+    
+    printResults(jobsAfterRun);
+    
     return errors;
   }
   
 
+  private static void printResults(List<JobRunResult> results){
+    ResultRender render = new ResultRenderAnsiConsoleImpl();
+    render.render(results, 0);
+  }
 
 }

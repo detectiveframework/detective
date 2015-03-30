@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import detective.utils.Utils;
+
 /**
  * The the result after a job ran in a spark cluster
  * 
@@ -50,17 +52,10 @@ public class JobRunResult implements Serializable, Comparable<JobRunResult> {
     builder.append("ignored:").append(ignored).append("\n ");
     if (error != null){
       builder.append("error:").append(error).append("\n ");
-      builder.append("error callstack:").append(getStackTrace(error)).append("\n");
+      builder.append("error callstack:").append(Utils.getStackTrace(error)).append("\n");
     }
     
     return builder.toString();
-  }
-  
-  private static String getStackTrace(Throwable aThrowable) {
-    Writer result = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(result);
-    aThrowable.printStackTrace(printWriter);
-    return result.toString();
   }
 
   public String getStoryName() {

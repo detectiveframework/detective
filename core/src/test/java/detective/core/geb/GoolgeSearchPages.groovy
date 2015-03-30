@@ -48,7 +48,7 @@ class GoogleResultsPage extends Page {
     // content definitions can compose and build from other definitions
     results { $("li.g") }
     result { i -> results[i] }
-    resultLink { i -> result(i).find("a.l") }
+    resultLink { i -> result(i).find(".r > a") }
     firstResultLink { resultLink(0) }
   }
 }
