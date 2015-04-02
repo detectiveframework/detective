@@ -1,15 +1,49 @@
 package detective.core.distribute;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class SparkDriverTest {
+  
+  @Test
+  public void testResultSetCollectionFromDifferentMachine(){
+    List<JobRunResult> results = SparkDriver.runJobs("detective.core.distribute.jobresult", "UnitTest_detective.core.distribute.jobresult");
+    Assert.assertTrue(results.size() == 2);
+    
+    Assert.assertEquals(results.get(0).getStoryName(), "Story For Testing Collect Running Result from Different Threads / Machines");
+    Assert.assertEquals(results.get(0).getScenarioName(), "Successed Scenario");
+    Assert.assertEquals(results.get(0).getSuccessed(), true);
+    Assert.assertEquals(results.get(0).getSteps().size(), 3); 
+    Assert.assertEquals(results.get(0).getSteps().get(0).getStepName(), "step1 log a user message");
+    Assert.assertEquals(results.get(0).getSteps().get(0).getAdditionalMsgs().size(), 1);
+    Assert.assertEquals(results.get(0).getSteps().get(0).getAdditionalMsgs().get(0), "This is the message will display to end user");
+    Assert.assertEquals(results.get(0).getSteps().get(1).getStepName(), "run echo task");
+    Assert.assertEquals(results.get(0).getSteps().get(1).getAdditionalMsgs().size(), 1);
+    Assert.assertEquals(results.get(0).getSteps().get(1).getAdditionalMsgs().get(0), "This is the message from task");
+    Assert.assertEquals(results.get(0).getSteps().get(2).getStepName(), "I can check message which will echo back");
+    Assert.assertEquals(results.get(0).getSteps().get(2).getAdditionalMsgs().size(), 0);
+    
+    Assert.assertEquals(results.get(1).getStoryName(), "Story For Testing Collect Running Result from Different Threads / Machines");
+    Assert.assertEquals(results.get(1).getScenarioName(), "Failed Scenario");
+    Assert.assertEquals(results.get(1).getSuccessed(), false);
+    Assert.assertEquals(results.get(1).getSteps().size(), 3); 
+    Assert.assertEquals(results.get(1).getSteps().get(0).getStepName(), "step1 log a user message");
+    Assert.assertEquals(results.get(1).getSteps().get(0).getAdditionalMsgs().size(), 1);
+    Assert.assertEquals(results.get(1).getSteps().get(0).getAdditionalMsgs().get(0), "This is the message will display to end user");
+    Assert.assertEquals(results.get(1).getSteps().get(1).getStepName(), "through exception");
+    Assert.assertEquals(results.get(1).getSteps().get(1).getAdditionalMsgs().size(), 0);
+    Assert.assertEquals(results.get(1).getSteps().get(1).isSuccessed(), false);
+    Assert.assertEquals(results.get(1).getSteps().get(2).getStepName(), "There is no chance this step will been executed, but this step will show in console so that user know one step has been scaped");
+    Assert.assertEquals(results.get(1).getSteps().get(2).getAdditionalMsgs().size(), 0);
+    Assert.assertEquals(results.get(1).getSteps().get(2).isSuccessed(), false);
+  }
 
   @Test
-  public void test() {
+  public void testGiveAPackageNameAllTestShouldRunInDifferentThread() {
     runningThreads.clear();
     Long errors = SparkDriver.run(new String[]{"detective.core.distribute.collect"});
     

@@ -25,7 +25,9 @@ import detective.core.Detective;
 import detective.core.Story;
 import detective.core.StoryRunner;
 import detective.core.TestTask;
+import detective.core.distribute.JobRunResult.JobRunResultSteps;
 import detective.core.distribute.JobToRun;
+import detective.core.distribute.scenario.ScenarioRunContext;
 import detective.core.dsl.DslException;
 import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.SharedDataPlaceHolder;
@@ -158,24 +160,66 @@ public class SimpleStoryRunner implements StoryRunner{
     //All steps will share same browser
     Browser browser = null;
     try {
+      addAllStepInfo(scenario, datain);
+      
+      int i = 0;
       for (Step step : scenario.getSteps()){
-        if (step.getExpectClosure() != null){
-          Closure<?> expectClosure = (Closure)step.getExpectClosure().clone();
-          if (step.getTitle().equalsIgnoreCase("browser")){
-            if (browser == null)
-              browser = Detective.newBrowser();
-            
-            Detective._browser(browser, expectClosure);
+        boolean stepSuccessed = false;
+        try {
+          if (step.getExpectClosure() != null){
+            Closure<?> expectClosure = (Closure)step.getExpectClosure().clone();
+            if (step.getTitle().equalsIgnoreCase("browser")){
+              if (browser == null)
+                browser = Detective.newBrowser();
+              
+              Detective._browser(browser, expectClosure);
+            }else{
+              runAsNormal(scenario, parameterForWholeScenario, step, expectClosure);
+            }
           }else{
-            runAsNormal(scenario, parameterForWholeScenario, step, expectClosure);
-          }        
-        }else{
-          throw new DslException("There is no \"then\" section in DSL scenario part. \n " + scenario.toString());
+            throw new DslException("There is no \"then\" section in DSL scenario part. \n " + scenario.toString());
+          }
+          stepSuccessed = true;
+        } finally {
+          logStepInfo(step, i, stepSuccessed, parameterForWholeScenario);
+          i++;
         }
       }
     } finally {
       if (browser != null)
         browser.close();
+    }
+  }
+  
+  private void addAllStepInfo(final Scenario scenario, Parameters datain){
+    ScenarioRunContext context = (ScenarioRunContext)datain.get("_scenarioContext");
+    if (context != null){
+      for (int i = 0; i < scenario.getSteps().size(); i++){
+        Step step = scenario.getSteps().get(i);
+        JobRunResultSteps stepResult = new JobRunResultSteps();
+        stepResult.setStepName(step.getTitle());
+        stepResult.setSuccessed(false);
+        context.addJobRunResultSteps(stepResult);
+      }
+    }
+  }
+  
+  private void logStepInfo(Step step, int stepIndex, boolean successed, Parameters datain){
+    //TODO Need Redesign for this as it requires distribute package. This implementation is really bad
+    ScenarioRunContext context = (ScenarioRunContext)datain.get("_scenarioContext");
+    if (context != null && context.getSteps().size() > stepIndex){
+      JobRunResultSteps stepResult = context.getSteps().get(stepIndex);
+      stepResult.setSuccessed(successed);
+      
+      List<String> msgs = Detective.getUserMessage(datain);
+      if (msgs != null){
+        stepResult.getAdditionalMsgs().addAll(msgs);
+      }
+    }
+    
+    //We always clear this information as it only exists in current step
+    if (Detective.getUserMessage(datain) != null){
+      Detective.getUserMessage(datain).clear();
     }
   }
 

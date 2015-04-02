@@ -8,8 +8,8 @@
 
 	<groupId>io.bddhub</groupId>
 	<artifactId>detective.core</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
-	<!-- <version>1.2.0</version> --> 
+	<!-- <version>1.3.0-SNAPSHOT</version> -->
+	<version>1.3.0</version>  
 	<packaging>jar</packaging>
 
 	<properties>
@@ -414,7 +414,8 @@
 			  </configuration>
 			</plugin>
 
-			<!--
+			<!-- Release related plugin start -->
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -422,9 +423,11 @@
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
+						
 						<goals>
-							<goal>deploy</goal>
+							<goal>jar</goal>
 						</goals>
+						<phase>package</phase>
 					</execution>
 				</executions>
 			</plugin>
@@ -443,7 +446,11 @@
 			<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
 				<version>1.5</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
 				<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin>
-			-->
+			
+			
+			
+			<!-- Release related plugin end -->
+			
 		</plugins>
 		<pluginManagement>
 			<plugins>

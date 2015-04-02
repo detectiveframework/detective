@@ -1,9 +1,8 @@
 package detective.core.distribute;
 
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import detective.utils.Utils;
 
@@ -14,6 +13,39 @@ import detective.utils.Utils;
  *
  */
 public class JobRunResult implements Serializable, Comparable<JobRunResult> {
+  
+  public static class JobRunResultSteps implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+
+    private String stepName;
+    private boolean successed;
+    private List<String> additionalMsgs = new ArrayList<String>();
+    
+    @Override
+    public String toString() {
+      return "JobRunResultSteps [stepName=" + stepName + ", successed=" + successed
+          + ", additionalMsgs=" + additionalMsgs + "]";
+    }
+    public String getStepName() {
+      return stepName;
+    }
+    public void setStepName(String stepName) {
+      this.stepName = stepName;
+    }
+    public boolean isSuccessed() {
+      return successed;
+    }
+    public void setSuccessed(boolean successed) {
+      this.successed = successed;
+    }
+    public List<String> getAdditionalMsgs() {
+      return additionalMsgs;
+    }
+    public void setAdditionalMsgs(List<String> additionalMsgs) {
+      this.additionalMsgs = additionalMsgs;
+    }
+  }
 
   private static final long serialVersionUID = 1L;
   
@@ -40,6 +72,8 @@ public class JobRunResult implements Serializable, Comparable<JobRunResult> {
    * ignored for some reason?
    */
   private boolean ignored = false;
+  
+  private List<JobRunResultSteps> steps = new ArrayList<JobRunResultSteps>();
   
   @Override
   public String toString() {
@@ -101,6 +135,14 @@ public class JobRunResult implements Serializable, Comparable<JobRunResult> {
   @Override
   public int compareTo(JobRunResult o) {
     return this.storyName.compareTo(o.getStoryName());
+  }
+
+  public List<JobRunResultSteps> getSteps() {
+    return steps;
+  }
+
+  public void setSteps(List<JobRunResultSteps> steps) {
+    this.steps = steps;
   }
 
 }

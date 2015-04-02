@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.common.base.Optional;
 
+import detective.core.Detective;
 import detective.core.Parameters;
 import detective.core.TestTask;
 import detective.core.config.ConfigException;
@@ -12,17 +13,29 @@ import detective.core.dsl.DslException;
 import detective.core.dsl.ParametersImpl;
 
 public abstract class AbstractTask implements TestTask{
+  
+  private Parameters config = null;
 
   @Override
   public Parameters execute(Parameters config) throws ConfigException {
     if (config == null)
       throw ConfigException.configCantEmpty();
     
+    this.config = config;
+    
     Parameters output = new ParametersImpl();
     
     doExecute(config, output);
     
+    if (config.get(Detective.PARAMETER_NAME_USER_MESSAGES) != null){
+      output.put(Detective.PARAMETER_NAME_USER_MESSAGES, config.get(Detective.PARAMETER_NAME_USER_MESSAGES));
+    }    
+    
     return output;
+  }
+  
+  protected void logMessage(String msg){
+    Detective.logUserMessage(config, msg);
   }
   
   protected abstract void doExecute(Parameters config, Parameters output);

@@ -56,9 +56,11 @@ public class SparkDriver {
    * @return how many jobs failed
    */
   public static long run(String[] args) {
+    String packageName = args[0];
+    
+    
     String master = DetectiveFactory.INSTANCE.getConfig().getString("spark.master");
     logger.info("Detective is running with master " + master);
-    String packageName = args[0];
     logger.info("Detective is running with package or class " + packageName);
     
     String appName = null;
@@ -66,6 +68,38 @@ public class SparkDriver {
       appName = args[1];
     }else
       appName = getDefaultAppName(packageName);
+
+    Long startTime = System.nanoTime();
+    
+    List<JobRunResult> jobsAfterRun = runJobs(packageName, appName);
+    
+    Long endTime = System.nanoTime();
+    
+    Collections.sort(jobsAfterRun);
+    long errors = 0;
+    long skipped = 0;
+    for (JobRunResult job : jobsAfterRun){
+      if (! job.getSuccessed())
+        errors = errors + 1;
+      if (job.isIgnored())
+        skipped ++;
+      
+      logger.info(job.toString());      
+    }
+    
+    Long timeElapsedSec = TimeUnit.SECONDS.convert(endTime - startTime, TimeUnit.NANOSECONDS);
+    logger.info("Tests run: "+jobsAfterRun.size()+", Errors: "+errors+", Skipped: "+skipped+", Time elapsed: " + timeElapsedSec + " Seconds ");
+    
+    printResults(jobsAfterRun);
+    
+    return errors;
+  }
+
+  //This method here for testing only
+  static List<JobRunResult> runJobs(String packageName, String appName) {
+    String master = DetectiveFactory.INSTANCE.getConfig().getString("spark.master");
+    logger.info("Detective is running with master " + master);
+    logger.info("Detective is running with package or class " + packageName);
     
     SparkConf sparkConf = new SparkConf()    
       .setAppName(appName)
@@ -76,12 +110,10 @@ public class SparkDriver {
       //.set("spark.driver.port", "5555")
       ;
     JavaSparkContext jsc = new JavaSparkContext(sparkConf);
-
+    
     int duplicatedtasks = DetectiveFactory.INSTANCE.getConfig().getInt("spark.pressureTest.duplicateTasks");
     logger.info("Detective pressure test, jobs duplication: " + duplicatedtasks);
     List<JobToRun> jobs = JobCollector.collectAll(packageName, duplicatedtasks);
-    
-    Long startTime = System.nanoTime();
     
     JavaRDD<JobToRun> dataset = jsc.parallelize(jobs, jobs.size());
     
@@ -108,27 +140,7 @@ public class SparkDriver {
       }});
     
     List<JobRunResult> jobsAfterRun = datasetResult.collect();
-    
-    Long endTime = System.nanoTime();
-    
-    Collections.sort(jobsAfterRun);
-    long errors = 0;
-    long skipped = 0;
-    for (JobRunResult job : jobsAfterRun){
-      if (! job.getSuccessed())
-        errors = errors + 1;
-      if (job.isIgnored())
-        skipped ++;
-      
-      logger.info(job.toString());      
-    }
-    
-    Long timeElapsedSec = TimeUnit.SECONDS.convert(endTime - startTime, TimeUnit.NANOSECONDS);
-    logger.info("Tests run: "+jobsAfterRun.size()+", Errors: "+errors+", Skipped: "+skipped+", Time elapsed: " + timeElapsedSec + " Seconds ");
-    
-    printResults(jobsAfterRun);
-    
-    return errors;
+    return jobsAfterRun;
   }
   
 

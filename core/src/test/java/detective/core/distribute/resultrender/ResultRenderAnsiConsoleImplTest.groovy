@@ -7,6 +7,7 @@ import org.fusesource.jansi.Ansi;
 import org.junit.Test;
 
 import detective.core.distribute.JobRunResult;
+import detective.core.distribute.JobRunResult.JobRunResultSteps
 import junit.framework.TestCase;
 
 /**
@@ -63,34 +64,82 @@ public class ResultRenderAnsiConsoleImplTest extends TestCase {
   }
   
   @Test
-  public void testOneResult() {
+  public void testSuccessStoryWithUserMessagesInEachStep(){
+    checkReuslt(createResult("Story1", "Scenario1", true, false, null),
+      """
+[32;1mStory Name: Story1[22m
+[1m| -- Scenario Name: [22mScenario1
+[1m| -- Successed:     [22mYes
+[32;1m| -- [22mstep1
+[1m| --   message for step1[22m
+[1m| --   message2 for step1[22m
+[32;32;1m| -- [22mstep2
+[1m| --   message for step2[22m
+[32;0m
+    """
+      )
+  }
+  
+  @Test
+  public void testFailedStoryWithUserMessagesInEachStep(){
+    checkReuslt(createResult("Story2", "Scenario2", false, false, null),
+"""
+[31;1mStory Name: Story2[22m
+[1m| -- Scenario Name: [22mScenario2
+[1m| -- Successed:     [22mFailed
+[32;1m| -- [22mstep1
+[1m| --   message for step1[22m
+[1m| --   message2 for step1[22m
+[31;31;1m| -- [22mstep2
+[1m| --   message for step2[22m
+[31;0m
+    """
+      )
+  }
+  
+  @Test
+  public void testIgornedStory(){
+    checkReuslt(createResult("Story3", "Scenario3", false, true, null),
+      """
+[34;1mStory Name: Story3[22m
+[1m| -- Scenario Name: [22mScenario3
+[1m| -- Ignored:       Yes[22m
+[32;1m| -- [22mstep1
+[1m| --   message for step1[22m
+[1m| --   message2 for step1[22m
+[34;31;1m| -- [22mstep2
+[1m| --   message for step2[22m
+[34;0m
+    """);
+  }
+  
+  @Test
+  public void testFailedStoryWithCallStack(){
+    checkReuslt(createResult("Story4", "Scenario4", false, false, createNewException("Ansi Console with Exception Message.")),  """
+[31;1mStory Name: Story4[22m
+[1m| -- Scenario Name: [22mScenario4
+[1m| -- Successed:     [22mFailed
+[32;1m| -- [22mstep1
+[1m| --   message for step1[22m
+[1m| --   message2 for step1[22m
+[31;31;1m| -- [22mstep2
+[1m| --   message for step2[22m
+[31;1m| -- Error:         Ansi Console with Exception Message.[22m
+[1m| -- Error Callstack:[22mjava.lang.RuntimeException: Ansi Console with Exception Message.
+  at detective.core.distribute.resultrender.ResultRenderAnsiConsoleImplTest.createNewException(ResultRenderAnsiConsoleImplTest.groovy
+  at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+  at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+[m
+    """)
+  }
+  
+  private void checkReuslt(JobRunResult jobRunResult, String expectedAnsiOutput){
     ResultRenderAnsiConsoleImpl render = new ResultRenderAnsiConsoleImpl();
-    List<JobRunResult> results = createTestCases();
-    
-    results.each{
-      println render.createAnsiCode(it).toString()
+    String realOutput = render.createAnsiCode(jobRunResult).toString();
+    println realOutput;
+    expectedAnsiOutput.split("\n").each {
+      assert realOutput.contains(it.trim());
     }
-    
-//    assert """
-//[32;1mStory Name: Story1[22m
-//[1m| -- Scenario Name: [22mScenario1
-//[1m| -- Successed:     [22mYes
-//[m
-//    """.equals(render.createAnsiCode(results.get(0)).toString())
-//    
-//    assert """
-//[31;1mStory Name: Story2[22m
-//[1m| -- Scenario Name: [22mScenario2
-//[1m| -- Successed:     [22mFailed
-//[m
-//    """.equals(render.createAnsiCode(results.get(1)).toString())
-//    
-//    assert """
-//[34;1mStory Name: Story3[22m
-//[1m| -- Scenario Name: [22mScenario3
-//[1m| -- Ignored:       Yes[22m
-//[m
-//    """.equals(render.createAnsiCode(results.get(2)).toString())
   }
   
   private Throwable createNewException(String msg){
@@ -108,6 +157,20 @@ public class ResultRenderAnsiConsoleImplTest extends TestCase {
     result.setSuccessed(successed);
     result.setIgnored(ignored);
     result.setError(error);
+    
+    if (successed){
+      List<JobRunResultSteps> steps = new ArrayList<JobRunResultSteps>();
+      steps << new JobRunResultSteps(stepName:"step1", successed:true, additionalMsgs:["message for step1", "message2 for step1"]);
+      steps << new JobRunResultSteps(stepName:"step2", successed:true, additionalMsgs:["message for step2"]);
+      result.setSteps(steps)
+    }else{
+      List<JobRunResultSteps> steps = new ArrayList<JobRunResultSteps>();
+      steps << new JobRunResultSteps(stepName:"step1", successed:true, additionalMsgs:["message for step1", "message2 for step1"]);
+      steps << new JobRunResultSteps(stepName:"step2", successed:false, additionalMsgs:["message for step2"]);
+      result.setSteps(steps)
+    }
+    
+    
     return result;
   }
   

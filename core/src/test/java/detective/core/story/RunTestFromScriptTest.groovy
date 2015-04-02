@@ -143,4 +143,10 @@ public class RunTestFromScriptTest {
     story.run();
   }
   
+  @Test
+  public void testGrammerStory(){
+    GrammerStory story = new GrammerStory();
+    story.run();
+  }
+  
 }

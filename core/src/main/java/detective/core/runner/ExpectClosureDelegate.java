@@ -11,6 +11,7 @@ import org.junit.Assert;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
+import detective.core.Detective;
 import detective.core.Parameters;
 import detective.core.Scenario;
 import detective.core.Story;
@@ -98,6 +99,10 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
     Parameters dataReturned = task.execute(datain);
     
     this.getValues().putAllUnwrappered(dataReturned);
+  }
+  
+  public void logMessage(String msg){
+    Detective.logUserMessage(this.getValues(), msg);
   }
   
   public void runtask(Map<?, ?> parameters, TestTask task){

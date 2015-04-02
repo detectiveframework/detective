@@ -4,6 +4,7 @@ package detective.core.distribute.scenario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import detective.core.Parameters;
 import detective.core.Scenario;
 import detective.core.Story;
 import detective.core.StoryRunner;
@@ -43,7 +44,9 @@ public class ScenarioRunnerFilter implements RunnerFilter<ScenarioRunContext>{
   
   private void runScenario(ScenarioRunContext context) throws Throwable{
     StoryRunner runner = new SimpleStoryRunner();
-    runner.runScenario(context.getScenario(), new ParametersImpl());
+    Parameters params = new ParametersImpl();
+    params.put("_scenarioContext", context);
+    runner.runScenario(context.getScenario(), params);
   }
   
   private void setupJobResult(ScenarioRunContext context){
@@ -55,6 +58,7 @@ public class ScenarioRunnerFilter implements RunnerFilter<ScenarioRunContext>{
     result.setSuccessed(scenario.getSuccessed());
     result.setIgnored(scenario.getIgnored());
     result.setError(scenario.getError());
+    result.getSteps().addAll(context.getSteps());
     job.setJobResult(result);
   }
 

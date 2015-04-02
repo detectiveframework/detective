@@ -7,7 +7,9 @@ import groovy.lang.Closure;
 import groovy.util.XmlSlurper;
 import groovy.xml.MarkupBuilder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.core.AllOf;
@@ -39,6 +41,8 @@ import detective.utils.StringUtils;
  */
 public class Detective {
   
+  public static final String PARAMETER_NAME_USER_MESSAGES = "_userMessages";
+
   private enum Recorder {
     INSTANCE;
     
@@ -123,6 +127,22 @@ public class Detective {
   
   public static TraceRecord debug(String message){
     return recordLog(LogLevel.DEBUG, message);
+  }
+  
+  public static void logUserMessage(Parameters params, String msg){
+    List<String> userMsgs = (List<String>)params.get(PARAMETER_NAME_USER_MESSAGES);
+    if (userMsgs == null){
+      synchronized (params){
+        userMsgs = new ArrayList<String>();
+        params.put(PARAMETER_NAME_USER_MESSAGES, userMsgs);
+      }      
+    }
+    
+    userMsgs.add(msg);
+  }
+  
+  public static List<String> getUserMessage(Parameters params){
+    return (List<String>)params.get(PARAMETER_NAME_USER_MESSAGES);
   }
   
   public static EchoTask echoTask(){
