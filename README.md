@@ -9,7 +9,7 @@ We have release our framework on Maven central repository.
 <dependency>
 	<groupId>io.bddhub</groupId>
 	<artifactId>detective.core</artifactId>
-	<version>1.2.0</version>
+	<version>1.3.0</version>
 </dependency>
 ```
 
