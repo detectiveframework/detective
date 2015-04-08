@@ -17,6 +17,7 @@ import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
@@ -173,10 +174,10 @@ public class HttpClientTask extends AbstractTask{
     
     HttpUriRequest request = this.createHttpUriRequest(m, uri);
     request.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36");
-    if (request instanceof HttpPost){
+    if (request instanceof HttpEntityEnclosingRequestBase){
       if (config.containsKey("http.post.string")){
         String postText = this.readOptional(config, "http.post.string", null, String.class);
-        setupPostRequest((HttpPost)request, postText);
+        setupPostRequest((HttpEntityEnclosingRequestBase)request, postText);
       }else if (config.containsKey("http.post.file.filename")){
         String filename = this.readOptional(config, "http.post.file.filename", null, String.class);
         this.setupPostWithFileName((HttpPost)request, filename);
@@ -230,7 +231,7 @@ public class HttpClientTask extends AbstractTask{
     }
   }
   
-  protected HttpPost setupPostRequest(HttpPost request, String postText){
+  protected HttpEntityEnclosingRequestBase setupPostRequest(HttpEntityEnclosingRequestBase request, String postText){
     if (postText == null || postText.length() == 0)
       return request;
     
@@ -280,7 +281,7 @@ public class HttpClientTask extends AbstractTask{
       case GET:
         return new HttpGet(uri);
       case DELETE:
-        return new HttpDelete(uri);
+        return new HttpDeleteWithBody(uri);
       case HEAD:
         return new HttpHead(uri);
       case OPTIONS:
