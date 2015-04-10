@@ -176,8 +176,8 @@ public class HttpClientTask extends AbstractTask{
     request.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36");
     if (request instanceof HttpEntityEnclosingRequestBase){
       if (config.containsKey("http.post.string")){
-        String postText = this.readOptional(config, "http.post.string", null, String.class);
-        setupPostRequest((HttpEntityEnclosingRequestBase)request, postText);
+        Object postText = this.readOptional(config, "http.post.string", null, Object.class);
+        setupPostRequest((HttpEntityEnclosingRequestBase)request, postText.toString());
       }else if (config.containsKey("http.post.file.filename")){
         String filename = this.readOptional(config, "http.post.file.filename", null, String.class);
         this.setupPostWithFileName((HttpPost)request, filename);

@@ -16,6 +16,8 @@ import org.hamcrest.core.AllOf;
 import org.hamcrest.core.AnyOf;
 import org.hamcrest.core.IsNot;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.typesafe.config.Config;
 
@@ -40,6 +42,8 @@ import detective.utils.StringUtils;
  *
  */
 public class Detective {
+  
+  private static final Logger logger = LoggerFactory.getLogger(Detective.class);
   
   public static final String PARAMETER_NAME_USER_MESSAGES = "_userMessages";
 
@@ -107,6 +111,7 @@ public class Detective {
   }
   
   public static TraceRecord info(String message){
+    logger.info(message);
     return recordLog(LogLevel.INFO, message);
   }
   
@@ -139,6 +144,7 @@ public class Detective {
     }
     
     userMsgs.add(msg);
+    info(msg);
   }
   
   public static List<String> getUserMessage(Parameters params){
