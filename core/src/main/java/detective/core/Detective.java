@@ -27,6 +27,7 @@ import detective.common.trace.TraceRecorder;
 import detective.common.trace.impl.TraceRecorderElasticSearchImpl;
 import detective.core.dsl.WrappedObject;
 import detective.core.dsl.builder.DslBuilder;
+import detective.core.geb.GebSession;
 import detective.core.matcher.IsEqual;
 import detective.core.matcher.Subset;
 import detective.core.runner.DslBuilderAndRun;
@@ -333,11 +334,7 @@ public class Detective {
    * @return
    */
   public static Browser newBrowser(){
-    Browser browser = new Browser();
-    //Setup driver
-    //browser.setDriver(null);
-    browser.setBaseUrl(getConfig().getString("global.baseurl"));
-    return browser;
+    return GebSession.getBrowser();
   }
   
   /**

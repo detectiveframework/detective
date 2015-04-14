@@ -44,8 +44,6 @@ import groovy.util.Expando;
  */
 public class ExpectClosureDelegate extends PropertyToStringDelegate{
   
-  private Browser browser;
-  
   /**
    * Create a new ROOT expect closure delegate
    * 
@@ -71,13 +69,9 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
   }
   
   public Object getProperty(String property){
-//    if (browser != null){
-//      browser.getPage();
-//      Object gebField = ((GroovyObject)browser).getProperty(property);
-//      if (gebField != null)
-//        return gebField;
-//    }
-//      
+    if ("browser".equals(property))
+      return this.browser();
+    
     Object result = super.getProperty(property);
     if (! (result instanceof PropertyToStringDelegate)){
       return new ExpectObjectWrapperWrapper(result);
@@ -121,6 +115,14 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
     }
   }
   
+  public Browser browser(){
+    return Detective.newBrowser();
+  }
+  
+  public void browser(Closure<?> closure){
+    Detective._browser(Detective.newBrowser(), closure);
+  }
+  
   public List<Row> table(Closure<?> closure){
     return TableParser.asListOfRows(values, closure);
   }
@@ -157,23 +159,7 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
   }
   
   public Object invokeMethod(String name, Object args) {
-    try {
-      return super.invokeMethod(name, args);
-    }
-    catch (GroovyRuntimeException e) {    
-      if (browser != null){
-        return ((GroovyObject)browser).invokeMethod(name, args);
-      }else{
-        throw e;
-      }
-    }
+    return super.invokeMethod(name, args);
   }
 
-  public Browser getBrowser() {
-    return browser;
-  }
-
-  public void setBrowser(Browser browser) {
-    this.browser = browser;
-  }
 }

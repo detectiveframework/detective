@@ -33,8 +33,10 @@ import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.SharedDataPlaceHolder;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.dsl.table.Row;
+import detective.core.exception.ScenarioFailException;
 import detective.core.exception.StoryFailException;
 import detective.core.filter.RunnerFilterChain;
+import detective.core.geb.GebSession;
 import detective.core.services.DetectiveFactory;
 import detective.utils.StringUtils;
 
@@ -117,8 +119,12 @@ public class SimpleStoryRunner implements StoryRunner{
         prepareDataIn(datain, headers, row);
         final Parameters datainWithRow = datain.clone();
         Promise<Object> p = DetectiveFactory.INSTANCE.getThreadGroup().task(new Runnable(){
-          public void run() {
-            runScenarioNew(scenario, datainWithRow);
+          public void run(){
+            try {
+              runScenarioNew(scenario, datainWithRow);
+            } catch (Exception e) {
+              throw new ScenarioFailException(scenario, 0, e.getMessage(), e);
+            }
           }
         });        
         promises.add(p);
@@ -152,42 +158,43 @@ public class SimpleStoryRunner implements StoryRunner{
    * Run Scenario in current thread
    * @param scenario
    * @param datain
+   * @throws Exception 
    */
-  private void runScenarioNew(final Scenario scenario, Parameters datain) {
+  private void runScenarioNew(final Scenario scenario, Parameters datain) throws Exception {
     //Shared data need join into the running user code so that they can change it
     Parameters parameterForWholeScenario = new ParametersImpl(scenario.getStory().getSharedDataMap());
     parameterForWholeScenario.putAll(datain);
-    //All steps will share same browser
-    Browser browser = null;
+    GebSession.setParameters(parameterForWholeScenario);
     try {
-      addAllStepInfo(scenario, datain);
-      
-      int i = 0;
-      for (Step step : scenario.getSteps()){
-        boolean stepSuccessed = false;
-        try {
-          if (step.getExpectClosure() != null){
-            Closure<?> expectClosure = (Closure)step.getExpectClosure().clone();
-            if (step.getTitle().equalsIgnoreCase("browser")){
-              if (browser == null)
-                browser = Detective.newBrowser();
+      try {
+        addAllStepInfo(scenario, datain);
+        
+        int i = 0;
+        for (Step step : scenario.getSteps()){
+          boolean stepSuccessed = false;
+          try {
+            if (step.getExpectClosure() != null){
+              Closure<?> expectClosure = (Closure)step.getExpectClosure().clone();
               
-              Detective._browser(browser, expectClosure);
+              runAsNormal(scenario, parameterForWholeScenario, step, expectClosure);            
             }else{
-              runAsNormal(scenario, parameterForWholeScenario, step, expectClosure);
+              throw new DslException("There is no \"then\" section in DSL scenario part. \n " + scenario.toString());
             }
-          }else{
-            throw new DslException("There is no \"then\" section in DSL scenario part. \n " + scenario.toString());
+            stepSuccessed = true;
+          } finally {
+            logStepInfo(step, i, stepSuccessed, parameterForWholeScenario);
+            i++;
           }
-          stepSuccessed = true;
-        } finally {
-          logStepInfo(step, i, stepSuccessed, parameterForWholeScenario);
-          i++;
         }
+      }catch (Exception e){
+        if (GebSession.isBrowserAvailable() && !"disable".equals(Detective.getConfig().getString("browser.report"))){
+          GebSession.getBrowser().report("Fail_" + scenario.getStory().getTitle() + "_" + scenario.getTitle());
+        }
+        throw e;
       }
     } finally {
-      if (browser != null)
-        browser.close();
+      GebSession.cleanBrowser();
+      GebSession.cleanParameters();
     }
   }
   
@@ -227,7 +234,6 @@ public class SimpleStoryRunner implements StoryRunner{
       Step step, Closure<?> expectClosure) {
     Parameters dataToPassIntoExpectClosure = parameterForWholeScenario;
     ExpectClosureDelegate delegate = new ExpectClosureDelegate(dataToPassIntoExpectClosure);
-    delegate.setBrowser(null);
     expectClosure.setDelegate(delegate);
     //expectClosure.setResolveStrategy(Closure.DELEGATE_ONLY);
     expectClosure.setResolveStrategy(Closure.DELEGATE_FIRST);

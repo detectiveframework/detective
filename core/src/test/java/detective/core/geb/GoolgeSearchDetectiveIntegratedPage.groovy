@@ -3,10 +3,11 @@ package detective.core.geb
 import geb.Browser
 import geb.Page
 import geb.Module
+import detective.core.geb.GebDetectivePage;
 
 // modules are reusable fragments that can be used across pages that can be parameterised
 // here we are using a module to model the search function on the home and results pages
-class GoogleSearchModule extends Module {
+class GoolgeSearchModuleDetective extends Module {
 
   // a parameterised value set when the module is included
   def buttonValue
@@ -25,25 +26,32 @@ class GoogleSearchModule extends Module {
   }
 }
 
-class GoogleHomePage extends GebDetectivePage {
+class GoogleHomePageDetective extends GebDetectivePage {
 
   // pages can define their location, either absolutely or relative to a base
-  static url = "http://google.com/ncr"
+  static url = "http://google.com/ncr?parameter1=?&parameter2=defaultValue&defaultValueWillBeOverwritten=defaultButOverwritten"
 
   // “at checkers” allow verifying that the browser is at the expected page
   static at = { title == "Google" }
 
   static content = {
     // include the previously defined module
-    search { module GoogleSearchModule, buttonValue: "Google Search" }    
+    search { module GoolgeSearchModuleDetective, buttonValue: "Google Search" }    
+  }
+  
+  static parameters = {
+    [
+      "search": search.field.value(),
+      "title": title
+    ]
   }
 }
 
-class GoogleResultsPage extends Page {
+class GoogleResultsPageDetective extends GebDetectivePage {
   static at = { title.endsWith "Google Search" }
   static content = {
     // reuse our previously defined module
-    search { module GoogleSearchModule, buttonValue: "Search" }
+    search { module GoolgeSearchModuleDetective, buttonValue: "Search" }
 
     // content definitions can compose and build from other definitions
     results { $("li.g") }
@@ -51,8 +59,14 @@ class GoogleResultsPage extends Page {
     resultLink { i -> result(i).find(".r > a") }
     firstResultLink { resultLink(0) }
   }
+  static parameters = {
+    [
+      "results" : results,
+      "firstResultLink" : firstResultLink
+    ]
+  }
 }
 
-class WikipediaPage extends Page {
+class WikipediaPageDetective extends GebDetectivePage {
   static at = { title.startsWith("Wikipedia") }
 }

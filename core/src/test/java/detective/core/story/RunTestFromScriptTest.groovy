@@ -2,7 +2,10 @@ package detective.core.story;
 
 import static org.junit.Assert.*;
 
-import detective.core.geb.GebStory
+import detective.core.geb.GebBasicStory
+import detective.core.geb.GebDetectiveStory
+import detective.core.geb.GebWithTaskStory
+import detective.core.story.groovyassert.SimpleStoryAssert
 import detective.core.story.matcher.ErrorExpectStory
 import detective.core.story.matcher.SubsetJsonTableStory
 import detective.core.story.matcher.SubsetListClassTableStory
@@ -139,14 +142,30 @@ public class RunTestFromScriptTest {
   
   @Test
   public void testGetStory(){
-    GebStory story = new GebStory();
+    GebWithTaskStory story = new GebWithTaskStory();
     story.run();
+  }
+  
+  @Test
+  public void testGetDetectiveStory(){
+    GebDetectiveStory story = new GebDetectiveStory();
+    story.run();
+  }
+  
+  @Test void testGebBasicStory(){
+    new GebBasicStory().run();
   }
   
   @Test
   public void testGrammerStory(){
     GrammerStory story = new GrammerStory();
     story.run();
+  }
+  
+  @Test
+  public void testGroovyAssert(){
+    SimpleStoryAssert store = new SimpleStoryAssert();
+    store.run();
   }
   
 }
