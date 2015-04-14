@@ -140,9 +140,9 @@ HTTP Client Task
 
   </ul>
 
-  It able to share cookies which means you can share session between different requests in most cases.
-
-
+  It able to **share cookies** which means you can share session between different requests in most cases.
+<br>
+<br>
   HttpClient Connection Manager Document Link: http://hc.apache.org/httpcomponents-client-4.3.x/tutorial/html/connmgmt.html
 
   </p>

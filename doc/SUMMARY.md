@@ -8,6 +8,7 @@
    * [Run Scenario](story_structure/run_task.md)
    * [Check the result](story_structure/check_the_result.md)
    * [JUnit](story_structure/junit.md)
+   * [Geb Integration](story_structure/geb_integration.md)
 * [Matchers](matchers/README.md)
    * [Equals](matchers/equals.md)
    * [Expect](matchers/expect.md)
