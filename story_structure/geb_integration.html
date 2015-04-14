@@ -4,7 +4,7 @@
     <head>
         
         <meta charset="UTF-8">
-        <title>Expect | Introduction</title>
+        <title>Geb Integration | Introduction</title>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="generator" content="GitBook 1.0.3">
@@ -18,10 +18,10 @@
     
     
     
-    <link rel="next" href="../matchers/subset.html" />
+    <link rel="next" href="../matchers/README.html" />
     
     
-    <link rel="prev" href="../matchers/equals.html" />
+    <link rel="prev" href="../story_structure/junit.html" />
     
 
         
@@ -33,7 +33,7 @@
 
 
         
-    <div class="book"  data-level="3.2" data-basepath=".." data-revision="1428999137637">
+    <div class="book"  data-level="2.6" data-basepath=".." data-revision="1428999137637">
     
 
 <div class="book-summary">
@@ -178,7 +178,7 @@
         </li>
     
         
-        <li class="chapter " data-level="2.6" data-path="story_structure/geb_integration.html">
+        <li class="chapter active" data-level="2.6" data-path="story_structure/geb_integration.html">
             
                 
                     <a href="../story_structure/geb_integration.html">
@@ -232,7 +232,7 @@
         </li>
     
         
-        <li class="chapter active" data-level="3.2" data-path="matchers/expect.html">
+        <li class="chapter " data-level="3.2" data-path="matchers/expect.html">
             
                 
                     <a href="../matchers/expect.html">
@@ -739,45 +739,76 @@
                 <div class="page-inner">
                 
                 
-                    <section class="normal" id="section-gitbook_238">
+                    <section class="normal" id="section-gitbook_251">
                     
-                        <h1 id="expect">expect</h1>
-<p>In some cases, you are <strong>expecting</strong> some error will happen.</p>
-<pre><code class="lang-groovy"><span class="hljs-keyword">package</span> detective.core.story.matcher
+                        <h1 id="geb-integration">Geb Integration</h1>
+<p>we support geb by provide browser cloure, you can run everything that geb supported into that cloure, for example <a href="https://github.com/detectiveframework/detective/blob/master/core/src/test/java/detective/core/geb/GebBasicStory.groovy" target="_blank">Link</a>:</p>
+<pre><code class="lang-groovy">story() <span class="hljs-string">"Geb Script Basic Story"</span> {
+  scenario <span class="hljs-string">"invoke geb by browser closure"</span>{
+    <span class="hljs-string">"go to google home page by closure"</span>{
+      browser {
+        go <span class="hljs-string">"http://google.com/ncr"</span>
 
-<span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> detective.core.Detective.*;
+        <span class="hljs-keyword">assert</span> title == <span class="hljs-string">"Google"</span>
 
-
-story() <span class="hljs-string">"Demo how to expect an error"</span> {
-
-  scenario <span class="hljs-string">"expect with a error message"</span> {
-    given <span class="hljs-string">"a parameter"</span> {
-      parameterA = <span class="hljs-string">"This is the value"</span>
-    }
-
-    when <span class="hljs-string">"run echo task"</span>{
-      runtask echoTask();
-    }
-
-    then <span class="hljs-string">"parameters will echo back"</span>{
-      echotask.parameterA &lt;&lt; <span class="hljs-string">"This is the value"</span>
-    }
-
-    and <span class="hljs-string">"below check should throw an error which message contains \"WRONG value \""</span>{
-      expect(<span class="hljs-string">"WRONG value!"</span>) {
-        echotask.parameterA &lt;&lt; <span class="hljs-string">"WRONG value!"</span>
+        $(<span class="hljs-string">"input"</span>, <span class="hljs-string">name:</span> <span class="hljs-string">"q"</span>).value(<span class="hljs-string">"Wikipedia"</span>)
       }
-    }
 
-    and <span class="hljs-string">"below check should throw an error which message contains \"WRONG value \" and \"This is the value\""</span>{
-      expect([<span class="hljs-string">"WRONG value!"</span>, <span class="hljs-string">"This is the value"</span>]){
-        echotask.parameterA &lt;&lt; <span class="hljs-string">"WRONG value!"</span>
-      }
+      <span class="hljs-comment">//you can also direct access geb via browser property</span>
+      browser.go <span class="hljs-string">"http://google.com/ncr"</span>
     }
   }
 }
 </code></pre>
+<p>You can access <a href="http://www.gebish.org/manual/current/pages.html#pages" target="_blank">PageObject</a> as usual, <a href="https://github.com/detectiveframework/detective/blob/master/core/src/test/java/detective/core/geb/GebDetectiveStory.groovy" target="_blank">full link here</a>.</p>
+<pre><code class="lang-groovy"><span class="hljs-keyword">package</span> detective.core.geb
 
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> detective.core.Detective.*;
+<span class="hljs-keyword">import</span> geb.Browser;
+
+story() <span class="hljs-string">"Geb page with detective integration"</span> {
+  scenario <span class="hljs-string">"url replacement and parameter exchange"</span>{
+    <span class="hljs-string">"go to google home page"</span>{
+      <span class="hljs-comment">//http://google.com/ncr?parameter1=?&amp;parameter2=defaultValue&amp;defaultValueWillBeOverwritten=defaultButOverwritten</span>
+      parameter1 = <span class="hljs-string">"ThisIsParameter1"</span>
+      defaultValueWillBeOverwritten = <span class="hljs-string">"ThisIsValueFromStory"</span>
+
+      browser {
+        to GoogleHomePageDetective
+        <span class="hljs-keyword">assert</span> at(GoogleHomePageDetective)
+        <span class="hljs-comment">//The url will replaced as below but we can't test at this moment</span>
+        <span class="hljs-comment">//assert currentUrl == "http://google.com/ncr?parameter1=ThisIsParameter1&amp;parameter2=defaultValue&amp;defaultValueWillBeOverwritten=ThisIsValueFromStory"</span>
+      }
+
+      <span class="hljs-comment">//The browser will fill title with current page title</span>
+      <span class="hljs-comment">//and search with current search value</span>
+      title &lt;&lt; <span class="hljs-string">"Google"</span>
+      search &lt;&lt; <span class="hljs-string">""</span>
+    }
+
+    <span class="hljs-string">"let's search wikipedia"</span> {
+      browser {
+        search.field.value(<span class="hljs-string">"wikipedia"</span>)
+        waitFor { at GoogleResultsPageDetective }
+        <span class="hljs-keyword">assert</span> firstResultLink.text().startsWith(<span class="hljs-string">"Wikipedia"</span>)
+      }
+
+      results &lt;&lt; not(<span class="hljs-literal">null</span>)
+      results[<span class="hljs-number">0</span>] &lt;&lt; not(<span class="hljs-literal">null</span>)
+      firstResultLink.text().startsWith(<span class="hljs-string">"Wikipedia"</span>) &lt;&lt; <span class="hljs-literal">true</span>
+    }
+  }
+}
+</code></pre>
+<h2 id="configuration">Configuration</h2>
+<pre><code>browser{
+    # The driver, could be htmlunit/firefox/ie/chrome
+    default_driver : firefox
+    # Report, could be everyPage / testFailureOnly / disable
+    report : everyPage
+    reportsDir : target/browser-reports
+}
+</code></pre>
                     
                     </section>
                 
@@ -787,10 +818,10 @@ story() <span class="hljs-string">"Demo how to expect an error"</span> {
         </div>
 
         
-        <a href="../matchers/equals.html" class="navigation navigation-prev " aria-label="Previous page: Equals"><i class="fa fa-angle-left"></i></a>
+        <a href="../story_structure/junit.html" class="navigation navigation-prev " aria-label="Previous page: JUnit"><i class="fa fa-angle-left"></i></a>
         
         
-        <a href="../matchers/subset.html" class="navigation navigation-next " aria-label="Next page: Subset"><i class="fa fa-angle-right"></i></a>
+        <a href="../matchers/README.html" class="navigation navigation-next " aria-label="Next page: Matchers"><i class="fa fa-angle-right"></i></a>
         
     </div>
 </div>
