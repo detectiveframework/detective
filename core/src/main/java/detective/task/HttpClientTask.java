@@ -138,6 +138,8 @@ import detective.core.services.DetectiveFactory;
 @ThreadSafe
 public class HttpClientTask extends AbstractTask{
   
+  public static final String PARAM_HTTP_COOKIES = "http.cookies";
+
   public enum HttpMethod {
     GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, PATCH;
 }
@@ -150,7 +152,7 @@ public class HttpClientTask extends AbstractTask{
     CookieStore cookieStore = null;
     boolean useSharedCookies = this.readAsString(config, "http.use_shared_cookies", "true", true, null).equals("true");
     if (useSharedCookies){
-      cookieStore = this.readOptional(config, "http.cookies", null, CookieStore.class);  
+      cookieStore = this.readOptional(config, PARAM_HTTP_COOKIES, null, CookieStore.class);  
     }
     if (cookieStore == null){
       cookieStore = new BasicCookieStore();
@@ -187,7 +189,7 @@ public class HttpClientTask extends AbstractTask{
     try {
       CloseableHttpResponse response = httpClient.execute(request, context);
       try {
-        output.put("http.cookies", cookieStore);
+        output.put(PARAM_HTTP_COOKIES, cookieStore);
         output.put("http.protocal.name", response.getStatusLine().getProtocolVersion().getProtocol());
         output.put("http.protocal.version.major", response.getStatusLine().getProtocolVersion().getMajor());
         output.put("http.protocal.version.minor", response.getStatusLine().getProtocolVersion().getMinor());

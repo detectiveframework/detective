@@ -3,6 +3,9 @@ package detective.core.geb
 import static detective.core.Detective.*;
 import geb.Browser;
 
+
+
+
 story() "Geb Script Basic Story" {
   scenario "invoke geb by browser closure"{
     "go to google home page by closure"{

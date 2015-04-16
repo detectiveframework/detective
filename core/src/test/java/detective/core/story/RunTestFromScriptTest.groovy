@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import detective.core.geb.GebBasicStory
 import detective.core.geb.GebDetectiveStory
 import detective.core.geb.GebWithTaskStory
+import detective.core.geb.UrlParameterAutoFillStory
 import detective.core.story.groovyassert.SimpleStoryAssert
 import detective.core.story.matcher.ErrorExpectStory
 import detective.core.story.matcher.SubsetJsonTableStory
@@ -166,6 +167,11 @@ public class RunTestFromScriptTest {
   public void testGroovyAssert(){
     SimpleStoryAssert store = new SimpleStoryAssert();
     store.run();
+  }
+  
+  @Test
+  public void testUrlFill(){
+    new UrlParameterAutoFillStory().run();
   }
   
 }

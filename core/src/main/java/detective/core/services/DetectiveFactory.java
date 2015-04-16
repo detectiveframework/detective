@@ -4,6 +4,9 @@ import groovyx.gpars.group.PGroup;
 import groovyx.gpars.group.DefaultPGroup;
 import groovyx.gpars.scheduler.DefaultPool;
 import groovyx.gpars.scheduler.ResizeablePool;
+import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
+import io.github.bonigarcia.wdm.OperaDriverManager;
 
 import java.net.InetAddress;
 import java.util.Map;
@@ -72,10 +75,21 @@ public enum DetectiveFactory {
     parametersConfig = new ParametersImpl();
     setupParameters(parametersConfig);
     parametersConfig.setImmutable(true);
+    
+    setupWebDriverBinaries();
   }
   
   public Parameters getParametersConfig() {
     return parametersConfig;
+  }
+  
+  private void setupWebDriverBinaries(){
+    if ("chrome".equals(getConfig().getString("browser.default_driver"))){
+      ChromeDriverManager.setup();
+    }else if ("ie".equals(getConfig().getString("browser.default_driver"))){
+      InternetExplorerDriverManager.setup();
+    }
+    //OperaDriverManager.setup();
   }
   
   private void setupParameters(Parameters parameters){

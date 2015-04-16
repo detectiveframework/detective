@@ -354,7 +354,7 @@ public class Detective {
   }
   
   public static Browser _browser(Browser browser, Closure script) {    
-    script.setResolveStrategy(Closure.DELEGATE_FIRST);
+    script.setResolveStrategy(Closure.DELEGATE_ONLY);
     Browser.drive(browser, script);
     
     return browser;

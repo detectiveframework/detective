@@ -9,9 +9,15 @@ import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.http.client.CookieStore;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.openqa.selenium.Cookie;
+
 import detective.core.Detective;
 import detective.core.Parameters;
 import detective.core.exception.StoryFailException;
+import detective.task.HttpClientTask;
 import geb.Page;
 import groovy.lang.Closure;
 
@@ -49,7 +55,51 @@ public class GebDetectivePage extends Page{
   public void onLoad(Page previousPage) {
     updateParameters();
     reportIfNeeded();
-  }  
+    
+    afterLoad(previousPage);
+  }
+  
+  /**
+   * Lifecycle method called when the page is connected to the browser.
+   * <p>
+   * This implementation does nothing.
+   * <p>
+   * You can still use onLoad but please remember call super.onLoad(previousPager) there
+   *
+   * @param previousPage The page that was active before this one
+   */
+  public void afterLoad(Page previousPage){
+    
+  }
+  
+  /**
+   * Share the cookies with HttpClientTask
+   */
+  public void shareCookies(){
+    Object store = this.getParametersInner().get(HttpClientTask.PARAM_HTTP_COOKIES);
+    if (store == null){
+      store = new BasicCookieStore();
+      this.getParametersInner().put(HttpClientTask.PARAM_HTTP_COOKIES, store);
+    }
+    
+    CookieStore cookieStore = (CookieStore)store; 
+    for (Cookie cookie : this.getDriver().manage().getCookies()){
+      cookieStore.addCookie(new BasicClientCookie(cookie.getName(), cookie.getValue()));
+    }
+  }
+  
+  /**
+   * Read cookies from Detective parameter system, the cookies usually created by HttpClientTask
+   */
+  public void readCookies(){
+    Object store = this.getParametersInner().get(HttpClientTask.PARAM_HTTP_COOKIES);
+    if (store != null){
+      CookieStore cookieStore = (CookieStore)store; 
+      for (org.apache.http.cookie.Cookie cookie : cookieStore.getCookies()){
+        this.getDriver().manage().addCookie(new Cookie(cookie.getName(), cookie.getValue()));
+      }       
+    }
+  }
 
   @Override
   public void to(Map params, Object[] args) {
@@ -64,7 +114,7 @@ public class GebDetectivePage extends Page{
   
   
   Map prepareUrlParameters(Map params) throws MalformedURLException, UnsupportedEncodingException{
-    URL url = new URL(super.getPageUrl());
+    String url = super.getPageUrl();
     Map<String, String> queries = splitQuery(url);
     Parameters ps = this.getParametersInner();
     for (String key : queries.keySet()){
@@ -92,9 +142,11 @@ public class GebDetectivePage extends Page{
     return GebSession.getParameters();
   }
   
-  protected static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
+  protected static Map<String, String> splitQuery(String url) throws UnsupportedEncodingException {
     Map<String, String> query_pairs = new LinkedHashMap<String, String>();
-    String query = url.getQuery();
+    if (url.indexOf("?") < 0 & url.length() > 1)
+      return query_pairs;
+    String query = url.substring(url.indexOf("?") + 1, url.length());
     if (query == null)
       return query_pairs;
     
