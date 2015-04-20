@@ -73,6 +73,18 @@ public class GebDetectivePage extends Page{
   }
   
   /**
+   * Lifecycle method called when the page about to load, driver has been initialized.
+   * <p>
+   * This implementation does nothing.
+   * <p>
+   *
+   * @param previousPage The page that was active before this one
+   */
+  public void beforeLoad(){
+    
+  }
+  
+  /**
    * Share the cookies with HttpClientTask
    */
   public void shareCookies(){
@@ -103,6 +115,8 @@ public class GebDetectivePage extends Page{
 
   @Override
   public void to(Map params, Object[] args) {
+    beforeLoad();
+    
     try {
       params = prepareUrlParameters(prepareUrlParameters(params));
     } catch (Exception e) {
