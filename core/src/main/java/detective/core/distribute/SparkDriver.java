@@ -109,12 +109,16 @@ public class SparkDriver {
       //.set("spark.driver.host", "localhost")
       //.set("spark.driver.port", "5555")
       ;
-    JavaSparkContext jsc = new JavaSparkContext(sparkConf);
     
     int duplicatedtasks = DetectiveFactory.INSTANCE.getConfig().getInt("spark.pressureTest.duplicateTasks");
     logger.info("Detective pressure test, jobs duplication: " + duplicatedtasks);
     List<JobToRun> jobs = JobCollector.collectAll(packageName, duplicatedtasks);
+    if (jobs.size() <= 0){
+      logger.error("we can't found any story from your input " + packageName);
+      System.exit(-1);
+    }
     
+    JavaSparkContext jsc = new JavaSparkContext(sparkConf);
     JavaRDD<JobToRun> dataset = jsc.parallelize(jobs, jobs.size());
     
     JavaRDD<JobRunResult> datasetResult = dataset.map(new Function<JobToRun, JobRunResult>(){

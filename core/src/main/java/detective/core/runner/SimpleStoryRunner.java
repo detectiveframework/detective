@@ -37,8 +37,10 @@ import detective.core.exception.ScenarioFailException;
 import detective.core.exception.StoryFailException;
 import detective.core.filter.RunnerFilterChain;
 import detective.core.geb.GebSession;
+import detective.core.matcher.SubsetAssertError;
 import detective.core.services.DetectiveFactory;
 import detective.utils.StringUtils;
+import detective.utils.Utils;
 
 public class SimpleStoryRunner implements StoryRunner{
   
@@ -122,7 +124,7 @@ public class SimpleStoryRunner implements StoryRunner{
           public void run(){
             try {
               runScenarioNew(scenario, datainWithRow);
-            } catch (Exception e) {
+            } catch (Throwable e) {
               throw new ScenarioFailException(scenario, 0, e.getMessage(), e);
             }
           }
@@ -160,7 +162,7 @@ public class SimpleStoryRunner implements StoryRunner{
    * @param datain
    * @throws Exception 
    */
-  private void runScenarioNew(final Scenario scenario, Parameters datain) throws Exception {
+  private void runScenarioNew(final Scenario scenario, Parameters datain) throws Throwable {
     //Shared data need join into the running user code so that they can change it
     Parameters parameterForWholeScenario = new ParametersImpl(scenario.getStory().getSharedDataMap());
     parameterForWholeScenario.putAll(datain);
@@ -186,10 +188,10 @@ public class SimpleStoryRunner implements StoryRunner{
             i++;
           }
         }
-      }catch (Exception e){
+      }catch (Throwable e){
         if (GebSession.isBrowserAvailable() && !"disable".equals(Detective.getConfig().getString("browser.report"))){
           GebSession.getBrowser().report("Fail_" + scenario.getStory().getTitle() + "_" + scenario.getTitle());
-        }
+        }        
         throw e;
       }
     } finally {
@@ -251,6 +253,13 @@ public class SimpleStoryRunner implements StoryRunner{
       .append(dataToPassIntoExpectClosure.toString());
       throw new DslException(sb.toString(), e);
     } catch (java.lang.AssertionError e){
+      SubsetAssertError subsetError = Utils.findCauseBy(e, SubsetAssertError.class);
+      if (subsetError != null){
+        //TODO We shoudn't check this here, consider to refactor into a filter.
+        Detective.logUserMessage(parameterForWholeScenario, subsetError.getMessage());
+        Detective.logUserMessage(parameterForWholeScenario, subsetError.getFullTableStrVersion());
+        Detective.logUserMessage(parameterForWholeScenario, subsetError.getSubsetTableStrVersion());
+      }
       throw new detective.core.AssertionError(scenario.getStory(), scenario, step, e);
     } catch (groovy.lang.MissingPropertyException e){
       throw new DslException(e.getMessage() +  ". Please note we have a know ambiguousness for parent child relationship, for example login.username is a valid identifier for us, but when you add login.username.lastname, we have no idea it is going to access a property from identifier login.username or it is a new identifier.", e);

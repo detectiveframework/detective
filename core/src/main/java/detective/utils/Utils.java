@@ -41,4 +41,21 @@ public class Utils {
     return result.toString();
   }
   
+  public static Throwable getRootCause(Throwable throwable){
+    if (throwable.getCause() == null)
+      return throwable;
+    else
+      return getRootCause(throwable.getCause());
+  }
+  
+  public static <T extends Throwable> T findCauseBy(Throwable throwable, Class<T> clazz){
+    if (throwable == null)
+      return null;
+    
+    if (clazz.isInstance(throwable))
+      return (T) throwable;
+    else
+      return findCauseBy(throwable.getCause(), clazz);
+  }
+  
 }

@@ -35,6 +35,7 @@ import detective.core.services.DetectiveFactory;
 import detective.task.EchoTask;
 import detective.task.HttpClientTask;
 import detective.utils.StringUtils;
+import detective.utils.TablePrinter;
 
 /**
  * The Factory / Entry Point class for Detective Framework
@@ -135,6 +136,11 @@ public class Detective {
     return recordLog(LogLevel.DEBUG, message);
   }
   
+  /**
+   * The message is not only print into console, but aslo added into the output result section
+   * @param params
+   * @param msg
+   */
   public static void logUserMessage(Parameters params, String msg){
     List<String> userMsgs = (List<String>)params.get(PARAMETER_NAME_USER_MESSAGES);
     if (userMsgs == null){
@@ -146,6 +152,10 @@ public class Detective {
     
     userMsgs.add(msg);
     info(msg);
+  }
+  
+  public static void logUserMessageAsTable(Parameters params, String title, Object table){
+    logUserMessage(params, TablePrinter.printObjectAsTable(table, title));
   }
   
   public static List<String> getUserMessage(Parameters params){

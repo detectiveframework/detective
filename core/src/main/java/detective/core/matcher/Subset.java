@@ -36,7 +36,11 @@ public class Subset<T> extends BaseMatcher<T> {
   
   @Override
   public boolean matches(Object subValue) {
-    isMatches(fullValue, subValue);
+    try {
+      isMatches(fullValue, subValue);
+    } catch (AssertionError e) {
+      throw new SubsetAssertError(fullValue, subValue, e.getMessage(), e);
+    }
     
     return true;
   }

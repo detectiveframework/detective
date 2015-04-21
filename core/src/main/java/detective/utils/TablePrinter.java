@@ -9,7 +9,34 @@ import detective.core.dsl.WrappedObject;
 import detective.core.dsl.table.Row;
 
 
-class TablePrinter {
+public class TablePrinter {
+  
+  public static String printObjectAsTable(Object root,String title){
+    root = Utils.getRealValue(root);
+    
+    if (root == null)
+      return printEmpty(title);
+    
+    if (root instanceof List){
+      List list = (List)root;
+      if (list.size() == 0)
+        return printEmpty(title);
+      
+      Object firstObject = list.get(0);
+      if (firstObject instanceof Map){
+        return printJSON(list, title);
+      }else if (firstObject instanceof Row){
+        return printTable(list, title);
+      }else
+        throw new RuntimeException("Print object item have to be a Map or a table Row your type:" + firstObject.getClass().getName());
+    }else{
+      throw new RuntimeException("Print object have to be a List, your type:" + root.getClass().getName());
+    }
+  }
+  
+  private static String printEmpty(String title){
+    return "\n|===========" + title + "================|\n" + "| There is no data to display |\n";
+  }
 
   /**
    * 
@@ -17,7 +44,7 @@ class TablePrinter {
    * @param title
    * @return
    */
-  public static String printJSON(Object root,String title){
+  static String printJSON(Object root,String title){
     root = Utils.getRealValue(root);
    
     ConsoleTable table =null;
@@ -45,7 +72,7 @@ class TablePrinter {
       }
     }
     
-    return table.toString();
+    return "\n" + table.toString();
   }
   
  
@@ -55,7 +82,7 @@ class TablePrinter {
    * @param title
    * @return
    */
-  public static String printTable(Object table, String title){
+  static String printTable(Object table, String title){
     ConsoleTable t = null;
     table = Utils.getRealValue(table);
     
@@ -77,7 +104,7 @@ class TablePrinter {
       idx = idx + 1;
     }
       
-    return t.toString();
+    return "\n" + t.toString();
   }
 
 }

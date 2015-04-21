@@ -406,12 +406,13 @@
 			    </execution>
 			  </executions>
 			  <configuration>
-			    <!-- <mainClass>detective.core.distribute.SparkDriver</mainClass> -->
+			    <mainClass>detective.core.distribute.SparkDriver</mainClass>
+			    <classpathScope>test</classpathScope>
 			  </configuration>
 			</plugin>
 
 			<!-- Release related plugin start -->
-			<!-- 
+			<!--  -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -443,7 +444,7 @@
 				<version>1.5</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
 				<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin>
 			
-			 -->
+			
 			
 			<!-- Release related plugin end -->
 			

@@ -21,6 +21,7 @@ import detective.core.dsl.ParametersImpl;
 import detective.core.dsl.builder.DslBuilder;
 import detective.core.dsl.table.Row;
 import detective.core.dsl.table.TableParser;
+import detective.utils.Utils;
 import geb.Browser;
 import groovy.lang.Closure;
 import groovy.lang.GroovyObject;
@@ -95,8 +96,11 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
     this.getValues().putAllUnwrappered(dataReturned);
   }
   
-  public void logMessage(String msg){
-    Detective.logUserMessage(this.getValues(), msg);
+  public void logMessage(Object msg){
+    if (Utils.getRealValue(msg) instanceof List)
+      Detective.logUserMessageAsTable(this.getValues(), "", msg);
+    else
+      Detective.logUserMessage(this.getValues(), msg.toString());
   }
   
   public void runtask(Map<?, ?> parameters, TestTask task){
