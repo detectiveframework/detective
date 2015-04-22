@@ -96,7 +96,12 @@ public class GebDetectivePage extends Page{
     
     CookieStore cookieStore = (CookieStore)store; 
     for (Cookie cookie : this.getDriver().manage().getCookies()){
-      cookieStore.addCookie(new BasicClientCookie(cookie.getName(), cookie.getValue()));
+      BasicClientCookie newCookie = new BasicClientCookie(cookie.getName(), cookie.getValue());
+      newCookie.setDomain(cookie.getDomain());
+      newCookie.setPath(cookie.getPath());
+      newCookie.setExpiryDate(cookie.getExpiry());
+      newCookie.setSecure(cookie.isSecure());
+      cookieStore.addCookie(newCookie);
     }
   }
   
@@ -108,7 +113,7 @@ public class GebDetectivePage extends Page{
     if (store != null){
       CookieStore cookieStore = (CookieStore)store; 
       for (org.apache.http.cookie.Cookie cookie : cookieStore.getCookies()){
-        this.getDriver().manage().addCookie(new Cookie(cookie.getName(), cookie.getValue()));
+        this.getDriver().manage().addCookie(new Cookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getExpiryDate(), cookie.isSecure(), true));
       }       
     }
   }

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import scala.reflect.internal.Trees.This;
 import detective.core.dsl.DslException;
 import detective.core.runner.PropertyToStringDelegate;
 
@@ -29,6 +30,14 @@ public class Row extends GroovyObjectSupport implements GroovyObject{
 
   public Object[] asArray() {
     return values.toArray();
+  }
+  
+  public Map<String, Object> asMap(){
+    Map<String, Object> map = new HashMap<String, Object>();
+    for (String head : getHeaderAsStrings()){
+      map.put(head, this.getProperty(head));
+    }
+    return map;
   }
   
   public int size(){

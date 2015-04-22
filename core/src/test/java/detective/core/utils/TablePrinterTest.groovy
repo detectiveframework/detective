@@ -30,7 +30,7 @@ public class TablePrinterTest {
     println printStr;
     
     assertEquals(printStr, 
-      "|=============== test ===============|\n" +
+      "\n|=============== test ===============|\n" +
       "|  name       |  age  |  pets        |\n" +
       "|====================================|\n" +
       "|  Guillaume  |  33   |  [dog, cat]  |\n" +
@@ -53,7 +53,7 @@ public class TablePrinterTest {
     println printStr;
     
     assertEquals(printStr,
-      "|================= title ==================|\n" +
+      "\n|================= title ==================|\n" +
       "|  fistname   |  lastname    |  job        |\n" +
       "|==========================================|\n" +
       "|  Christian  |  Baranowski  |  Developer  |\n" +

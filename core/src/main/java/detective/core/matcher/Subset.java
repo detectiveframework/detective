@@ -2,6 +2,7 @@ package detective.core.matcher;
 
 import groovy.lang.Closure;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hamcrest.BaseMatcher;
@@ -13,6 +14,7 @@ import org.junit.Assert;
 import detective.core.dsl.DslException;
 import detective.core.dsl.table.Row;
 import detective.utils.GroovyUtils;
+import detective.utils.TablePrinter;
 
 /**
  * Test if a type is a subset of other
@@ -99,8 +101,24 @@ public class Subset<T> extends BaseMatcher<T> {
     for (int i = 1; i < headers.length; i++){
       String propertyName = headers[i];
       Object actualProperty = this.getPropertyInner(actualRow, propertyName);
-      Assert.assertThat(actualProperty, IsEqual.equalTo(expectedRow.getProperty(propertyName)));
+      try {
+        Assert.assertThat(actualProperty, IsEqual.equalTo(expectedRow.getProperty(propertyName)));
+      } catch (AssertionError e) {
+        throw new AssertionError(buildDetailErrorMsg(i, propertyName, actualRow, expectedRow, e.getMessage()), e);
+      }
     }
+  }
+  
+  private String buildDetailErrorMsg(int columnIndex, String columnName, Object actualRow, Row expectedRow, String originMsg){
+    StringBuilder sb = new StringBuilder(originMsg);
+    sb.append("     on column [").append(columnIndex).append("] with name [").append(columnName).append("]");
+    List<Object> actualList = new ArrayList<Object>();
+    actualList.add(actualRow);
+    sb.append(TablePrinter.printObjectAsTable(actualList, "Actual row"));
+    List<Object> expectedList = new ArrayList<Object>();
+    expectedList.add(expectedRow);
+    sb.append(TablePrinter.printObjectAsTable(expectedList, "Expected row"));
+    return sb.toString();
   }
 
   private Object findRightRowInFullList(final List<?> fullList, Row row)
