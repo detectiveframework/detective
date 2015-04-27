@@ -32,7 +32,7 @@ public class ConsoleTable {
 
   public ConsoleTable appendColum(Object value) {
     if (value == null) {
-      value = "NULL";
+      value = "null";
     }
     List row = rows.get(rows.size() - 1);
     row.add(value);

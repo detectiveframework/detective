@@ -30,13 +30,16 @@ public class TablePrinterTest {
     println printStr;
     
     assertEquals(printStr, 
-      "\n|=============== test ===============|\n" +
-      "|  name       |  age  |  pets        |\n" +
-      "|====================================|\n" +
-      "|  Guillaume  |  33   |  [dog, cat]  |\n" +
-      "|------------------------------------|\n" +
-      "|  J          |  11   |  [dog, cat]  |\n" +
-      "|------------------------------------|\n");    
+"""
+|================= test =================|
+|  "name"       |  "age"  |  "pets"      |
+|========================================|
+|  "Guillaume"  |  33     |  [dog, cat]  |
+|----------------------------------------|
+|  "J"          |  11     |  [dog, cat]  |
+|----------------------------------------|
+""".toString()
+      );    
   }
   
   @Test
@@ -52,14 +55,17 @@ public class TablePrinterTest {
     String printStr = TablePrinter.printTable(rows, "title");
     println printStr;
     
-    assertEquals(printStr,
-      "\n|================= title ==================|\n" +
-      "|  fistname   |  lastname    |  job        |\n" +
-      "|==========================================|\n" +
-      "|  Christian  |  Baranowski  |  Developer  |\n" +
-      "|------------------------------------------|\n" +
-      "|  James      |  Bond        |  Agent      |\n" +
-      "|------------------------------------------|\n");
+    assertEquals(printStr, 
+"""
+|==================== title =====================|
+|  "fistname"   |  "lastname"    |  "job"        |
+|================================================|
+|  "Christian"  |  "Baranowski"  |  "Developer"  |
+|------------------------------------------------|
+|  "James"      |  "Bond"        |  "Agent"      |
+|------------------------------------------------|
+""".toString()
+      );
   }
 
 }

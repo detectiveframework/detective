@@ -106,16 +106,37 @@ public class GebDetectivePage extends Page{
   }
   
   /**
-   * Read cookies from Detective parameter system, the cookies usually created by HttpClientTask
+   * Read cookies from Detective parameter system, the cookies usually created by HttpClientTask.
+   * As selenium only allow setup for current active domain, we have to check domain name
    */
   public void readCookies(){
     Object store = this.getParametersInner().get(HttpClientTask.PARAM_HTTP_COOKIES);
     if (store != null){
+      String domainName = getCurrentDomainName();
+      if (domainName == null)
+        return;
+      
       CookieStore cookieStore = (CookieStore)store; 
       for (org.apache.http.cookie.Cookie cookie : cookieStore.getCookies()){
-        this.getDriver().manage().addCookie(new Cookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), cookie.getExpiryDate(), cookie.isSecure(), true));
+        if (domainName.equalsIgnoreCase(cookie.getDomain()))
+          this.getDriver().manage().addCookie(new Cookie(cookie.getName(), cookie.getValue()));
       }       
     }
+  }
+  
+  /**
+   * return the current opened domain name
+   * @return null if there is no page currently open
+   */
+  private String getCurrentDomainName(){
+    String domainName = this.getDriver().getCurrentUrl();
+    try {
+      if (domainName != null && domainName.length() > 0)
+        domainName = new URL(domainName).getHost();
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
+    return domainName;
   }
 
   @Override

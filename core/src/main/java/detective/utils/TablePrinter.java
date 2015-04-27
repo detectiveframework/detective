@@ -61,11 +61,14 @@ public class TablePrinter {
           table = new ConsoleTable(keySet.size(), title);
           table.appendRow();
           for (Object key : keySet)
-            table.appendColum(key);
+            table.appendColum("\"" + key + "\"");
         }
         
         table.appendRow();
         for (Object value : map.values()){
+          if (value instanceof String)
+            value = "\"" + value + "\"";
+          
           table.appendColum(value);
         }
         idx = idx + 1;
@@ -94,11 +97,14 @@ public class TablePrinter {
         t = new ConsoleTable(headers.length, title);
         t.appendRow();
         for (String header : headers)
-          t.appendColum(header);
+          t.appendColum("\"" + header + "\"");
       }
       t.appendRow();
       for (String header : headers){
-        t.appendColum(row.getProperty(header));
+        Object value = row.getProperty(header);
+        if (value instanceof String)
+          value = "\"" + value + "\"";
+        t.appendColum(value);
       }
       
       idx = idx + 1;
