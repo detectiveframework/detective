@@ -29,6 +29,8 @@ public class TablePrinter {
         return printTable(list, title);
       }else
         throw new RuntimeException("Print object item have to be a Map or a table Row your type:" + firstObject.getClass().getName());
+    }else if (root instanceof Map){
+      return printMapOnly((Map)root, title);
     }else{
       throw new RuntimeException("Print object have to be a List, your type:" + root.getClass().getName());
     }
@@ -36,6 +38,35 @@ public class TablePrinter {
   
   private static String printEmpty(String title){
     return "\n|===========" + title + "================|\n" + "| There is no data to display |\n";
+  }
+  
+  static String printMapOnly(Map root,String title){
+    ConsoleTable table =null;
+    
+    if (root instanceof Map){
+      int idx = 0;
+      for (Object subItem : root.keySet()){
+        
+        if(idx==0){
+          table = new ConsoleTable(2, title);
+          table.appendRow();
+          table.appendColum("\"name\"");
+          table.appendColum("\"value\"");
+        }
+        
+        table.appendRow();
+        Object value = root.get(subItem);
+        if (value instanceof String)
+          value = "\"" + value + "\"";
+          
+        table.appendColum("\"" + subItem + "\"");
+        table.appendColum(value);
+        
+        idx = idx + 1;
+      }
+    }
+    
+    return "\n" + table.toString();
   }
 
   /**

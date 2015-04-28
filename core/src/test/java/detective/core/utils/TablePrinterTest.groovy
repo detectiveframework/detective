@@ -67,5 +67,35 @@ public class TablePrinterTest {
 """.toString()
       );
   }
+  
+  @Test
+  public void testPrintMapOnly(){
+    def rows = [
+      "firstname":"Christian", 
+      "int":"201", 
+      "otherList":["item1", "item2", "item3"], 
+      "otherMap":["map1":"value1", "map2":"value2"]
+      ]
+    assert rows.size() == 4;
+    
+    String printStr = TablePrinter.printMapOnly(rows, "this is title");
+    println printStr;
+    
+    assertEquals(printStr,
+"""
+|=============== this is title ================|
+|  "name"       |  "value"                     |
+|==============================================|
+|  "firstname"  |  "Christian"                 |
+|----------------------------------------------|
+|  "int"        |  "201"                       |
+|----------------------------------------------|
+|  "otherList"  |  [item1, item2, item3]       |
+|----------------------------------------------|
+|  "otherMap"   |  {map1=value1, map2=value2}  |
+|----------------------------------------------|
+""".toString()
+      );
+  }
 
 }

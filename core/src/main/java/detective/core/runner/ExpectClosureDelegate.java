@@ -97,7 +97,8 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
   }
   
   public void logMessage(Object msg){
-    if (Utils.getRealValue(msg) instanceof List)
+    Object realMsg = Utils.getRealValue(msg);
+    if (realMsg instanceof List || realMsg instanceof Map)
       Detective.logUserMessageAsTable(this.getValues(), "", msg);
     else
       Detective.logUserMessage(this.getValues(), msg.toString());
