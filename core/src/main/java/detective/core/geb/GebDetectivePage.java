@@ -88,7 +88,7 @@ public class GebDetectivePage extends Page{
    * Share the cookies with HttpClientTask
    */
   public void shareCookies(){
-    Object store = this.getParametersInner().get(HttpClientTask.PARAM_HTTP_COOKIES);
+    Object store = getCookieStore();
     if (store == null){
       store = new BasicCookieStore();
       this.getParametersInner().put(HttpClientTask.PARAM_HTTP_COOKIES, store);
@@ -110,7 +110,7 @@ public class GebDetectivePage extends Page{
    * As selenium only allow setup for current active domain, we have to check domain name
    */
   public void readCookies(){
-    Object store = this.getParametersInner().get(HttpClientTask.PARAM_HTTP_COOKIES);
+    Object store = getCookieStore();
     if (store != null){
       String domainName = getCurrentDomainName();
       if (domainName == null)
@@ -122,6 +122,13 @@ public class GebDetectivePage extends Page{
           this.getDriver().manage().addCookie(new Cookie(cookie.getName(), cookie.getValue()));
       }       
     }
+  }
+
+  protected CookieStore getCookieStore() {
+    Object store = this.getParametersInner().get(HttpClientTask.PARAM_HTTP_COOKIES);
+    if (store == null)
+      return null;
+    return (CookieStore)store;
   }
   
   /**
@@ -160,6 +167,9 @@ public class GebDetectivePage extends Page{
     for (String key : queries.keySet()){
       if (ps.containsKey(key) && ps.get(key) != null)
         queries.put(key, ps.get(key).toString());
+      
+      if ("?".equals(queries.get(key)))
+        queries.put(key, "");
     }
     queries.putAll(params);
     return queries;

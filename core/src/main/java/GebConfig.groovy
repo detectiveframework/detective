@@ -12,7 +12,7 @@ driver = Detective.config.getString("browser.default_driver");
 cacheDriverPerThread = true;
 
 waiting {
-  timeout = 10
+  timeout = Detective.config.getInt("browser.waiting.timeout");
   retryInterval = 0.5
 }
 

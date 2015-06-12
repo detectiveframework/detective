@@ -184,6 +184,9 @@ story() "Geb Integration Cookie share with HttpClient Story" {
 browser{
 	# The driver, could be htmlunit/firefox/ie/chrome
 	default_driver : firefox
+	waiting{
+		timout : 10
+	}
 	# Report, could be everyPage / testFailureOnly / disable
 	report : everyPage
 	reportsDir : target/browser-reports
