@@ -31,6 +31,7 @@ story() "Demo for tables" {
       echotask.echotask.parameter.given1 << "given1"
       echotask.parameter.given2 << "given2"
       
+      given2.expected  << (given2.col1 + given2.col2)
       echotask.given2.expected  << (echotask.given2.col1 + echotask.given2.col2)
     }
   }
@@ -69,7 +70,7 @@ story() "Demo for tables" {
         10      | 11      | 21
        }
       
-      runtask echoTask()
+      //runtask echoTask()
     }
     
     then "I can read my table a lot of ways"{

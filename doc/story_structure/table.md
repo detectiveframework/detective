@@ -80,8 +80,6 @@ story() "Demo for tables" {
         4       | 5       | 9
         10      | 11      | 21
        }
-
-      runtask echoTask()
     }
 
     then "I can read my table a lot of ways"{

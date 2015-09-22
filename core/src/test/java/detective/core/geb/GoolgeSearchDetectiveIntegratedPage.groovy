@@ -54,7 +54,7 @@ class GoogleResultsPageDetective extends GebDetectivePage {
     search { module GoolgeSearchModuleDetective, buttonValue: "Search" }
 
     // content definitions can compose and build from other definitions
-    results { $("li.g") }
+    results { $("#search .g") }
     result { i -> results[i] }
     resultLink { i -> result(i).find(".r > a") }
     firstResultLink { resultLink(0) }
