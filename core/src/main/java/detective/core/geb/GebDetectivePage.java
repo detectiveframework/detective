@@ -211,9 +211,32 @@ public class GebDetectivePage extends Page{
   private String getUrlWithoutQuery(){
     String urlStr = super.getPageUrl();
     if (urlStr.indexOf("?") >= 0){
-      return urlStr.substring(0, urlStr.indexOf("?"));
-    }else
-      return urlStr;
+      urlStr = urlStr.substring(0, urlStr.indexOf("?"));
+    }
+    
+    //Handle path parameters, see test UrlParameterAutoFillPage
+    return replaceOneParameter(urlStr, this.getParametersInner());
+  }
+  
+  private String replaceOneParameter(String url, Parameters parameters){
+    int indexFirst = url.indexOf("{");
+    int indexLast = url.indexOf("}");
+    
+    if (indexFirst < 0 && indexLast < 0)
+      return url;
+    else if (indexFirst >= 0 && indexLast < 0){
+      throw new RuntimeException("found { in url path but not }");
+    }else if (indexFirst < 0 && indexLast >= 0){
+      throw new RuntimeException("found } in url path but not {");      
+    }else{
+      String parameterName = url.substring(indexFirst + 1, indexLast);
+      if (! parameters.containsKey(parameterName))
+        throw new RuntimeException(parameterName + " not exists in secario parameter list.");
+      else{
+        url = url.replace("{" + parameterName + "}", parameters.get(parameterName).toString());
+        return replaceOneParameter(url, parameters);
+      }
+    }
   }
   
   private void updateParameters(){
