@@ -40,7 +40,7 @@ public class HttpClientTaskTest extends HttpClientTask {
 
     Header[] headers = request.getHeaders("Authorization");
     assertNotNull(headers);
-    assertTrue(headers.length > 1);
+    assertTrue(headers.length > 0);
     Header authHeader = headers[0];
     String authHeaderValue = authHeader.getValue();
 
