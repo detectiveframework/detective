@@ -1,14 +1,11 @@
 package detective.core.task;
 
 import detective.task.HttpClientTask;
-import junit.framework.Assert;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
 
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
@@ -46,6 +43,23 @@ public class HttpClientTaskTest extends HttpClientTask {
 
     assertEquals(expectedAuthString, authHeaderValue);
 
+  }
+
+  @Test
+  public void testAddAuthHeader() throws Exception {
+    String authHeaderValue = "thisistheauthheader";
+
+    HttpUriRequest request = new HttpPost("http://www.google.com.au");
+    HttpClientTask httpClientTask = new HttpClientTask();
+    Method method = httpClientTask.getClass().getDeclaredMethod("addAuthorizationHeader", HttpUriRequest.class, String.class);
+    method.setAccessible(true);
+    method.invoke(httpClientTask, request, authHeaderValue);
+
+    Header[] headers = request.getHeaders("Authorization");
+    assertNotNull(headers);
+    assertTrue(headers.length > 0);
+    Header authHeader = headers[0];
+    assertEquals(authHeaderValue, authHeader.getValue());
   }
 
 }

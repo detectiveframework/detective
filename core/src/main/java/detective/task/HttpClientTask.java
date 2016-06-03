@@ -188,7 +188,12 @@ public class HttpClientTask extends AbstractTask{
     String userName = this.readAsString(config, "http.auth.username", null, true, "Adding basic http header auth to request");
     String password = this.readAsString(config, "http.auth.password", null, true, "");
     if (null != userName && null != password) {
-      addBasicAuthentication(request, userName, password);
+      request = addBasicAuthentication(request, userName, password);
+    }
+
+    String authorizationHeader = this.readAsString(config, "http.auth.header", null, true, "No authorization header found, skipping token auth");
+    if (authorizationHeader != null) {
+      request = addAuthorizationHeader(request, authorizationHeader);
     }
 
     if (request instanceof HttpEntityEnclosingRequestBase){
@@ -323,6 +328,11 @@ public class HttpClientTask extends AbstractTask{
     String authHeader = "Basic " + new String(encodedAuth);
     request.setHeader(HttpHeaders.AUTHORIZATION, authHeader);
 
+    return request;
+  }
+
+  protected HttpUriRequest addAuthorizationHeader(HttpUriRequest request, String headerValue) {
+    request.setHeader(HttpHeaders.AUTHORIZATION, headerValue);
     return request;
   }
 
