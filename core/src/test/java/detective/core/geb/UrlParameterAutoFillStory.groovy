@@ -6,7 +6,7 @@ import geb.Browser;
 class UrlParameterAutoFillPage extends GebDetectivePage {
     static url = "https://github.com/{path1}/{path2}?parameter1=?&paramWithDefaultValue=defaultValue&paramWillOverwrite=originValue"
   
-    static at = { title.startsWith("detectiveframework/detective") }  
+    static at = { title.contains("detectiveframework/detective") }  
   }
 
 story() "Geb Integration URL auto fill Story" {

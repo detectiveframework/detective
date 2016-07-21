@@ -9,10 +9,16 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -35,7 +41,9 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
@@ -160,7 +168,7 @@ public class HttpClientTask extends AbstractTask{
     HttpClientContext context = HttpClientContext.create();
     context.setCookieStore(cookieStore);
     context.setRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build());
-  
+
     String method = this.readAsString(config, "http.method", "post", true, null);
     HttpMethod m = HttpMethod.valueOf(method.toUpperCase());
     Object address = this.readAsObject(config, "http.address", null, false, "please provider address your request send to", Object.class);
@@ -176,6 +184,18 @@ public class HttpClientTask extends AbstractTask{
     
     HttpUriRequest request = this.createHttpUriRequest(m, uri);
     request.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36");
+
+    String userName = this.readAsString(config, "http.auth.username", null, true, "Adding basic http header auth to request");
+    String password = this.readAsString(config, "http.auth.password", null, true, "");
+    if (null != userName && null != password) {
+      request = addBasicAuthentication(request, userName, password);
+    }
+
+    String authorizationHeader = this.readAsString(config, "http.auth.header", null, true, "No authorization header found, skipping token auth");
+    if (authorizationHeader != null) {
+      request = addAuthorizationHeader(request, authorizationHeader);
+    }
+
     if (request instanceof HttpEntityEnclosingRequestBase){
       if (config.containsKey("http.post.string")){
         Object postText = this.readOptional(config, "http.post.string", null, Object.class);
@@ -299,6 +319,21 @@ public class HttpClientTask extends AbstractTask{
       default:
         throw new IllegalArgumentException("Invalid HTTP method: " + httpMethod);
     }
+  }
+
+  protected HttpUriRequest addBasicAuthentication(HttpUriRequest request, String user, String pass) {
+
+    String auth = user + ":" + pass;
+    byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("UTF-8")));
+    String authHeader = "Basic " + new String(encodedAuth);
+    request.setHeader(HttpHeaders.AUTHORIZATION, authHeader);
+
+    return request;
+  }
+
+  protected HttpUriRequest addAuthorizationHeader(HttpUriRequest request, String headerValue) {
+    request.setHeader(HttpHeaders.AUTHORIZATION, headerValue);
+    return request;
   }
 
 }
