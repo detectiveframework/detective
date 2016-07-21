@@ -51,7 +51,6 @@ public class Row extends GroovyObjectSupport implements GroovyObject{
   
   /**
    * Setup header if have
-   * @param header
    */
   public void setRowHeader(Row header){
     this.header = header;

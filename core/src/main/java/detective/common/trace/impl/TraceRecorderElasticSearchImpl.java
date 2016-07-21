@@ -117,7 +117,6 @@ public class TraceRecorderElasticSearchImpl implements TraceRecorder {
   
   /**
    * The hidden function for test, idealy a log/trace should never been deleted as it is happened, we can't go back
-   * @param hashKey
    */
   public void deleteByHashKey(String hashKey){
     if (hashKey == null || hashKey.equals("*"))

@@ -21,7 +21,6 @@ import detective.utils.TablePrinter;
  * 
  * @author James Luo
  *
- * @param <T>
  */
 public class Subset<T> extends BaseMatcher<T> {
 

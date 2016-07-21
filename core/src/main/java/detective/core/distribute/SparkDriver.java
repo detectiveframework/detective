@@ -34,7 +34,6 @@ public class SparkDriver {
    * ./bin/spark-submit --class detective.core.distribute.SparkDriver --master spark://127.0.0.1:7000 your.jar spark://127.0.0.1:7000
    * 
    * @param args classOrPackageName
-   * @return
    */
   public static void main(String[] args) {
     if (args == null || args.length < 1){
@@ -51,8 +50,7 @@ public class SparkDriver {
   }
 
   /**
-   * 
-   * @param args
+   *
    * @return how many jobs failed
    */
   public static long run(String[] args) {

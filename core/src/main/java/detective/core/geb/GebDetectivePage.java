@@ -25,7 +25,7 @@ import groovy.lang.Closure;
  * Features this class added:
  * <ul>
  * <li>Fill parameters from detective parameter system automatically, 
- * for example google.co?local=en&additional=? the ? mark will be filled automatically first
+ * for example google.co?local=en&amp;additional=? the ? mark will be filled automatically first
  * if there is a parameter called "additional" exists. For parameter "local", the value "en" is default setup, it 
  * still can be overwrite by this class if "local" exists in parameter list</li>
  * </ul>
@@ -33,7 +33,7 @@ import groovy.lang.Closure;
  * @author james
  *
  */
-public class GebDetectivePage extends Page{
+public class GebDetectivePage extends Page {
   
   private String urlWithoutQuery = null;
   
@@ -46,7 +46,7 @@ public class GebDetectivePage extends Page{
   
   /**
    * Return the page url which defined in url static content
-   * @return
+   * @return string
    */
   public String getOriginPageUrl(){
     return super.getPageUrl();
@@ -61,9 +61,7 @@ public class GebDetectivePage extends Page{
   
   /**
    * Lifecycle method called when the page is connected to the browser.
-   * <p>
    * This implementation does nothing.
-   * <p>
    * You can still use onLoad but please remember call super.onLoad(previousPager) there
    *
    * @param previousPage The page that was active before this one
@@ -74,11 +72,7 @@ public class GebDetectivePage extends Page{
   
   /**
    * Lifecycle method called when the page about to load, driver has been initialized.
-   * <p>
    * This implementation does nothing.
-   * <p>
-   *
-   * @param previousPage The page that was active before this one
    */
   public void beforeLoad(){
     

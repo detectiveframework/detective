@@ -47,7 +47,7 @@ public interface Parameters extends Cloneable{
    * (optional operation).  If the map previously contained a mapping for
    * the key, the old value is replaced by the specified value.  (A map
    * <tt>m</tt> is said to contain a mapping for a key <tt>k</tt> if and only
-   * if {@link #containsKey(Object) m.containsKey(k)} would return
+   * if containsKey(object) m.containsKey(k)} would return
    * <tt>true</tt>.)
    *
    * @param key key with which the specified value is to be associated
@@ -123,7 +123,7 @@ public interface Parameters extends Cloneable{
   /**
    * Copies all of the mappings from the specified map to this map
    * (optional operation).  The effect of this call is equivalent to that
-   * of calling {@link #put(Object,Object) put(k, v)} on this map once
+   * of calling #put(Object,Object) put(k, v) on this map once
    * for each mapping from key <tt>k</tt> to value <tt>v</tt> in the
    * specified map.  The behavior of this operation is undefined if the
    * specified map is modified while the operation is in progress.

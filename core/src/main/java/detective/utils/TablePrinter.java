@@ -72,8 +72,6 @@ public class TablePrinter {
   /**
    * 
    * @param root A groovy JSON Object, actually it's a List<Map>
-   * @param title
-   * @return
    */
   static String printJSON(Object root,String title){
     root = Utils.getRealValue(root);
@@ -112,9 +110,6 @@ public class TablePrinter {
  
   /**
    * Print a table
-   * @param table
-   * @param title
-   * @return
    */
   static String printTable(Object table, String title){
     ConsoleTable t = null;

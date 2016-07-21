@@ -33,11 +33,11 @@ import groovy.util.Expando;
  * Delegate for expect closure.
  * <pre>
       then "I should have four black sweaters in stock"{
-        sweater.balck << equalTo(4)
+        sweater.balck &lt;&lt; equalTo(4)
       }
  * </pre>
  * <br>
- * The operation << leftShift will actually runs the code, but which code 
+ * The operation &lt;&lt; leftShift will actually runs the code, but which code
  * will run will delegate out.
  * <br>
  * @author James Luo
@@ -47,8 +47,7 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
   
   /**
    * Create a new ROOT expect closure delegate
-   * 
-   * @param values
+   *
    */
   public ExpectClosureDelegate(Parameters values){
     super(values);
@@ -57,7 +56,6 @@ public class ExpectClosureDelegate extends PropertyToStringDelegate{
   /**
    * 
    * @param parent can not be null
-   * @param values
    */
   public ExpectClosureDelegate(PropertyToStringDelegate parent, String propertyName, Parameters values){
     super(parent, propertyName, values);

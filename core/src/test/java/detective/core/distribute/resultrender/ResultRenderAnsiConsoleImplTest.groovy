@@ -36,7 +36,6 @@ public class ResultRenderAnsiConsoleImplTest extends TestCase {
   /**
    * To Run this main method, you can :
    * mvn exec:java -Dexec.mainClass="detective.core.distribute.resultrender.ResultRenderAnsiConsoleImplTest" -Dexec.classpathScope=test
-   * @param args
    */
   public static void main(String[] args) {
     ResultRenderAnsiConsoleImplTest test = new ResultRenderAnsiConsoleImplTest("ResultRenderAnsiConsoleImplTest");
@@ -128,7 +127,6 @@ public class ResultRenderAnsiConsoleImplTest extends TestCase {
 [1m| -- Error Callstack:[22mjava.lang.RuntimeException: Ansi Console with Exception Message.
   at detective.core.distribute.resultrender.ResultRenderAnsiConsoleImplTest.createNewException(ResultRenderAnsiConsoleImplTest.groovy
   at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-  at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
 [m
     """)
   }

@@ -138,8 +138,6 @@ public class Detective {
   
   /**
    * The message is not only print into console, but aslo added into the output result section
-   * @param params
-   * @param msg
    */
   public static void logUserMessage(Parameters params, String msg){
     List<String> userMsgs = (List<String>)params.get(PARAMETER_NAME_USER_MESSAGES);
@@ -188,7 +186,7 @@ public class Detective {
   
   /**
    * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p/>
+   * <p></p>
    * For example:
    * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
    */
@@ -198,7 +196,7 @@ public class Detective {
 
   /**
    * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p/>
+   * <p></p>
    * For example:
    * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
    */
@@ -208,7 +206,7 @@ public class Detective {
 
   /**
    * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p/>
+   * <p></p>
    * For example:
    * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
    */
@@ -218,7 +216,7 @@ public class Detective {
 
   /**
    * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p/>
+   * <p></p>
    * For example:
    * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
    */
@@ -228,7 +226,7 @@ public class Detective {
 
   /**
    * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p/>
+   * <p></p>
    * For example:
    * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
    */
@@ -238,7 +236,7 @@ public class Detective {
 
   /**
    * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p/>
+   * <p></p>
    * For example:
    * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
    */
@@ -248,7 +246,7 @@ public class Detective {
   
   /**
    * Creates a matcher that matches if the examined object matches <b>Any</b> of the specified matchers.
-   * <p/>
+   * <p></p>
    * For example:
    * <pre>assertThat("myValue", anyOf(startsWith("my"), containsString("Val")))</pre>
    */

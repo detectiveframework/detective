@@ -57,8 +57,7 @@ public class JobCollector {
   }
   
   /**
-   * 
-   * @param packageOrClassName
+   *
    * @param duplicates how many jobs you'd like to duplicate
    * @return
    */

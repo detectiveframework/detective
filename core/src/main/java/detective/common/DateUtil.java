@@ -17,9 +17,6 @@ public class DateUtil {
 
   /**
    * TODO Wrong Name
-   * 
-   * @param date
-   * @return
    */
   public static String fromatFullTime(Date date) {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
@@ -58,10 +55,6 @@ public class DateUtil {
 
   /**
    * Format date with UTC time zone.
-   * 
-   * @param date
-   * @param pattern
-   * @return
    */
   public static String format(Date date, String pattern) {
     SimpleDateFormat sdf = new SimpleDateFormat(pattern);

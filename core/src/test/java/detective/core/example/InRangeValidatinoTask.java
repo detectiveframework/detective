@@ -10,7 +10,7 @@ import detective.task.AbstractTask;
  * Validates a give number is within a range
  * 
  * 
- * <h4>Input</h4>
+ * <h3>Input</h3>
  * 
  * <pre>
  *   number: the value to check against the range
@@ -18,7 +18,7 @@ import detective.task.AbstractTask;
  *   end: the end of the range
  * </pre>
  * 
- * <h4>Output</h4>
+ * <h3>Output</h3>
  * 
  * <pre>
  *   inRange: boolean to indicate number is within the range

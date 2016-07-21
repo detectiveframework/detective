@@ -30,7 +30,7 @@ public class Matchers {
   
   /**
    * Creates a matcher that matches if examined object is <code>null</code>.
-   * <p/>
+   * <p></p>
    * For example:
    * <pre>assertThat(cheese, is(nullValue())</pre>
    * 
@@ -41,7 +41,7 @@ public class Matchers {
 
   /**
    * A shortcut to the frequently used <code>not(nullValue())</code>.
-   * <p/>
+   * <p></p>
    * For example:
    * <pre>assertThat(cheese, is(notNullValue()))</pre>
    * instead of:

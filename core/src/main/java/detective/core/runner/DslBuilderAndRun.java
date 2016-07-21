@@ -19,8 +19,7 @@ public class DslBuilderAndRun extends DslBuilder {
   
   /**
    * Setup chain for current thread
-   * 
-   * @param chain
+   *
    */
   public static void setFilterChainCurrentThread(RunnerFilterChain<Story> chain){
     filterChainCurrentThread.set(chain);

@@ -5,7 +5,6 @@ package detective.core.dsl;
  * 
  * @author James Luo
  *
- * @param <T>
  */
 public interface SharedVariable<T> extends WrappedObject<T>{
 

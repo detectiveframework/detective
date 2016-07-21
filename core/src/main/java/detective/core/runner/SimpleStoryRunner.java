@@ -158,9 +158,6 @@ public class SimpleStoryRunner implements StoryRunner{
   
   /**
    * Run Scenario in current thread
-   * @param scenario
-   * @param datain
-   * @throws Exception 
    */
   private void runScenarioNew(final Scenario scenario, Parameters datain) throws Throwable {
     //Shared data need join into the running user code so that they can change it
@@ -292,9 +289,6 @@ public class SimpleStoryRunner implements StoryRunner{
   
   /**
    * Dataout will override data in if have same key
-   * @param datain
-   * @param dataout
-   * @return
    */
   private Parameters combineSharedAndInAndOut(Parameters shared, Parameters datain, Parameters dataout){
     Parameters p = new ParametersImpl(shared);

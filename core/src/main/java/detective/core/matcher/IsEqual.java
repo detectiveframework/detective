@@ -7,11 +7,10 @@ import org.hamcrest.Matcher;
  * A equal modified for number which will ommit the data types, for example in this 
  * class, 4 equals 4L.
  * 
- * <TODO>For now the implement just compare toString(), need improve
+ * TODO: For now the implement just compare toString(), need improve
  * 
  * @author James Luo
  *
- * @param <T>
  */
 public class IsEqual<T> extends org.hamcrest.core.IsEqual<T> {
 

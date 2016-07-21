@@ -59,10 +59,10 @@ import detective.core.services.DetectiveFactory;
 /**
  * 
  * HTTP Client Task<br>
- * <p>
+ * <p></p>
  * Support GET, PUT, POST, DELETE, HEAD and OPTIONS
  * 
- * <h4>Input</h4>
+ * <h3>Input</h3>
  * <pre>
  *   http.use_shared_cookies: default true, identify if this httpclient will read cookies from share data section
  *   http.cookies: optional, output of other HTTPClientTask
@@ -74,7 +74,7 @@ import detective.core.services.DetectiveFactory;
  *   http.post.file.filename: optional, the file you'd like to upload
  *     
  * </pre>
- * <h4>Output</h4>
+ * <h3>Output</h3>
  * <pre>
  *   http.cookies: the http context current task have (may created by this task or passed in from input)
  *   http.output
@@ -131,14 +131,11 @@ import detective.core.services.DetectiveFactory;
  *  
  * </ul>
  * 
- * 
- * 
  * It able to share cookies which means you can share session between different requests in most cases.
- * 
- * 
+ *
  * HttpClient Connection Manager Document Link: http://hc.apache.org/httpcomponents-client-4.3.x/tutorial/html/connmgmt.html
  * 
- * </p>
+ * <p></p>
  * 
  * @author James Luo
  *

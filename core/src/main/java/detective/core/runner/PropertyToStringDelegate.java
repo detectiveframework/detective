@@ -23,8 +23,7 @@ public class PropertyToStringDelegate extends PropertyToStringAdapter{
   
   /**
    * Create a new ROOT expect closure delegate
-   * 
-   * @param values
+   *
    */
   public PropertyToStringDelegate(Parameters values){
     this.parent = null;
@@ -39,7 +38,6 @@ public class PropertyToStringDelegate extends PropertyToStringAdapter{
   /**
    * 
    * @param parent can not be null
-   * @param values
    */
   public PropertyToStringDelegate(PropertyToStringDelegate parent, String propertyName, Parameters values){
     Assert.assertNotNull(parent);

@@ -46,9 +46,6 @@ public class TraceRecordBuilder {
   /**
    * Setup the time stamp to now and create a new TraceRecordBuilder and Thread to current thread
    * name
-   * 
-   * @param record
-   * @return
    */
   public static TraceRecordBuilder build(TraceRecord record) {
     if (instanceId == null)
@@ -58,12 +55,6 @@ public class TraceRecordBuilder {
     return new TraceRecordBuilder(record).withObject("_RunningInstance", instanceId);
   }
 
-  /**
-   * 
-   * @param exception
-   * @param storyKey what are you doing at this moment? this will be grouped in lowviewer UI
-   * @return
-   */
   public static TraceRecordBuilder buildUnhandledException(Throwable exception, String type, String hashKey) {
     logger.error(exception.getMessage(), exception);
     
@@ -95,9 +86,7 @@ public class TraceRecordBuilder {
    * <li>request.cookies</li>
    * <li>request.content</li>
    * </ul>
-   * 
-   * @param request
-   * @return
+   *
    */
   public TraceRecordBuilder withHttpRequest(HttpServletRequest request) {
     Map<String, Object> map = record.getExtendDatas();
@@ -128,9 +117,6 @@ public class TraceRecordBuilder {
    * <li>exception.callstack</li>
    * <li>exception.class</li>
    * </ul>
-   * 
-   * @param exception
-   * @return
    */
   public TraceRecordBuilder withException(Throwable exception) {
     Map<String, Object> map = record.getExtendDatas();
@@ -145,11 +131,9 @@ public class TraceRecordBuilder {
   /**
    * Add extend data into trace record, this basically doing: record.getExtendDatas().put(fieldName,
    * toJson(obj));
-   * 
-   * @param fieldName
+   *
    * @param obj, will convert to json before put into extend data, will use toString() if convert to
    *          json fails
-   * @return
    */
   public TraceRecordBuilder withObject(String fieldName, Object obj) {
     String json = toJsonSafe(obj);
@@ -160,10 +144,6 @@ public class TraceRecordBuilder {
   /**
    * Add extend data into trace record, this basically doing: record.getExtendDatas().put(fieldName,
    * obj);
-   * 
-   * @param fieldName
-   * @param obj
-   * @return
    */
   public TraceRecordBuilder withObject(String fieldName, Number obj) {
     record.getExtendDatas().put(fieldName, obj);
@@ -173,10 +153,6 @@ public class TraceRecordBuilder {
   /**
    * Add extend data into trace record, this basically doing: record.getExtendDatas().put(fieldName,
    * obj);
-   * 
-   * @param fieldName
-   * @param obj
-   * @return
    */
   public TraceRecordBuilder withObject(String fieldName, String obj) {
     record.getExtendDatas().put(fieldName, obj);
