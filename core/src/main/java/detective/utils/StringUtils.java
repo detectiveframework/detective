@@ -1,12 +1,11 @@
 package detective.utils;
 
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Collection;
 import java.util.Random;
 
-import org.elasticsearch.common.Base64;
-
+/*import org.elasticsearch.common.Base64;*/
+import org.apache.commons.codec.binary.Base64;
 import com.google.common.base.Optional;
 
 public class StringUtils {
@@ -45,16 +44,13 @@ public class StringUtils {
        * We set only the MSB of the variant*/
       randomBytes[8] &= 0x3f;  /* clear the 2 most significant bits */
       randomBytes[8] |= 0x80;  /* set the variant (MSB is set)*/
-      try {
-          byte[] encoded = Base64.encodeBytesToBytes(randomBytes, 0, randomBytes.length, Base64.URL_SAFE);
-          // we know the bytes are 16, and not a multi of 3, so remove the 2 padding chars that are added
-          assert encoded[encoded.length - 1] == '=';
-          assert encoded[encoded.length - 2] == '=';
-          // we always have padding of two at the end, encode it differently
-          return new String(encoded, 0, encoded.length - 2, Base64.PREFERRED_ENCODING);
-      } catch (IOException e) {
-          throw new RuntimeException("should not be thrown");
-      }
+      
+      byte[] encoded = Base64.encodeBase64(randomBytes, true, true);
+      // we know the bytes are 16, and not a multi of 3, so remove the 2 padding chars that are added
+      assert encoded[encoded.length - 1] == '=';
+      assert encoded[encoded.length - 2] == '=';
+      // we always have padding of two at the end, encode it differently
+      return new String(encoded, 0, encoded.length - 2);
   }
 
   public static Optional<String> getBestMatch(String wordToMatch, Collection<String> candidates) {

@@ -73,7 +73,6 @@ public class SparkDriver {
     
     Long endTime = System.nanoTime();
     
-    Collections.sort(jobsAfterRun);
     long errors = 0;
     long skipped = 0;
     for (JobRunResult job : jobsAfterRun){
@@ -102,6 +101,7 @@ public class SparkDriver {
     SparkConf sparkConf = new SparkConf()    
       .setAppName(appName)
       .setMaster(master)
+      .set("spark.driver.allowMultipleContexts", "true")
       //.setMaster("local[8]")
       //.setMaster("spark://127.0.0.1:7000")
       //.set("spark.driver.host", "localhost")

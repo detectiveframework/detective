@@ -19,6 +19,7 @@ import detective.core.Parameters;
 import detective.core.exception.StoryFailException;
 import detective.task.HttpClientTask;
 import geb.Page;
+import geb.url.UrlFragment;
 import groovy.lang.Closure;
 
 /**
@@ -141,7 +142,7 @@ public class GebDetectivePage extends Page {
   }
 
   @Override
-  public void to(Map params, Object[] args) {
+  public void to(Map params, UrlFragment fragment, Object[] args) {
     beforeLoad();
     
     try {
@@ -149,8 +150,7 @@ public class GebDetectivePage extends Page {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    
-    super.to(params, args);
+    super.to(params, fragment, args);
   }
   
   
