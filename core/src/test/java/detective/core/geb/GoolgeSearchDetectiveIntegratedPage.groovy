@@ -36,7 +36,7 @@ class GoogleHomePageDetective extends GebDetectivePage {
 
   static content = {
     // include the previously defined module
-    search { module GoolgeSearchModuleDetective, buttonValue: "Google Search" }    
+    search { id -> module(new GoolgeSearchModuleDetective(buttonValue: "Google Search")) }
   }
   
   static parameters = {
@@ -45,18 +45,23 @@ class GoogleHomePageDetective extends GebDetectivePage {
       "title": title
     ]
   }
+  
+  void searchFor(String searchTerm) {
+    search.field.value searchTerm
+    search.button.click()
+  }
 }
 
 class GoogleResultsPageDetective extends GebDetectivePage {
   static at = { title.endsWith "Google Search" }
   static content = {
     // reuse our previously defined module
-    search { module GoolgeSearchModuleDetective, buttonValue: "Search" }
+    search { id -> module(new GoolgeSearchModuleDetective(buttonValue: "Search")) }
 
     // content definitions can compose and build from other definitions
     results { $("#search .g") }
     result { i -> results[i] }
-    resultLink { i -> result(i).find(".r > a") }
+    resultLink { i -> result(i).find(".rc .r > a") }
     firstResultLink { resultLink(0) }
   }
   static parameters = {

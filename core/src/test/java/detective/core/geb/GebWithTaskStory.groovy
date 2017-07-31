@@ -9,7 +9,7 @@ story() "Demostrate Geb" {
       browser {
         to GoogleHomePage
         assert at(GoogleHomePage)
-        search.field.value("wikipedia")
+        searchFor "wikipedia"
         waitFor { at GoogleResultsPage }
         assert firstResultLink.text().startsWith("Wikipedia")
         firstResultLink.click()
@@ -23,7 +23,7 @@ story() "Demostrate Geb" {
     "go to google home page step by step"{
       browser.to GoogleHomePage
       browser.at(GoogleHomePage)
-      browser.search.field.value("wikipedia")
+      browser.searchFor "wikipedia"
       browser.waitFor { browser.at GoogleResultsPage }
       browser.firstResultLink.text().startsWith("Wikipedia")
       browser.firstResultLink.click()
@@ -35,7 +35,7 @@ story() "Demostrate Geb" {
     "go to google home page step by step"{
       browser() to GoogleHomePage
       browser() at(GoogleHomePage)
-      browser().search.field.value("wikipedia")
+      browser().searchFor "wikipedia"
       browser().waitFor { browser().at GoogleResultsPage }
       browser().firstResultLink.text().startsWith("Wikipedia")
       browser().firstResultLink.click()

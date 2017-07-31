@@ -1,25 +1,12 @@
 package detective.common.trace.impl;
 
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
-
-import java.io.IOException;
 import java.util.Date;
-
-import org.elasticsearch.action.ListenableActionFuture;
-import org.elasticsearch.action.deletebyquery.DeleteByQueryRequestBuilder;
-import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
-import org.elasticsearch.action.index.IndexRequestBuilder;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.index.query.TermQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import detective.common.DateUtil;
 import detective.common.trace.TraceRecord;
 import detective.common.trace.TraceRecorder;
-import detective.core.services.ElasticSearchClientFactory;
 
 public class TraceRecorderElasticSearchImpl implements TraceRecorder {
   
@@ -121,14 +108,6 @@ public class TraceRecorderElasticSearchImpl implements TraceRecorder {
   public void deleteByHashKey(String hashKey){
     if (hashKey == null || hashKey.equals("*"))
       throw new RuntimeException("Hashkey must have a value and can't be *");
-    
-    TransportClient client = ElasticSearchClientFactory.getTransportClient();
-    DeleteByQueryRequestBuilder builder = client.prepareDeleteByQuery(this.TRACE_INDEX);
-    TermQueryBuilder query = new TermQueryBuilder("hashKey", hashKey);
-    builder.setQuery(query);
-    
-    ListenableActionFuture<DeleteByQueryResponse> future = builder.execute();
-    future.actionGet();
   }
 
 }

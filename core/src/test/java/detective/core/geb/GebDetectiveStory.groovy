@@ -25,7 +25,7 @@ story() "Geb page with detective integration" {
     
     "let's search wikipedia" {
       browser {
-        search.field.value("wikipedia")
+        searchFor "wikipedia"
         waitFor { at GoogleResultsPageDetective }
         assert firstResultLink.text().startsWith("Wikipedia")
       }
