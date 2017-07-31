@@ -37,6 +37,11 @@ class GoogleHomePage extends GebDetectivePage {
     // include the previously defined module
     search { id -> module(new GoogleSearchModule(buttonValue: "Google Search")) }
   }
+  
+  void searchFor(String searchTerm) {
+    search.field.value searchTerm
+    search.button.click()
+  }
 }
 
 class GoogleResultsPage extends Page {

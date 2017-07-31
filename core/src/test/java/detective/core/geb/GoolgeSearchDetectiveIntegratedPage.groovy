@@ -45,6 +45,11 @@ class GoogleHomePageDetective extends GebDetectivePage {
       "title": title
     ]
   }
+  
+  void searchFor(String searchTerm) {
+    search.field.value searchTerm
+    search.button.click()
+  }
 }
 
 class GoogleResultsPageDetective extends GebDetectivePage {
