@@ -127,15 +127,19 @@ public enum DetectiveFactory {
   private String getInstanceId(){
     try {
       String hostName = getHostNameFromSystemEnv();
-      if (hostName == null || hostName.length() == 0)
-        hostName = InetAddress.getLocalHost().getHostAddress();
+      try{
+        if (hostName == null || hostName.length() == 0)
+          hostName = InetAddress.getLocalHost().getHostAddress();
+      }catch(Exception e){        
+      }
       
       if (hostName == null || hostName.length() == 0)
         hostName = InetAddress.getLocalHost().getHostName();
       
       return hostName;
     } catch (Exception e) {
-      throw new RuntimeException("Can't read your host name, if you are in mac, please run sudo scutil –-set HostName yourname", e);
+      logger.error("Can't read your host name, a new set name has been created for you. if you are in mac, please run sudo scutil –-set HostName yourname", e);
+      return "DetectiveTest";
     }
   }
   
