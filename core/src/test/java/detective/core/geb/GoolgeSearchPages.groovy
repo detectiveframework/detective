@@ -14,13 +14,13 @@ class GoogleSearchModule extends Module {
   // the content DSL
   static content = {
 
-    // name the search input control “field”, defining it with the jQuery like navigator
+    // name the search input control field, defining it with the jQuery like navigator
     field { $("input", name: "q") }
 
     // the search button declares that it takes us to the results page, and uses the
     // parameterised buttonValue to define itself
     button(to: GoogleResultsPage) {
-      $("input", value: buttonValue)
+      $("input", value: buttonValue)[1]
     }
   }
 }
@@ -30,7 +30,7 @@ class GoogleHomePage extends GebDetectivePage {
   // pages can define their location, either absolutely or relative to a base
   static url = "http://google.com/ncr"
 
-  // “at checkers” allow verifying that the browser is at the expected page
+  // at checkers allow verifying that the browser is at the expected page
   static at = { title == "Google" }
 
   static content = {
