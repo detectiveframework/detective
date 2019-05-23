@@ -203,6 +203,13 @@ public class HttpClientTask extends AbstractTask{
       }
     }
     
+    if (config.containsKey("http.header.x-amz-target")) {
+      request.setHeader("x-amz-target", config.get("http.header.x-amz-target").toString());
+      if (config.containsKey("http.header.Content-Type")) {
+    	 request.setHeader("Content-Type", config.get("http.header.Content-Type").toString());
+      }
+	}
+    
     try {
       CloseableHttpResponse response = httpClient.execute(request, context);
       try {
