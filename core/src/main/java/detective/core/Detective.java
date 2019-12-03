@@ -195,56 +195,6 @@ public class Detective {
   }
 
   /**
-   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p></p>
-   * For example:
-   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
-   */
-  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second) {
-      return AllOf.allOf(first, second);
-  }
-
-  /**
-   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p></p>
-   * For example:
-   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
-   */
-  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second, Matcher<? super T> third) {
-      return AllOf.allOf(first, second, third);
-  }
-
-  /**
-   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p></p>
-   * For example:
-   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
-   */
-  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second, Matcher<? super T> third, Matcher<? super T> fourth) {
-      return AllOf.allOf(first, second, third, fourth);
-  }
-
-  /**
-   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p></p>
-   * For example:
-   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
-   */
-  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second, Matcher<? super T> third, Matcher<? super T> fourth, Matcher<? super T> fifth) {
-      return AllOf.allOf(first, second, third, fourth, fifth);
-  }
-
-  /**
-   * Creates a matcher that matches if the examined object matches <b>ALL</b> of the specified matchers.
-   * <p></p>
-   * For example:
-   * <pre>assertThat("myValue", allOf(startsWith("my"), containsString("Val")))</pre>
-   */
-  public static <T> Matcher<T> allOf(Matcher<? super T> first, Matcher<? super T> second, Matcher<? super T> third, Matcher<? super T> fourth, Matcher<? super T> fifth, Matcher<? super T> sixth) {
-    return AllOf.allOf(first, second, third, fourth, fifth, sixth);
-  }
-  
-  /**
    * Creates a matcher that matches if the examined object matches <b>Any</b> of the specified matchers.
    * <p></p>
    * For example:

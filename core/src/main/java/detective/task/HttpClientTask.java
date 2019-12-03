@@ -6,23 +6,17 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.AuthCache;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
@@ -34,21 +28,15 @@ import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
-
-import com.amazonaws.HttpMethod;
 
 import detective.common.annotation.ThreadSafe;
 import detective.core.Parameters;
@@ -144,6 +132,7 @@ import detective.core.services.DetectiveFactory;
 public class HttpClientTask extends AbstractTask{
   
   public static final String PARAM_HTTP_COOKIES = "http.cookies";
+  public static final String DEFAULT_USER_AGENT = "DetectiveCore/1.0 (automated-test)";
 
   public enum HttpMethod {
     GET, POST, PUT, DELETE, HEAD, OPTIONS, TRACE, PATCH;
@@ -180,7 +169,13 @@ public class HttpClientTask extends AbstractTask{
       throw new ConfigException("the address you provided have to be a String or java URI, however your type is " + address.getClass().getName());
     
     HttpUriRequest request = this.createHttpUriRequest(m, uri);
-    request.setHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36");
+    
+    if (config.containsKey("http.header.User-Agent")) {
+      request.setHeader("User-Agent", config.get("http.header.User-Agent").toString());
+    }
+    else {
+      request.setHeader("User-Agent", DEFAULT_USER_AGENT);
+    }
 
     String userName = this.readAsString(config, "http.auth.username", null, true, "Adding basic http header auth to request");
     String password = this.readAsString(config, "http.auth.password", null, true, "");
@@ -205,11 +200,12 @@ public class HttpClientTask extends AbstractTask{
     
     if (config.containsKey("http.header.x-amz-target")) {
       request.setHeader("x-amz-target", config.get("http.header.x-amz-target").toString());
-      if (config.containsKey("http.header.Content-Type")) {
-    	 request.setHeader("Content-Type", config.get("http.header.Content-Type").toString());
-      }
-	}
+    }
     
+    if (config.containsKey("http.header.Content-Type")) {
+      request.setHeader("Content-Type", config.get("http.header.Content-Type").toString());
+    }
+
     try {
       CloseableHttpResponse response = httpClient.execute(request, context);
       try {
