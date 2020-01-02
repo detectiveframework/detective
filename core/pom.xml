@@ -342,6 +342,8 @@
 					<compilerId>groovy-eclipse-compiler</compilerId>
 					<!-- set verbose to be true if you want lots of uninteresting messages -->
 					<!-- <verbose>true</verbose> -->
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -372,16 +374,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
 			</plugin>
 			
 			<plugin>
