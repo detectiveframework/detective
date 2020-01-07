@@ -46,11 +46,8 @@ public class StringUtils {
       randomBytes[8] |= 0x80;  /* set the variant (MSB is set)*/
       
       byte[] encoded = Base64.encodeBase64(randomBytes, true, true);
-      // we know the bytes are 16, and not a multi of 3, so remove the 2 padding chars that are added
-      assert encoded[encoded.length - 1] == '=';
-      assert encoded[encoded.length - 2] == '=';
-      // we always have padding of two at the end, encode it differently
-      return new String(encoded, 0, encoded.length - 2);
+
+      return new String(encoded);
   }
 
   public static Optional<String> getBestMatch(String wordToMatch, Collection<String> candidates) {
