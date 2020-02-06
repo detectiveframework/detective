@@ -3,9 +3,8 @@ package detective.core.services;
 import groovyx.gpars.group.PGroup;
 import groovyx.gpars.group.DefaultPGroup;
 import groovyx.gpars.scheduler.DefaultPool;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
-import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
-import io.github.bonigarcia.wdm.FirefoxDriverManager;
+import io.github.bonigarcia.wdm.DriverManagerType;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.net.InetAddress;
 import java.util.Map;
@@ -84,12 +83,12 @@ public enum DetectiveFactory {
   
   private void setupWebDriverBinaries(){
     if ("chrome".equals(getConfig().getString("browser.default_driver"))){
-      ChromeDriverManager.getInstance().setup();
+    	WebDriverManager.getInstance(DriverManagerType.CHROME).setup();
     }else if ("ie".equals(getConfig().getString("browser.default_driver"))){
-      InternetExplorerDriverManager.getInstance().setup();
+    	WebDriverManager.getInstance(DriverManagerType.IEXPLORER).setup();
     }
     else {
-      FirefoxDriverManager.getInstance().setup();
+    	WebDriverManager.getInstance(DriverManagerType.FIREFOX).setup();
     }
   }
   

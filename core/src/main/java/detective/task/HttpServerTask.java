@@ -1,17 +1,27 @@
 package detective.task;
-
-import static io.netty.handler.codec.http.HttpHeaders.getHost;
-import static io.netty.handler.codec.http.HttpHeaders.is100ContinueExpected;
-import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONNECTION;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
-import static io.netty.handler.codec.http.HttpHeaders.Names.COOKIE;
-import static io.netty.handler.codec.http.HttpHeaders.Names.SET_COOKIE;
+import static io.netty.handler.codec.http.HttpHeaderValues.KEEP_ALIVE;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
+import static io.netty.handler.codec.http.HttpHeaderNames.COOKIE;
+import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
+import static io.netty.handler.codec.http.HttpUtil.is100ContinueExpected;
+import static io.netty.handler.codec.http.HttpUtil.isKeepAlive;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import detective.common.annotation.ThreadSafe;
+import detective.core.Parameters;
+import detective.core.TestTask;
+import detective.core.config.ConfigException;
+import detective.core.dsl.ParametersImpl;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -26,8 +36,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DecoderResult;
-import io.netty.handler.codec.http.Cookie;
-import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
@@ -38,20 +46,10 @@ import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.handler.codec.http.ServerCookieEncoder;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
+import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import io.netty.util.CharsetUtil;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import detective.common.annotation.ThreadSafe;
-import detective.core.Parameters;
-import detective.core.TestTask;
-import detective.core.config.ConfigException;
-import detective.core.dsl.ParametersImpl;
 
 @ThreadSafe
 public class HttpServerTask implements TestTask {
@@ -143,9 +141,9 @@ public class HttpServerTask implements TestTask {
         buf.append("WELCOME TO THE WILD WILD WEB SERVER\r\n");
         buf.append("===================================\r\n");
 
-        buf.append("VERSION: ").append(request.getProtocolVersion()).append("\r\n");
-        buf.append("HOSTNAME: ").append(getHost(request, "unknown")).append("\r\n");
-        buf.append("REQUEST_URI: ").append(request.getUri()).append("\r\n\r\n");
+        buf.append("VERSION: ").append(request.protocolVersion()).append("\r\n");
+        buf.append("HOSTNAME: ").append(request.headers().get("Host", "unknown")).append("\r\n");
+        buf.append("REQUEST_URI: ").append(request.uri()).append("\r\n\r\n");
 
         HttpHeaders headers = request.headers();
         if (!headers.isEmpty()) {
@@ -157,7 +155,7 @@ public class HttpServerTask implements TestTask {
           buf.append("\r\n");
         }
 
-        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(request.getUri());
+        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(request.uri());
         Map<String, List<String>> params = queryStringDecoder.parameters();
         if (!params.isEmpty()) {
           for (Entry<String, List<String>> p : params.entrySet()) {
@@ -205,7 +203,7 @@ public class HttpServerTask implements TestTask {
     }
 
     private static void appendDecoderResult(StringBuilder buf, HttpObject o) {
-      DecoderResult result = o.getDecoderResult();
+      DecoderResult result = o.decoderResult();
       if (result.isSuccess()) {
         return;
       }
@@ -220,7 +218,7 @@ public class HttpServerTask implements TestTask {
       boolean keepAlive = isKeepAlive(request);
       // Build the response object.
       FullHttpResponse response =
-          new DefaultFullHttpResponse(HTTP_1_1, currentObj.getDecoderResult().isSuccess() ? OK
+          new DefaultFullHttpResponse(HTTP_1_1, currentObj.decoderResult().isSuccess() ? OK
               : BAD_REQUEST, Unpooled.copiedBuffer(buf.toString(), CharsetUtil.UTF_8));
 
       response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
@@ -230,23 +228,23 @@ public class HttpServerTask implements TestTask {
         response.headers().set(CONTENT_LENGTH, response.content().readableBytes());
         // Add keep alive header as per:
         // - http://www.w3.org/Protocols/HTTP/1.1/draft-ietf-http-v11-spec-01.html#Connection
-        response.headers().set(CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+        response.headers().set(CONNECTION, KEEP_ALIVE);
       }
 
       // Encode the cookie.
       String cookieString = request.headers().get(COOKIE);
       if (cookieString != null) {
-        Set<Cookie> cookies = CookieDecoder.decode(cookieString);
+    	  Set<Cookie> cookies = ServerCookieDecoder.STRICT.decode(cookieString);
         if (!cookies.isEmpty()) {
           // Reset the cookies if necessary.
           for (Cookie cookie : cookies) {
-            response.headers().add(SET_COOKIE, ServerCookieEncoder.encode(cookie));
+            response.headers().add(SET_COOKIE, ServerCookieEncoder.LAX.encode(cookie));
           }
         }
       } else {
         // Browser sent no cookie. Add some.
-        response.headers().add(SET_COOKIE, ServerCookieEncoder.encode("key1", "value1"));
-        response.headers().add(SET_COOKIE, ServerCookieEncoder.encode("key2", "value2"));
+        response.headers().add(SET_COOKIE, ServerCookieEncoder.LAX.encode("key1", "value1"));
+        response.headers().add(SET_COOKIE, ServerCookieEncoder.LAX.encode("key2", "value2"));
       }
 
       // Write the response.

@@ -1,17 +1,12 @@
 package detective.core.task.webdriver;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
@@ -20,9 +15,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.ScreenshotException;
 
@@ -85,27 +81,10 @@ public class WebDriverTest {
     runMultipleThread(1, new WebDriverFactory(){
 
       public WebDriver getDriver() {
-        return new RemoteWebDriver(DesiredCapabilities.chrome());
+        return new RemoteWebDriver(new ChromeOptions());
       }
       
     });    
-  }
-  
-  //@Test
-  public void testRemotePhantomjs() throws InterruptedException {
-    runMultipleThread(30, new WebDriverFactory(){
-
-      public WebDriver getDriver() {
-        RemoteWebDriver driver;
-        try {
-          driver = new RemoteWebDriver(new URL("http://localhost:8081/wd"), DesiredCapabilities.phantomjs());
-          return driver;
-        } catch (MalformedURLException e) {
-          throw new RuntimeException(e.getMessage(), e);
-        }
-      }
-      
-    });
   }
   
   /**
@@ -166,7 +145,7 @@ public class WebDriverTest {
 
   //@Test
   public void testRemoteFirefox() {
-    WebDriver driver = new RemoteWebDriver(DesiredCapabilities.firefox());
+    WebDriver driver = new RemoteWebDriver(new FirefoxOptions());
 
     // Query the driver to find out more information
     Capabilities actualCapabilities = ((RemoteWebDriver) driver).getCapabilities();
