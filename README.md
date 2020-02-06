@@ -174,3 +174,6 @@ What's the task looks like
  ## Developers
    To release, please run (Make sure your are in JDK 1.7)
    mvn clean deploy -Dgpg.passphrase=yourpass
+   
+   If wanted to skip test
+   mvn clean deploy -DskipTests=true -Dgpg.passphrase=yourpass 
